@@ -319,19 +319,28 @@ function Plan() {
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  <span>{t("Covers 1 pair every 2 years")}</span>
+                  <div>
+                    <span className="font-semibold text-foreground">{t("Covers 1 pair every 2 years")}</span>
+                    <p className="text-xs text-muted-foreground/80 mt-0.5">{t("Max €150 allowance — you pay the remaining balance out of pocket")}</p>
+                  </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  <span>{t("Replacements not covered")}</span>
+                  <div>
+                    <span className="font-semibold text-foreground">{t("Replacements not covered")}</span>
+                    <p className="text-xs text-muted-foreground/80 mt-0.5">{t("Accidental breakage or prescription changes cost 100% full retail price")}</p>
+                  </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  <span>{t("Additional co-pays for premium lenses")}</span>
+                  <div>
+                    <span className="font-semibold text-foreground">{t("Additional co-pays for premium lenses")}</span>
+                    <p className="text-xs text-muted-foreground/80 mt-0.5">{t("Anti-reflective, scratch-resistant coatings and high-index thinning cost €150+ extra")}</p>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -356,19 +365,28 @@ function Plan() {
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>{t("1 complete pair delivered to you")}</span>
+                  <div>
+                    <span className="font-semibold text-foreground">{t("1 complete pair delivered to you")}</span>
+                    <p className="text-xs text-primary/70 mt-0.5">{t("Fully covered every single year — zero waiting periods")}</p>
+                  </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>{t("3 free replacements (broken, power change)")}</span>
+                  <div>
+                    <span className="font-semibold text-foreground">{t("3 free replacements (broken, power change)")}</span>
+                    <p className="text-xs text-primary/70 mt-0.5">{t("€0 out-of-pocket costs for prescription changes or accident replacements")}</p>
+                  </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>{t("Nothing extra to pay ever")}</span>
+                  <div>
+                    <span className="font-semibold text-foreground">{t("Nothing extra to pay ever")}</span>
+                    <p className="text-xs text-primary/70 mt-0.5">{t("Premium lenses, anti-reflective & UV-400 coatings are 100% included")}</p>
+                  </div>
                 </li>
               </ul>
             </div>
