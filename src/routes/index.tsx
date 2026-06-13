@@ -8,7 +8,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "One care plan: new prescription glasses every year + 2 free replacements a year, for €29/month. No retail markup.",
+          "One care plan: new prescription glasses every year + 3 free replacements a year, for €29/month. No retail markup.",
       },
     ],
   }),
@@ -98,7 +98,7 @@ function Hero() {
 
         <p className="mx-auto mt-5 max-w-md text-[14px] leading-relaxed text-muted-foreground md:max-w-xl md:text-base">
           A single, honest plan. Up-to-date prescription lenses delivered every year,
-          plus two free replacements if you break or scratch them.
+          plus three free replacements if you break or scratch them.
         </p>
         <div className="mt-5 flex items-center justify-center gap-4">
           <a
@@ -193,7 +193,7 @@ function Plan() {
             </p>
             <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-sm">
               <Feature>1 new pair of precision lenses every year</Feature>
-              <Feature>2 free replacements per year (lost, broken, scratched)</Feature>
+              <Feature>3 free replacements per year (lost, broken, scratched)</Feature>
               <Feature>Premium lenses, anti-reflective &amp; UV-400 coatings included</Feature>
               <Feature>Free shipping EU-wide · cancel anytime</Feature>
             </ul>
@@ -210,9 +210,9 @@ function Plan() {
 
         {/* The math */}
         <div className="mt-8 grid gap-6 rounded-2xl border border-border bg-card p-8 md:grid-cols-3">
-          <Math k="€1,500" l="Traditional optician (3 pairs)" />
+          <Math k="€2,000" l="Traditional optician (4 pairs)" />
           <Math k="€29/mo" l="Lensly subscription (€348/yr)" highlight />
-          <Math k="€1,152" l="Saved per year with replacements" />
+          <Math k="€1,652" l="Saved per year with replacements" />
         </div>
 
         {/* Insurance Comparison */}
@@ -299,7 +299,7 @@ function Plan() {
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>2 free replacements included</span>
+                  <span>3 free replacements included</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
