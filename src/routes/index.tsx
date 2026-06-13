@@ -410,7 +410,7 @@ function Plan() {
 
               <div className="mt-8 border-t border-border/60 pt-5">
                 <div className="text-[15px] font-bold text-primary">{t("Flat €29/month, completely covered")}</div>
-                <div className="text-[11px] font-medium text-muted-foreground/75 mt-0.5">{t("Zero hidden fees, 2 new pairs, 6 replacements included")}</div>
+                <div className="text-[11px] font-medium text-muted-foreground/75 mt-0.5">{t("Zero hidden fees, 1 pair per year and 3 replacements per year")}</div>
               </div>
             </div>
           </div>
