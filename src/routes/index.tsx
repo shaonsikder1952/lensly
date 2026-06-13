@@ -98,7 +98,7 @@ function Hero() {
 
         <p className="mx-auto mt-5 max-w-md text-[14px] leading-relaxed text-muted-foreground md:max-w-xl md:text-base">
           A single, honest plan. Up-to-date prescription lenses delivered every year.
-          Theft, broken, power change? We got you covered with three free replacements.
+          Broken, power change? We got you covered with three free replacements.
         </p>
         <div className="mt-5 flex items-center justify-center gap-4">
           <a
@@ -110,26 +110,26 @@ function Hero() {
           </a>
         </div>
 
-        {/* European Trust Indicators */}
+        {/* Trust Indicators */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-border/40 pt-6 text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80">
           <div className="flex items-center gap-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.17 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118L2.05 9.43c-.783-.57-.38-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z" />
             </svg>
-            <span>CE Certified Lenses</span>
+            <span>Premium Optical Lenses</span>
           </div>
           <div className="flex items-center gap-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v4m0 0L4 7m8 4v10M4 7v10l8 4" />
             </svg>
-            <span>German Optical Standards</span>
+            <span>Free EU-Wide Shipping</span>
           </div>
           <div className="flex items-center gap-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0110 0v4" />
             </svg>
-            <span>GDPR Secure Checkout</span>
+            <span>Secure Stripe Checkout</span>
           </div>
         </div>
       </div>
@@ -149,7 +149,7 @@ function Plan() {
               Traditional optician
             </p>
             <div className="mt-5 font-display text-5xl font-semibold tracking-tight text-foreground/35 line-through decoration-[oklch(0.7_0.17_55)] decoration-[3px]">
-              €500
+              €400
             </div>
             <p className="mt-2 text-xs font-medium text-muted-foreground/80 uppercase tracking-wider">
               Upfront · 1 pair · no free replacements
@@ -193,7 +193,7 @@ function Plan() {
             </p>
             <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-sm">
               <Feature>1 new pair of precision lenses every year</Feature>
-              <Feature>3 free replacements (theft, broken, power change? We got you covered)</Feature>
+              <Feature>3 free replacements (broken, power change? We got you covered)</Feature>
               <Feature>Premium lenses, anti-reflective &amp; UV-400 coatings included</Feature>
               <Feature>Free shipping EU-wide · cancel anytime</Feature>
             </ul>
@@ -223,9 +223,9 @@ function Plan() {
 
         {/* The math */}
         <div className="mt-8 grid gap-6 rounded-2xl border border-border bg-card p-8 md:grid-cols-3">
-          <Math k="€2,000" l="Traditional optician (4 pairs)" />
+          <Math k="€1,600" l="Traditional optician (4 pairs)" />
           <Math k="€29/mo" l="Lensly subscription (€348/yr)" highlight />
-          <Math k="€1,652" l="Saved per year with replacements" />
+          <Math k="€1,252" l="Saved per year with replacements" />
         </div>
 
         {/* Insurance Comparison */}
@@ -312,7 +312,7 @@ function Plan() {
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>3 free replacements (theft, broken, power change)</span>
+                  <span>3 free replacements (broken, power change)</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
