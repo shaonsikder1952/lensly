@@ -100,7 +100,7 @@ export function Nav() {
             href="/#plan"
             className="rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:opacity-90"
           >
-            {t("nav.start")}
+            {t("Start for €29/mo")}
           </a>
         </div>
       </div>
@@ -159,7 +159,7 @@ function Hero() {
         </div>
 
         <p className="mx-auto mt-5 max-w-md text-[14px] leading-relaxed text-muted-foreground md:max-w-xl md:text-base">
-          {t("A single, honest plan. Up-to-date prescription lenses delivered every year. Broken, power change? We got you covered with three free replacements.")}
+          {t("Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.")}
         </p>
         <div className="mt-5 flex items-center justify-center gap-4">
           <a
