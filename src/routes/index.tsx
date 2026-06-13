@@ -468,7 +468,7 @@ export function Faq() {
     {
       q: t("Who is behind Lensly?"),
       a: (
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
           {t("Lensly is a small independent team focused on making quality prescription eyewear affordable and accessible across Europe. We work directly with certified optical labs to cut out retail markups.")}
         </p>
       ),
@@ -476,7 +476,7 @@ export function Faq() {
     {
       q: t("Can I see frame options before subscribing?"),
       a: (
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
           {t("Yes. You choose any frame you like, from any brand, online shop, or store. Send us a photo or screenshot and we source it for you. No limitations.")}
         </p>
       ),
@@ -485,26 +485,41 @@ export function Faq() {
       q: t("What is the exact process for my first pair?"),
       a: (
         <div className="mt-1 space-y-4">
-          <div className="relative pl-5 border-l border-primary/30 space-y-3.5 py-1">
+          <div className="relative pl-5 border-l-2 border-primary/20 space-y-4.5 py-1">
             <div className="relative">
-              <div className="absolute -left-[25px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary" />
-              <h5 className="font-semibold text-xs text-foreground uppercase tracking-wider">{t("Subscribe via Stripe")}</h5>
+              <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              </div>
+              <h5 className="font-semibold text-xs sm:text-sm text-foreground">{t("1. Subscribe via Stripe")}</h5>
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">{t("Select your plan and complete checkout securely.")}</p>
             </div>
             <div className="relative">
-              <div className="absolute -left-[25px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary" />
-              <h5 className="font-semibold text-xs text-foreground uppercase tracking-wider">{t("We contact you by email within 24 hours")}</h5>
+              <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              </div>
+              <h5 className="font-semibold text-xs sm:text-sm text-foreground">{t("2. E-mail contact within 24 hours")}</h5>
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">{t("We reach out to gather your custom prescription details.")}</p>
             </div>
             <div className="relative">
-              <div className="absolute -left-[25px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary" />
-              <h5 className="font-semibold text-xs text-foreground uppercase tracking-wider">{t("You send us your prescription, pupillary distance measurement, and your chosen frame")}</h5>
+              <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              </div>
+              <h5 className="font-semibold text-xs sm:text-sm text-foreground">{t("3. Send us prescription, pupillary distance & chosen frame")}</h5>
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">{t("Simply reply with your values and a photo/screenshot of any frame you want.")}</p>
             </div>
             <div className="relative">
-              <div className="absolute -left-[25px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary" />
-              <h5 className="font-semibold text-xs text-foreground uppercase tracking-wider">{t("We source and produce your glasses")}</h5>
+              <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              </div>
+              <h5 className="font-semibold text-xs sm:text-sm text-foreground">{t("4. Sourcing & production")}</h5>
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">{t("We purchase your frame and craft your custom lenses to specification.")}</p>
             </div>
             <div className="relative">
-              <div className="absolute -left-[25px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary" />
-              <h5 className="font-semibold text-xs text-foreground uppercase tracking-wider">{t("Delivered to your door within approximately 15 days")}</h5>
+              <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              </div>
+              <h5 className="font-semibold text-xs sm:text-sm text-foreground">{t("5. Delivered to your door")}</h5>
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">{t("Your finished prescription eyewear arrives in approximately 15 days.")}</p>
             </div>
           </div>
         </div>
@@ -513,7 +528,7 @@ export function Faq() {
     {
       q: t("How do I get my pupillary distance measured?"),
       a: (
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
           {t("Visit any local optician or doctor for a quick measurement. It takes 2 minutes and is usually free. Then just include it in your email to us.")}
         </p>
       ),
@@ -521,7 +536,7 @@ export function Faq() {
     {
       q: t("What if my lenses are wrong?"),
       a: (
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
           {t("We send a replacement pair free of charge, no questions asked.")}
         </p>
       ),
@@ -529,7 +544,7 @@ export function Faq() {
     {
       q: t("How do returns or refunds work?"),
       a: (
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
           {t("If there is a production error on our side we fix it completely free. Custom prescription lenses cannot be refunded once produced, but we will always make it right.")}
         </p>
       ),
@@ -537,7 +552,7 @@ export function Faq() {
     {
       q: t("Do I buy the frame or do you?"),
       a: (
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
           {t("We source the frame for you based on your photo or screenshot. It is included in your subscription, nothing extra to pay.")}
         </p>
       ),
@@ -545,13 +560,13 @@ export function Faq() {
   ];
 
   return (
-    <section className="py-16 border-t border-border/40 bg-muted/10">
+    <section className="py-14 sm:py-20 border-t border-border/40 bg-muted/10">
       <div className="mx-auto max-w-2xl px-4 sm:px-6">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8 sm:mb-12">
           <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             {t("Frequently Asked Questions")}
           </h2>
-          <p className="mt-2 text-xs text-muted-foreground uppercase tracking-wider">
+          <p className="mt-2 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">
             {t("Everything you need to know")}
           </p>
         </div>
@@ -567,7 +582,7 @@ export function Faq() {
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-semibold text-foreground hover:bg-muted/30 transition-colors"
+                  className="flex w-full items-center justify-between px-4 py-3.5 sm:px-6 sm:py-5 text-left text-[13px] sm:text-base font-semibold text-foreground hover:bg-muted/30 transition-colors"
                 >
                   <span>{faq.q}</span>
                   <svg
@@ -584,7 +599,7 @@ export function Faq() {
                 </button>
                 <div
                   className={`transition-all duration-200 ease-in-out ${
-                    isOpen ? "max-h-[600px] opacity-100 border-t border-border/40 px-5 py-4 bg-muted/5" : "max-h-0 opacity-0 overflow-hidden"
+                    isOpen ? "max-h-[700px] opacity-100 border-t border-border/40 px-4 py-4 sm:px-6 sm:py-5 bg-muted/5" : "max-h-0 opacity-0 overflow-hidden"
                   }`}
                 >
                   {faq.a}
