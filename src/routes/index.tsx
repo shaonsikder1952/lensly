@@ -128,11 +128,11 @@ function Hero() {
 
       <div className="relative mx-auto max-w-3xl px-6 pt-10 pb-12 text-center md:pt-14 md:pb-16">
         <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
-          {t("hero.badge")}
+          {t("One plan · €29 / month")}
         </p>
         <h1 className="animate-fade-in mx-auto mt-3 max-w-[18ch] font-display text-[34px] font-semibold leading-[1.05] tracking-tight md:text-[52px]">
-          {t("hero.titlePart1")}
-          <span className="shimmer-text whitespace-nowrap">{t("hero.titlePart2")}</span>
+          {t("New glasses every ")}
+          <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
         </h1>
 
         {/* Floating 3D glasses with tight orbital rings */}
@@ -159,14 +159,14 @@ function Hero() {
         </div>
 
         <p className="mx-auto mt-5 max-w-md text-[14px] leading-relaxed text-muted-foreground md:max-w-xl md:text-base">
-          {t("hero.subtitle")}
+          {t("A single, honest plan. Up-to-date prescription lenses delivered every year. Broken, power change? We got you covered with three free replacements.")}
         </p>
         <div className="mt-5 flex items-center justify-center gap-4">
           <a
             href="/#plan"
             className="group inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition hover:opacity-90 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)]"
           >
-            {t("hero.cta")}
+            {t("See the plan")}
             <span className="transition-transform group-hover:translate-x-0.5">→</span>
           </a>
         </div>
@@ -177,20 +177,20 @@ function Hero() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
               <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.17 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118L2.05 9.43c-.783-.57-.38-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z" />
             </svg>
-            <span>{t("trust.lenses")}</span>
+            <span>{t("Premium Optical Lenses")}</span>
           </div>
           <div className="flex items-center gap-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
               <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v4m0 0L4 7m8 4v10M4 7v10l8 4" />
             </svg>
-            <span>{t("trust.shipping")}</span>
+            <span>{t("Free EU-Wide Shipping")}</span>
           </div>
           <div className="flex items-center gap-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0110 0v4" />
             </svg>
-            <span>{t("trust.checkout")}</span>
+            <span>{t("Secure Stripe Checkout")}</span>
           </div>
         </div>
       </div>
@@ -208,30 +208,30 @@ function Plan() {
           {/* Traditional Optician Card */}
           <div className="rounded-2xl border border-border bg-card p-8 shadow-sm transition hover:shadow-md">
             <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              {t("plan.traditional")}
+              {t("Traditional optician")}
             </p>
             <div className="mt-5 font-display text-5xl font-semibold tracking-tight text-foreground/35 line-through decoration-[oklch(0.7_0.17_55)] decoration-[3px]">
               €400
             </div>
             <p className="mt-2 text-xs font-medium text-muted-foreground/80 uppercase tracking-wider">
-              {t("plan.upfront")}
+              {t("Upfront · 1 pair · no free replacements")}
             </p>
             <ul className="mt-6 space-y-3.5 border-t border-border/60 pt-6 text-sm text-muted-foreground">
               <li className="flex items-center gap-2.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                {t("plan.wait")}
+                {t("Wait 2–3 years to save up money and buy again")}
               </li>
               <li className="flex items-center gap-2.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                {t("plan.accidental")}
+                {t("Accidental replacements cost full retail price")}
               </li>
               <li className="flex items-center gap-2.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                {t("plan.coatings")}
+                {t("Coatings & high-index lenses billed as extras")}
               </li>
               <li className="flex items-center gap-2.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                {t("plan.outdated")}
+                {t("Outdated prescription within 12 months")}
               </li>
             </ul>
           </div>
@@ -239,7 +239,7 @@ function Plan() {
           {/* Lensly Care Card (Featured) */}
           <div className="relative rounded-2xl border-2 border-primary bg-card p-8 shadow-md transition hover:shadow-lg">
             <div className="absolute -top-3 right-8 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
-              {t("plan.lenslyCare")}
+              {t("Lensly Care")}
             </div>
             <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-primary">
               The subscription
@@ -251,20 +251,20 @@ function Plan() {
               <span className="text-base font-medium text-muted-foreground">/ month</span>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Continuous vision care · <span className="font-semibold text-foreground">€0.95 a day</span> ({t("plan.dailyCoffee")}).
+              Continuous vision care · <span className="font-semibold text-foreground">€0.95 a day</span> ({t("less than a daily coffee")}).
             </p>
             <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-sm">
-              <Feature>{t("plan.feature1")}</Feature>
-              <Feature>{t("plan.feature2")}</Feature>
-              <Feature>{t("plan.feature3")}</Feature>
-              <Feature>{t("plan.feature4")}</Feature>
+              <Feature>{t("1 new pair of precision lenses every year")}</Feature>
+              <Feature>{t("3 free replacements (broken, power change? We got you covered)")}</Feature>
+              <Feature>{t("Premium lenses, anti-reflective & UV-400 coatings included")}</Feature>
+              <Feature>{t("Free shipping EU-wide · cancel anytime")}</Feature>
             </ul>
             <div className="mt-6 border-t border-border/60 pt-6 text-left">
               <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground">
-                {t("plan.whatsNext")}
+                {t("What's next?")}
               </h4>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                {t("plan.whatsNextDesc")}
+                {t("To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.")}
               </p>
             </div>
             
@@ -274,30 +274,30 @@ function Plan() {
               rel="noopener noreferrer"
               className="mt-5 block w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)]"
             >
-              {t("plan.subscribeBtn")}
+              {t("Subscribe to Lensly Care")}
             </a>
             
             <p className="mt-3 text-center text-[10px] text-muted-foreground/80">
-              {t("plan.secureStripe")}
+              {t("Secure checkout via Stripe")}
             </p>
           </div>
         </div>
 
         {/* The math */}
         <div className="mt-8 grid gap-6 rounded-2xl border border-border bg-card p-8 md:grid-cols-3">
-          <Math k="€1,600" l={t("math.optician")} />
-          <Math k="€29/mo" l={t("math.lensly")} highlight />
-          <Math k="€1,252" l={t("math.saved")} />
+          <Math k="€1,600" l={t("Traditional optician (4 pairs)")} />
+          <Math k="€29/mo" l={t("Lensly subscription (€348/yr)")} highlight />
+          <Math k="€1,252" l={t("Saved per year with replacements")} />
         </div>
 
         {/* Insurance Comparison */}
         <div className="mt-16 border-t border-border/60 pt-16">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <h3 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
-              {t("compare.title")}
+              {t("Lensly vs. Glasses Insurance")}
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              {t("compare.desc")}
+              {t("Supplemental insurance plans look cheap upfront but often leave you with heavy out-of-pocket costs.")}
             </p>
           </div>
 
@@ -306,8 +306,8 @@ function Plan() {
             <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
               <div className="flex items-center justify-between border-b border-border/60 pb-5">
                 <div>
-                  <h4 className="font-display text-lg font-semibold text-foreground">{t("compare.insurance")}</h4>
-                  <p className="text-xs text-muted-foreground mt-1">{t("compare.insuranceSub")}</p>
+                  <h4 className="font-display text-lg font-semibold text-foreground">{t("Glasses Insurance")}</h4>
+                  <p className="text-xs text-muted-foreground mt-1">{t("Standard supplemental policy")}</p>
                 </div>
                 <div className="text-right">
                   <span className="font-display text-2xl font-bold text-foreground">€7-20<span className="text-sm font-normal text-muted-foreground">/mo</span></span>
@@ -319,19 +319,19 @@ function Plan() {
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  <span>{t("compare.item1_yes")}</span>
+                  <span>{t("Covers 1 pair every 2 years")}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  <span>{t("compare.item2_no")}</span>
+                  <span>{t("Replacements not covered")}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  <span>{t("compare.item3_no")}</span>
+                  <span>{t("Additional co-pays for premium lenses")}</span>
                 </li>
               </ul>
             </div>
@@ -343,8 +343,8 @@ function Plan() {
               </div>
               <div className="flex items-center justify-between border-b border-border/60 pb-5">
                 <div>
-                  <h4 className="font-display text-lg font-semibold text-primary">{t("plan.lenslyCare")}</h4>
-                  <p className="text-xs text-primary/80 mt-1">{t("compare.lenslySub")}</p>
+                  <h4 className="font-display text-lg font-semibold text-primary">{t("Lensly Care")}</h4>
+                  <p className="text-xs text-primary/80 mt-1">{t("Complete continuous vision plan")}</p>
                 </div>
                 <div className="text-right">
                   <span className="font-display text-2xl font-bold text-primary">€29<span className="text-sm font-normal text-muted-foreground">/mo</span></span>
@@ -356,19 +356,19 @@ function Plan() {
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>{t("compare.lensly_item1")}</span>
+                  <span>{t("1 complete pair delivered to you")}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>{t("compare.lensly_item2")}</span>
+                  <span>{t("3 free replacements (broken, power change)")}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>{t("compare.lensly_item3")}</span>
+                  <span>{t("Nothing extra to pay ever")}</span>
                 </li>
               </ul>
             </div>
@@ -423,7 +423,7 @@ export function Footer() {
   return (
     <footer className="bg-foreground text-background">
       <div className="border-b border-background/10 py-5 text-center text-xs text-background/60">
-        {t("footer.support")}{" "}
+        {t("For any help or requests regarding subscription please contact at")}{" "}
         <a href="mailto:lenslycare@gmail.com" className="text-primary hover:underline font-medium">
           lenslycare@gmail.com
         </a>

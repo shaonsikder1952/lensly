@@ -5,244 +5,229 @@ export type Language = "en" | "de" | "fr" | "es" | "it";
 interface LanguageContextProps {
   lang: Language;
   setLang: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (text: string) => string;
 }
 
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
 
-const translations: Record<Language, Record<string, string>> = {
-  en: {
-    // Nav
-    "nav.start": "Start for €29/mo",
-    // Hero
-    "hero.badge": "One plan · €29 / month",
-    "hero.titlePart1": "New glasses every ",
-    "hero.titlePart2": "year.",
-    "hero.subtitle": "A single, honest plan. Up-to-date prescription lenses delivered every year. Broken, power change? We got you covered with three free replacements.",
-    "hero.cta": "See the plan",
-    // Trust
-    "trust.lenses": "Premium Optical Lenses",
-    "trust.shipping": "Free EU-Wide Shipping",
-    "trust.checkout": "Secure Stripe Checkout",
-    // Plan Section
-    "plan.traditional": "Traditional optician",
-    "plan.upfront": "Upfront · 1 pair · no free replacements",
-    "plan.wait": "Wait 2–3 years to save up money and buy again",
-    "plan.accidental": "Accidental replacements cost full retail price",
-    "plan.coatings": "Coatings & high-index lenses billed as extras",
-    "plan.outdated": "Outdated prescription within 12 months",
-    "plan.lenslyCare": "Lensly Care",
-    "plan.dailyCoffee": "less than a daily coffee",
-    "plan.feature1": "1 new pair of precision lenses every year",
-    "plan.feature2": "3 free replacements (broken, power change? We got you covered)",
-    "plan.feature3": "Premium lenses, anti-reflective & UV-400 coatings included",
-    "plan.feature4": "Free shipping EU-wide · cancel anytime",
-    "plan.whatsNext": "What's next?",
-    "plan.whatsNextDesc": "To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.",
-    "plan.subscribeBtn": "Subscribe to Lensly Care",
-    "plan.secureStripe": "Secure checkout via Stripe",
-    // Math Row
-    "math.optician": "Traditional optician (4 pairs)",
-    "math.lensly": "Lensly subscription (€348/yr)",
-    "math.saved": "Saved per year with replacements",
-    // Insurance Comparison
-    "compare.title": "Lensly vs. Glasses Insurance",
-    "compare.desc": "Supplemental insurance plans look cheap upfront but often leave you with heavy out-of-pocket costs.",
-    "compare.insurance": "Glasses Insurance",
-    "compare.insuranceSub": "Standard supplemental policy",
-    "compare.lenslySub": "Complete continuous vision plan",
-    "compare.item1_yes": "Covers 1 pair every 2 years",
-    "compare.item2_no": "Replacements not covered",
-    "compare.item3_no": "Additional co-pays for premium lenses",
-    "compare.lensly_item1": "1 complete pair delivered to you",
-    "compare.lensly_item2": "3 free replacements (broken, power change)",
-    "compare.lensly_item3": "Nothing extra to pay ever",
-    // Footer
-    "footer.support": "For any help or requests regarding subscription please contact at",
-  },
+// Premium manual translations as seeds for instant loading
+const initialTranslations: Record<Language, Record<string, string>> = {
+  en: {},
   de: {
-    // Nav
-    "nav.start": "Starten für 29 €/Monat",
-    // Hero
-    "hero.badge": "Ein Tarif · 29 € / Monat",
-    "hero.titlePart1": "Jedes Jahr neue ",
-    "hero.titlePart2": "Brille.",
-    "hero.subtitle": "Ein einziger, ehrlicher Tarif. Jährlich neue Korrekturgläser geliefert. Beschädigt, Sehstärkenänderung? Wir sichern Sie mit drei kostenlosen Ersatzgläsern ab.",
-    "hero.cta": "Tarif ansehen",
-    // Trust
-    "trust.lenses": "Premium Brillengläser",
-    "trust.shipping": "Kostenloser EU-Versand",
-    "trust.checkout": "Sicherer Stripe-Checkout",
-    // Plan Section
-    "plan.traditional": "Herkömmlicher Optiker",
-    "plan.upfront": "Einmalig · 1 Brille · kein kostenloser Ersatz",
-    "plan.wait": "2–3 Jahre warten, um Geld zu sparen und neu zu kaufen",
-    "plan.accidental": "Unfall-Ersatz kostet den vollen Ladenpreis",
-    "plan.coatings": "Beschichtungen & dünne Gläser kosten extra",
-    "plan.outdated": "Veraltete Sehstärke innerhalb von 12 Monaten",
-    "plan.lenslyCare": "Lensly Care",
-    "plan.dailyCoffee": "weniger als ein täglicher Kaffee",
-    "plan.feature1": "1 neues Paar Präzisionsgläser jedes Jahr",
-    "plan.feature2": "3 kostenlose Ersatzgläser (beschädigt, Sehstärke geändert? Wir helfen)",
-    "plan.feature3": "Premium-Gläser, Entspiegelung & UV-400 inklusive",
-    "plan.feature4": "Kostenloser EU-Versand · jederzeit kündbar",
-    "plan.whatsNext": "Wie geht es weiter?",
-    "plan.whatsNextDesc": "Um Ihren Tarif zu starten, abonnieren Sie Lensly Care. Nach der Zahlung meldet sich unser Team bei Ihnen, um Gestelle auszuwählen und Ihr Rezept einzuholen.",
-    "plan.subscribeBtn": "Lensly Care abonnieren",
-    "plan.secureStripe": "Sicherer Checkout über Stripe",
-    // Math Row
-    "math.optician": "Herkömmlicher Optiker (4 Brillen)",
-    "math.lensly": "Lensly-Abo (348 €/Jahr)",
-    "math.saved": "Jährliche Ersparnis mit Ersatz",
-    // Insurance Comparison
-    "compare.title": "Lensly vs. Brillenversicherung",
-    "compare.desc": "Zusatzversicherungen wirken anfangs günstig, haben aber oft hohe Zuzahlungen.",
-    "compare.insurance": "Brillenversicherung",
-    "compare.insuranceSub": "Standard-Zusatzpolice",
-    "compare.lenslySub": "Komplettes Sehversorgungs-Abo",
-    "compare.item1_yes": "Deckt 1 Brille alle 2 Jahre ab",
-    "compare.item2_no": "Kein Ersatz bei Beschädigung",
-    "compare.item3_no": "Zusatzkosten für Premium-Gläser",
-    "compare.lensly_item1": "1 komplette Brille jährlich geliefert",
-    "compare.lensly_item2": "3 kostenlose Ersatzgläser (beschädigt, Sehstärke)",
-    "compare.lensly_item3": "Keine versteckten Zuzahlungen",
-    // Footer
-    "footer.support": "Bei Fragen oder Wünschen zu Ihrem Abonnement kontaktieren Sie uns bitte unter",
+    "Start for €29/mo": "Starten für 29 €/Monat",
+    "One plan · €29 / month": "Ein Tarif · 29 € / Monat",
+    "New glasses every ": "Jedes Jahr neue ",
+    "year.": "Brille.",
+    "A single, honest plan. Up-to-date prescription lenses delivered every year. Broken, power change? We got you covered with three free replacements.": "Ein einziger, ehrlicher Tarif. Jährlich neue Korrekturgläser geliefert. Beschädigt, Sehstärkenänderung? Wir sichern Sie mit drei kostenlosen Ersatzgläsern ab.",
+    "See the plan": "Tarif ansehen",
+    "Premium Optical Lenses": "Premium Brillengläser",
+    "Free EU-Wide Shipping": "Kostenloser EU-Versand",
+    "Secure Stripe Checkout": "Sicherer Stripe-Checkout",
+    "Traditional optician": "Herkömmlicher Optiker",
+    "Upfront · 1 pair · no free replacements": "Einmalig · 1 Brille · kein kostenloser Ersatz",
+    "Wait 2–3 years to save up money and buy again": "2–3 Jahre warten, um Geld zu sparen und neu zu kaufen",
+    "Accidental replacements cost full retail price": "Unfall-Ersatz kostet den vollen Ladenpreis",
+    "Coatings & high-index lenses billed as extras": "Beschichtungen & dünne Gläser kosten extra",
+    "Outdated prescription within 12 months": "Veraltete Sehstärke innerhalb von 12 Monaten",
+    "Lensly Care": "Lensly Care",
+    "less than a daily coffee": "weniger als ein täglicher Kaffee",
+    "1 new pair of precision lenses every year": "1 neues Paar Präzisionsgläser jedes Jahr",
+    "3 free replacements (broken, power change? We got you covered)": "3 kostenlose Ersatzgläser (beschädigt, Sehstärke geändert? Wir helfen)",
+    "Premium lenses, anti-reflective & UV-400 coatings included": "Premium-Gläser, Entspiegelung & UV-400 inklusive",
+    "Free shipping EU-wide · cancel anytime": "Kostenloser EU-Versand · jederzeit kündbar",
+    "What's next?": "Wie geht es weiter?",
+    "To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.": "Um Ihren Tarif zu starten, abonnieren Sie Lensly Care. Nach der Zahlung meldet sich unser Team bei Ihnen, um Gestelle auszuwählen und Ihr Rezept einzuholen.",
+    "Subscribe to Lensly Care": "Lensly Care abonnieren",
+    "Secure checkout via Stripe": "Sicherer Checkout über Stripe",
+    "Traditional optician (4 pairs)": "Herkömmlicher Optiker (4 Brillen)",
+    "Lensly subscription (€348/yr)": "Lensly-Abo (348 €/Jahr)",
+    "Saved per year with replacements": "Jährliche Ersparnis mit Ersatz",
+    "Lensly vs. Glasses Insurance": "Lensly vs. Brillenversicherung",
+    "Supplemental insurance plans look cheap upfront but often leave you with heavy out-of-pocket costs.": "Zusatzversicherungen wirken anfangs günstig, haben aber oft hohe Zuzahlungen.",
+    "Glasses Insurance": "Brillenversicherung",
+    "Standard supplemental policy": "Standard-Zusatzpolice",
+    "Complete continuous vision plan": "Komplettes Sehversorgungs-Abo",
+    "Covers 1 pair every 2 years": "Deckt 1 Brille alle 2 Jahre ab",
+    "Replacements not covered": "Kein Ersatz bei Beschädigung",
+    "Additional co-pays for premium lenses": "Zusatzkosten für Premium-Gläser",
+    "1 complete pair delivered to you": "1 komplette Brille jährlich geliefert",
+    "3 free replacements (broken, power change)": "3 kostenlose Ersatzgläser (beschädigt, Sehstärke)",
+    "Nothing extra to pay ever": "Keine versteckten Zuzahlungen",
+    "For any help or requests regarding subscription please contact at": "Bei Fragen oder Wünschen zu Ihrem Abonnement kontaktieren Sie uns bitte unter",
   },
   fr: {
-    "nav.start": "S'abonner pour 29 €/mois",
-    "hero.badge": "Un plan · 29 € / mois",
-    "hero.titlePart1": "De nouvelles lunettes chaque ",
-    "hero.titlePart2": "an.",
-    "hero.subtitle": "Un tarif unique et transparent. Des verres correcteurs mis à jour livrés chaque année. Cassés, changement de correction ? Vous bénéficiez de trois remplacements gratuits.",
-    "hero.cta": "Voir le plan",
-    "trust.lenses": "Verres optiques premium",
-    "trust.shipping": "Livraison gratuite en UE",
-    "trust.checkout": "Paiement Stripe sécurisé",
-    "plan.traditional": "Opticien traditionnel",
-    "plan.upfront": "Achat initial · 1 paire · pas de remplacement gratuit",
-    "plan.wait": "Attendre 2 à 3 ans pour économiser et racheter",
-    "plan.accidental": "Remplacement accidentel au prix fort",
-    "plan.coatings": "Traitements et verres amincis facturés en supplément",
-    "plan.outdated": "Correction obsolète en moins de 12 mois",
-    "plan.lenslyCare": "Lensly Care",
-    "plan.dailyCoffee": "moins cher qu'un café par jour",
-    "plan.feature1": "1 nouvelle paire de verres de précision par an",
-    "plan.feature2": "3 remplacements gratuits (cassés, changement de correction)",
-    "plan.feature3": "Verres premium, antireflet & protection UV-400 inclus",
-    "plan.feature4": "Livraison gratuite en Europe · sans engagement",
-    "plan.whatsNext": "Quelle est l'étape suivante ?",
-    "plan.whatsNextDesc": "Pour commencer votre forfait, abonnez-vous à Lensly Care. Une fois le paiement validé, notre équipe vous contactera pour choisir votre monture et recueillir votre ordonnance.",
-    "plan.subscribeBtn": "S'abonner à Lensly Care",
-    "plan.secureStripe": "Paiement sécurisé via Stripe",
-    "math.optician": "Opticien traditionnel (4 paires)",
-    "math.lensly": "Abonnement Lensly (348 €/an)",
-    "math.saved": "Économie par an avec remplacements",
-    "compare.title": "Lensly vs. Assurance Lunettes",
-    "compare.desc": "Les assurances complémentaires semblent bon marché au départ mais cachent souvent des frais importants.",
-    "compare.insurance": "Assurance Lunettes",
-    "compare.insuranceSub": "Complémentaire santé standard",
-    "compare.lenslySub": "Forfait complet de santé visuelle",
-    "compare.item1_yes": "Couvre 1 paire tous les 2 ans",
-    "compare.item2_no": "Remplacements non couverts",
-    "compare.item3_no": "Franchises pour les verres premium",
-    "compare.lensly_item1": "1 paire complète livrée chez vous",
-    "compare.lensly_item2": "3 remplacements gratuits (correction, casse)",
-    "compare.lensly_item3": "Aucun frais supplémentaire à payer",
-    "footer.support": "Pour toute question ou demande concernant votre abonnement, contactez-nous à",
+    "Start for €29/mo": "S'abonner pour 29 €/mois",
+    "One plan · €29 / month": "Un plan · 29 € / mois",
+    "New glasses every ": "De nouvelles lunettes chaque ",
+    "year.": "an.",
+    "A single, honest plan. Up-to-date prescription lenses delivered every year. Broken, power change? We got you covered with three free replacements.": "Un tarif unique et transparent. Des verres correcteurs mis à jour livrés chaque année. Cassés, changement de correction ? Vous bénéficiez de trois remplacements gratuits.",
+    "See the plan": "Voir le plan",
+    "Premium Optical Lenses": "Verres optiques premium",
+    "Free EU-Wide Shipping": "Livraison gratuite en UE",
+    "Secure Stripe Checkout": "Paiement Stripe sécurisé",
+    "Traditional optician": "Opticien traditionnel",
+    "Upfront · 1 pair · no free replacements": "Achat initial · 1 paire · pas de remplacement gratuit",
+    "Wait 2–3 years to save up money and buy again": "Attendre 2 à 3 ans pour économiser et racheter",
+    "Accidental replacements cost full retail price": "Remplacement accidentel au prix fort",
+    "Coatings & high-index lenses billed as extras": "Traitements et verres amincis facturés en supplément",
+    "Outdated prescription within 12 months": "Correction obsolète en moins de 12 mois",
+    "Lensly Care": "Lensly Care",
+    "less than a daily coffee": "moins cher qu'un café par jour",
+    "1 new pair of precision lenses every year": "1 nouvelle paire de verres de précision par an",
+    "3 free replacements (broken, power change? We got you covered)": "3 remplacements gratuits (cassés, changement de correction)",
+    "Premium lenses, anti-reflective & UV-400 coatings included": "Verres premium, antireflet & protection UV-400 inclus",
+    "Free shipping EU-wide · cancel anytime": "Livraison gratuite en Europe · sans engagement",
+    "What's next?": "Quelle est l'étape suivante ?",
+    "To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.": "Pour commencer votre forfait, abonnez-vous à Lensly Care. Une fois le paiement validé, notre équipe vous contactera pour choisir votre monture et recueillir votre ordonnance.",
+    "Subscribe to Lensly Care": "S'abonner à Lensly Care",
+    "Secure checkout via Stripe": "Paiement sécurisé via Stripe",
+    "Traditional optician (4 pairs)": "Opticien traditionnel (4 paires)",
+    "Lensly subscription (€348/yr)": "Abonnement Lensly (348 €/an)",
+    "Saved per year with replacements": "Économie par an avec remplacements",
+    "Lensly vs. Glasses Insurance": "Lensly vs. Assurance Lunettes",
+    "Supplemental insurance plans look cheap upfront but often leave you with heavy out-of-pocket costs.": "Les assurances complémentaires semblent bon marché au départ mais cachent souvent des frais importants.",
+    "Glasses Insurance": "Assurance Lunettes",
+    "Standard supplemental policy": "Complémentaire santé standard",
+    "Complete continuous vision plan": "Forfait complet de santé visuelle",
+    "Covers 1 pair every 2 years": "Couvre 1 paire tous les 2 ans",
+    "Replacements not covered": "Remplacements non couverts",
+    "Additional co-pays for premium lenses": "Franchises pour les verres premium",
+    "1 complete pair delivered to you": "1 paire complète livrée chez vous",
+    "3 free replacements (broken, power change)": "3 remplacements gratuits (correction, casse)",
+    "Nothing extra to pay ever": "Aucun frais supplémentaire à payer",
+    "For any help or requests regarding subscription please contact at": "Pour toute question ou demande concernant votre abonnement, contactez-nous à",
   },
   es: {
-    "nav.start": "Iniciar por 29 €/mes",
-    "hero.badge": "Un plan · 29 € / mes",
-    "hero.titlePart1": "Gafas nuevas cada ",
-    "hero.titlePart2": "año.",
-    "hero.subtitle": "Un plan único y honesto. Lentes graduadas actualizadas cada año. ¿Rotura o cambio de graduación? Te cubrimos con tres reemplazos gratuitos.",
-    "hero.cta": "Ver el plan",
-    "trust.lenses": "Lentes ópticas premium",
-    "trust.shipping": "Envío gratis a toda la UE",
-    "trust.checkout": "Pago Stripe seguro",
-    "plan.traditional": "Óptica tradicional",
-    "plan.upfront": "Pago único · 1 par · sin reemplazos gratuitos",
-    "plan.wait": "Esperar 2-3 años para ahorrar y comprar de nuevo",
-    "plan.accidental": "Reemplazo por accidente a precio normal",
-    "plan.coatings": "Tratamientos y lentes reducidas como extras",
-    "plan.outdated": "Graduación desactualizada en 12 meses",
-    "plan.lenslyCare": "Lensly Care",
-    "plan.dailyCoffee": "menos que un café al día",
-    "plan.feature1": "1 nuevo par de lentes de precisión cada año",
-    "plan.feature2": "3 reemplazos gratis (rotura, cambio de graduación)",
-    "plan.feature3": "Lentes premium con tratamientos antirreflejantes y UV-400 incluidos",
-    "plan.feature4": "Envío gratuito en la UE · cancela cuando quieras",
-    "plan.whatsNext": "¿Qué es lo siguiente?",
-    "plan.whatsNextDesc": "Para comenzar tu plan, suscríbete a Lensly Care. Once completado el pago, nuestro equipo se pondrá en contacto contigo para elegir montura y recibir tu receta médica.",
-    "plan.subscribeBtn": "Suscribirse a Lensly Care",
-    "plan.secureStripe": "Pago seguro mediante Stripe",
-    "math.optician": "Óptica tradicional (4 pares)",
-    "math.lensly": "Suscripción Lensly (348 €/año)",
-    "math.saved": "Ahorro anual con reemplazos",
-    "compare.title": "Lensly vs. Seguro de Gafas",
-    "compare.desc": "Los seguros de gafas parecen baratos al principio pero suelen dejarte con gastos adicionales.",
-    "compare.insurance": "Seguro de Gafas",
-    "compare.insuranceSub": "Póliza complementaria común",
-    "compare.lenslySub": "Plan completo de cuidado visual",
-    "compare.item1_yes": "Cubre 1 par cada 2 años",
-    "compare.item2_no": "Reemplazos no cubiertos",
-    "compare.item3_no": "Copagos para lentes de gama alta",
-    "compare.lensly_item1": "1 par completo entregado a domicilio",
-    "compare.lensly_item2": "3 reemplazos gratis (rotura, graduación)",
-    "compare.lensly_item3": "Sin costes ocultos nunca",
-    "footer.support": "Para cualquier consulta o solicitud sobre su suscripción, contáctenos en",
+    "Start for €29/mo": "Iniciar por 29 €/mes",
+    "One plan · €29 / month": "Un plan · 29 € / mes",
+    "New glasses every ": "Gafas nuevas cada ",
+    "year.": "año.",
+    "A single, honest plan. Up-to-date prescription lenses delivered every year. Broken, power change? We got you covered with three free replacements.": "Un plan único y honesto. Lentes graduadas actualizadas cada año. ¿Rotura o cambio de graduación? Te cubrimos con tres reemplazos gratuitos.",
+    "See the plan": "Ver el plan",
+    "Premium Optical Lenses": "Lentes ópticas premium",
+    "Free EU-Wide Shipping": "Envío gratis a toda la UE",
+    "Secure Stripe Checkout": "Pago Stripe seguro",
+    "Traditional optician": "Óptica tradicional",
+    "Upfront · 1 pair · no free replacements": "Pago único · 1 par · sin reemplazos gratuitos",
+    "Wait 2–3 years to save up money and buy again": "Esperar 2-3 años para ahorrar y comprar de nuevo",
+    "Accidental replacements cost full retail price": "Reemplazo por accidente a precio normal",
+    "Coatings & high-index lenses billed as extras": "Tratamientos y lentes reducidas como extras",
+    "Outdated prescription within 12 months": "Graduación desactualizada en 12 meses",
+    "Lensly Care": "Lensly Care",
+    "less than a daily coffee": "menos que un café al día",
+    "1 new pair of precision lenses every year": "1 nuevo par de lentes de precisión cada año",
+    "3 free replacements (broken, power change? We got you covered)": "3 reemplazos gratis (rotura, cambio de graduación)",
+    "Premium lenses, anti-reflective & UV-400 coatings included": "Lentes premium con tratamientos antirreflejantes y UV-400 incluidos",
+    "Free shipping EU-wide · cancel anytime": "Envío gratuito en la UE · cancela cuando quieras",
+    "What's next?": "¿Qué es lo siguiente?",
+    "To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.": "Para comenzar tu plan, suscríbete a Lensly Care. Once completado el pago, nuestro equipo se pondrá en contacto contigo para elegir montura y recibir tu receta médica.",
+    "Subscribe to Lensly Care": "Suscribirse a Lensly Care",
+    "Secure checkout via Stripe": "Pago seguro mediante Stripe",
+    "Traditional optician (4 pairs)": "Óptica tradicional (4 pares)",
+    "Lensly subscription (€348/yr)": "Suscripción Lensly (348 €/año)",
+    "Saved per year with replacements": "Ahorro anual con reemplazos",
+    "Lensly vs. Glasses Insurance": "Lensly vs. Seguro de Gafas",
+    "Supplemental insurance plans look cheap upfront but often leave you with heavy out-of-pocket costs.": "Los seguros de gafas parecen baratos al principio pero suelen dejarte con gastos adicionales.",
+    "Glasses Insurance": "Seguro de Gafas",
+    "Standard supplemental policy": "Póliza complementaria común",
+    "Complete continuous vision plan": "Plan completo de cuidado visual",
+    "Covers 1 pair every 2 years": "Cubre 1 par cada 2 años",
+    "Replacements not covered": "Reemplazos no cubiertos",
+    "Additional co-pays for premium lenses": "Copagos para lentes de gama alta",
+    "1 complete pair delivered to you": "1 par completo entregado a domicilio",
+    "3 free replacements (broken, power change)": "3 reemplazos gratis (rotura, graduación)",
+    "Nothing extra to pay ever": "Sin costes ocultos nunca",
+    "For any help or requests regarding subscription please contact at": "Para cualquier consulta o solicitud sobre su suscripción, contáctenos en",
   },
   it: {
-    "nav.start": "Inizia con 29 €/mese",
-    "hero.badge": "Un piano · 29 € / mese",
-    "hero.titlePart1": "Occhiali nuovi ogni ",
-    "hero.titlePart2": "anno.",
-    "hero.subtitle": "Un unico piano, trasparente. Lenti graduate aggiornate consegnate ogni anno. Rottura o cambio di gradazione? Ti copriamo con tre sostituzioni gratuite.",
-    "hero.cta": "Scopri il piano",
-    "trust.lenses": "Lenti ottiche premium",
-    "trust.shipping": "Spedizione gratuita in UE",
-    "trust.checkout": "Pagamento Stripe sicuro",
-    "plan.traditional": "Ottico tradizionale",
-    "plan.upfront": "Pagamento iniziale · 1 paio · nessuna sostituzione gratuita",
-    "plan.wait": "Attendi 2-3 anni per risparmiare e riacquistare",
-    "plan.accidental": "Sostituzioni accidentali al prezzo di listino",
-    "plan.coatings": "Trattamenti e lenti sottili fatturati come extra",
-    "plan.outdated": "Graduazione obsoleta entro 12 mesi",
-    "plan.lenslyCare": "Lensly Care",
-    "plan.dailyCoffee": "meno di un caffè al giorno",
-    "plan.feature1": "1 nuovo paio di lenti di precisione all'anno",
-    "plan.feature2": "3 sostituzioni gratuite (rottura, cambio gradazione)",
-    "plan.feature3": "Lenti premium con antiriflesso e protezione UV-400 inclusi",
-    "plan.feature4": "Spedizione gratuita in tutta l'UE · disdici quando vuoi",
-    "plan.whatsNext": "Quali sono i passaggi successivi?",
-    "plan.whatsNextDesc": "Per iniziare il tuo piano, abbonati a Lensly Care. Una volta completato il pagamento, il nostro team ti contatterà per scegliere la montatura e raccogliere la tua prescrizione.",
-    "plan.subscribeBtn": "Abbonati a Lensly Care",
-    "plan.secureStripe": "Pagamento sicuro con Stripe",
-    "math.optician": "Ottico tradizionale (4 paia)",
-    "math.lensly": "Abbonamento Lensly (348 €/anno)",
-    "math.saved": "Risparmio annuale con sostituzioni",
-    "compare.title": "Lensly vs. Assicurazione Occhiali",
-    "compare.desc": "Le polizze integrative sembrano convenienti all'inizio, ma spesso prevedono franchigie elevate.",
-    "compare.insurance": "Assicurazione Occhiali",
-    "compare.insuranceSub": "Polizza integrativa standard",
-    "compare.lenslySub": "Piano di cura visiva continuo",
-    "compare.item1_yes": "Copre 1 paio ogni 2 anni",
-    "compare.item2_no": "Sostituzioni non coperte",
-    "compare.item3_no": "Costi extra per lenti premium",
-    "compare.lensly_item1": "1 paio completo consegnato a domicilio",
-    "compare.lensly_item2": "3 sostituzioni gratuite (rottura, gradazione)",
-    "compare.lensly_item3": "Nessun costo aggiuntivo mai",
-    "footer.support": "Per qualsiasi domanda o richiesta relativa all'abbonamento, contattaci a",
+    "Start for €29/mo": "Inizia con 29 €/mese",
+    "One plan · €29 / month": "Un piano · 29 € / mese",
+    "New glasses every ": "Occhiali nuovi ogni ",
+    "year.": "anno.",
+    "A single, honest plan. Up-to-date prescription lenses delivered every year. Broken, power change? We got you covered with three free replacements.": "Un unico piano, trasparente. Lenti graduate aggiornate consegnate ogni anno. Rottura o cambio di gradazione? Ti copriamo con tre sostituzioni gratuite.",
+    "See the plan": "Scopri il piano",
+    "Premium Optical Lenses": "Lenti ottiche premium",
+    "Free EU-Wide Shipping": "Spedizione gratuita in UE",
+    "Secure Stripe Checkout": "Pagamento Stripe sicuro",
+    "Traditional optician": "Ottico tradizionale",
+    "Upfront · 1 pair · no free replacements": "Pagamento iniziale · 1 paio · nessuna sostituzione gratuita",
+    "Wait 2–3 years to save up money and buy again": "Attendi 2-3 anni per risparmiare e riacquistare",
+    "Accidental replacements cost full retail price": "Sostituzioni accidentali al prezzo di listino",
+    "Coatings & high-index lenses billed as extras": "Trattamenti e lenti sottili fatturati come extra",
+    "Outdated prescription within 12 months": "Graduazione obsoleta entro 12 mesi",
+    "Lensly Care": "Lensly Care",
+    "less than a daily coffee": "meno di un caffè al giorno",
+    "1 new pair of precision lenses every year": "1 nuovo paio di lenti di precisione all'anno",
+    "3 free replacements (broken, power change? We got you covered)": "3 sostituzioni gratuite (rottura, cambio gradazione)",
+    "Premium lenses, anti-reflective & UV-400 coatings included": "Lenti premium con antiriflesso e protezione UV-400 inclusi",
+    "Free shipping EU-wide · cancel anytime": "Spedizione gratuita in tutta l'UE · disdici quando vuoi",
+    "What's next?": "Quali sono i passaggi successivi?",
+    "To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.": "Per iniziare il tuo piano, abbonati a Lensly Care. Una volta completato il pagamento, il nostro team ti contatterà per scegliere la montatura e raccogliere la tua prescrizione.",
+    "Subscribe to Lensly Care": "Abbonati a Lensly Care",
+    "Secure checkout via Stripe": "Pagamento sicuro con Stripe",
+    "Traditional optician (4 pairs)": "Ottico tradizionale (4 paia)",
+    "Lensly subscription (€348/yr)": "Abbonamento Lensly (348 €/anno)",
+    "Saved per year with replacements": "Risparmio annuale con sostituzioni",
+    "Lensly vs. Glasses Insurance": "Lensly vs. Assicurazione Occhiali",
+    "Supplemental insurance plans look cheap upfront but often leave you with heavy out-of-pocket costs.": "Le polizze integrative sembrano convenienti all'inizio, ma spesso prevedono franchigie elevate.",
+    "Glasses Insurance": "Assicurazione Occhiali",
+    "Standard supplemental policy": "Polizza integrativa standard",
+    "Complete continuous vision plan": "Piano di cura visiva continuo",
+    "Covers 1 pair every 2 years": "Copre 1 paio ogni 2 anni",
+    "Replacements not covered": "Sostituzioni non coperte",
+    "Additional co-pays for premium lenses": "Costi extra per lenti premium",
+    "1 complete pair delivered to you": "1 paio completo consegnato a domicilio",
+    "3 free replacements (broken, power change)": "3 sostituzioni gratuite (rottura, gradazione)",
+    "Nothing extra to pay ever": "Nessun costo aggiuntivo mai",
+    "For any help or requests regarding subscription please contact at": "Per qualsiasi domanda o richiesta relativa all'abbonamento, contattaci a",
   },
 };
 
+// In-memory cache for translations that dynamically updates
+const translationCache: Record<string, Record<string, string>> = {
+  de: { ...initialTranslations.de },
+  fr: { ...initialTranslations.fr },
+  es: { ...initialTranslations.es },
+  it: { ...initialTranslations.it },
+};
+
+// Load saved runtime translation caches from localStorage
+if (typeof window !== "undefined") {
+  try {
+    const saved = localStorage.getItem("lensly_translations_cache");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      Object.keys(translationCache).forEach((l) => {
+        if (parsed[l]) {
+          translationCache[l] = { ...translationCache[l], ...parsed[l] };
+        }
+      });
+    }
+  } catch (e) {
+    console.error("Failed to load translation cache", e);
+  }
+}
+
+function saveCacheToStorage() {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem("lensly_translations_cache", JSON.stringify(translationCache));
+    } catch (e) {
+      console.error("Failed to save translation cache", e);
+    }
+  }
+}
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Language>("en");
+  // Keep translations in state to trigger updates upon API returns
+  const [translationsMap, setTranslationsMap] = useState<Record<string, Record<string, string>>>(() => {
+    return { ...translationCache };
+  });
 
   useEffect(() => {
     const saved = localStorage.getItem("lensly_lang") as Language;
-    if (saved && translations[saved]) {
+    if (saved) {
       setLangState(saved);
     }
   }, []);
@@ -252,8 +237,59 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("lensly_lang", newLang);
   };
 
-  const t = (key: string): string => {
-    return translations[lang][key] || translations["en"][key] || key;
+  const t = (text: string): string => {
+    if (lang === "en" || !text) {
+      return text;
+    }
+
+    const langMap = translationsMap[lang] || {};
+    if (langMap[text]) {
+      return langMap[text];
+    }
+
+    // Trigger dynamic Google translation
+    fetchTranslation(text, lang);
+
+    // Default to the original English text while translating
+    return text;
+  };
+
+  const activeFetches = React.useRef<Set<string>>(new Set());
+
+  const fetchTranslation = async (text: string, targetLang: Language) => {
+    const fetchKey = `${targetLang}:${text}`;
+    if (activeFetches.current.has(fetchKey)) {
+      return;
+    }
+    activeFetches.current.add(fetchKey);
+
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Translation request failed");
+
+      const data = await res.json();
+      if (data && data[0] && data[0][0] && data[0][0][0]) {
+        const translatedText = data[0].map((x: any) => x[0]).join("");
+
+        // Store in cache
+        translationCache[targetLang][text] = translatedText;
+        saveCacheToStorage();
+
+        // Update state to trigger UI render
+        setTranslationsMap((prev) => ({
+          ...prev,
+          [targetLang]: {
+            ...prev[targetLang],
+            [text]: translatedText,
+          },
+        }));
+      }
+    } catch (err) {
+      console.error(`Error translating text to ${targetLang}:`, err);
+    } finally {
+      activeFetches.current.delete(fetchKey);
+    }
   };
 
   return (
