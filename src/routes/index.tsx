@@ -4,11 +4,11 @@ import glasses3d from "@/assets/glasses-3d.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Lensly | One plan. €39/month. New lenses every 6 months." },
+      { title: "Lensly | One plan. €29/month. New lenses every year." },
       {
         name: "description",
         content:
-          "One care plan: new prescription glasses every 6 months + 2 free replacements a year, for €39/month. No retail markup.",
+          "One care plan: new prescription glasses every year + 2 free replacements a year, for €29/month. No retail markup.",
       },
     ],
   }),
@@ -33,16 +33,14 @@ function Nav() {
         <a href="#" className="flex items-center gap-2">
           <LensMark />
           <span className="font-display text-[15px] font-semibold tracking-tight">
-            Lensly
+            Lensly<span className="text-primary">.</span>care
           </span>
         </a>
         <a
-          href="https://buy.stripe.com/4gM7sN1k82pL4JX7QO7EQ00"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#plan"
           className="rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:opacity-90"
         >
-          Start for €39/mo
+          Start for €29/mo
         </a>
       </div>
     </header>
@@ -68,11 +66,11 @@ function Hero() {
 
       <div className="relative mx-auto max-w-3xl px-6 pt-10 pb-12 text-center md:pt-14 md:pb-16">
         <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
-          One plan · €39 / month
+          One plan · €29 / month
         </p>
         <h1 className="animate-fade-in mx-auto mt-3 max-w-[18ch] font-display text-[34px] font-semibold leading-[1.05] tracking-tight md:text-[52px]">
           New glasses every{" "}
-          <span className="shimmer-text whitespace-nowrap">6 months.</span>
+          <span className="shimmer-text whitespace-nowrap">year.</span>
         </h1>
 
         {/* Floating 3D glasses with tight orbital rings */}
@@ -99,7 +97,7 @@ function Hero() {
         </div>
 
         <p className="mx-auto mt-5 max-w-md text-[14px] leading-relaxed text-muted-foreground md:max-w-xl md:text-base">
-          A single, honest plan. Up-to-date prescription lenses delivered twice a year,
+          A single, honest plan. Up-to-date prescription lenses delivered every year,
           plus two free replacements if you break or scratch them.
         </p>
         <div className="mt-5 flex items-center justify-center gap-4">
@@ -111,6 +109,29 @@ function Hero() {
             <span className="transition-transform group-hover:translate-x-0.5">→</span>
           </a>
         </div>
+
+        {/* European Trust Indicators */}
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-border/40 pt-6 text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80">
+          <div className="flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            <span>CE Certified Lenses</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+            <span>German Optical Standards</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0110 0v4" />
+            </svg>
+            <span>GDPR Secure Checkout</span>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -118,66 +139,177 @@ function Hero() {
 
 function Plan() {
   return (
-    <section id="plan" className="border-b border-border/60 bg-[var(--mint)]/50">
-      <div className="mx-auto max-w-5xl px-6 py-14">
-        {/* Comparison */}
-        <div className="grid gap-px rounded-xl border border-border bg-border md:grid-cols-2">
-          {/* Traditional */}
-          <div className="rounded-l-xl bg-card p-6 md:p-8">
-            <p className="label-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+    <section id="plan" className="border-b border-border/60 bg-[var(--mint)]/30">
+      <div className="mx-auto max-w-5xl px-6 py-16">
+        {/* Comparison Grid */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Traditional Optician Card */}
+          <div className="rounded-2xl border border-border bg-card p-8 shadow-sm transition hover:shadow-md">
+            <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               Traditional optician
             </p>
-            <div className="mt-4 font-display text-5xl font-semibold tracking-tight text-foreground/40 line-through decoration-[oklch(0.7_0.17_55)] decoration-[3px]">
-              €1,200
+            <div className="mt-5 font-display text-5xl font-semibold tracking-tight text-foreground/35 line-through decoration-[oklch(0.7_0.17_55)] decoration-[3px]">
+              €500
             </div>
-            <p className="mt-2 text-sm text-muted-foreground">Upfront · single pair · no updates</p>
-            <ul className="mt-5 space-y-2.5 border-t border-border pt-4 text-sm text-muted-foreground">
-              <li>Pay again in 2–3 years</li>
-              <li>Replacements cost full price</li>
-              <li>Frame &amp; coatings billed separately</li>
-              <li>Outdated prescription within 12 months</li>
+            <p className="mt-2 text-xs font-medium text-muted-foreground/80 uppercase tracking-wider">
+              Upfront · 1 pair · no free replacements
+            </p>
+            <ul className="mt-6 space-y-3.5 border-t border-border/60 pt-6 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
+                Wait 2–3 years to save up money and buy again
+              </li>
+              <li className="flex items-center gap-2.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
+                Accidental replacements cost full retail price
+              </li>
+              <li className="flex items-center gap-2.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
+                Coatings &amp; high-index lenses billed as extras
+              </li>
+              <li className="flex items-center gap-2.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
+                Outdated prescription within 12 months
+              </li>
             </ul>
           </div>
 
-          {/* Lensly */}
-          <div className="rounded-r-xl bg-card p-6 md:p-8">
-            <span className="mb-3 inline-block rounded-full bg-primary px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary-foreground">
+          {/* Lensly Care Card (Featured) */}
+          <div className="relative rounded-2xl border-2 border-primary bg-card p-8 shadow-md transition hover:shadow-lg">
+            <div className="absolute -top-3 right-8 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
               Lensly Care
-            </span>
-            <p className="label-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-              The only plan
-            </p>
-            <div className="mt-4 flex items-baseline gap-2">
-              <span className="font-display text-6xl font-semibold tracking-tight text-primary">
-                €39
-              </span>
-              <span className="text-lg text-muted-foreground">/ month</span>
             </div>
-            <p className="mt-2 text-sm text-foreground/80">
-              That's <span className="font-medium text-foreground">€1.28 a day,</span> less than a coffee a week.
+            <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-primary">
+              The subscription
             </p>
-            <ul className="mt-5 space-y-2.5 border-t border-border pt-4 text-sm">
-              <Feature>1 new pair of glasses, every 6 months</Feature>
+            <div className="mt-5 flex items-baseline gap-2">
+              <span className="font-display text-6xl font-semibold tracking-tight text-primary">
+                €29
+              </span>
+              <span className="text-base font-medium text-muted-foreground">/ month</span>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Continuous vision care · <span className="font-semibold text-foreground">€0.95 a day</span> (less than a daily coffee).
+            </p>
+            <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-sm">
+              <Feature>1 new pair of precision lenses every year</Feature>
               <Feature>2 free replacements per year (lost, broken, scratched)</Feature>
-              <Feature>Premium lenses · anti-reflective + UV-400 coatings included</Feature>
-              <Feature>Free EU shipping · cancel anytime</Feature>
+              <Feature>Premium lenses, anti-reflective &amp; UV-400 coatings included</Feature>
+              <Feature>Free shipping EU-wide · cancel anytime</Feature>
             </ul>
             <a
-              href="https://buy.stripe.com/4gM7sN1k82pL4JX7QO7EQ00"
+              href="https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 block w-full rounded-md bg-primary py-3 text-center text-sm font-medium text-primary-foreground transition-colors hover:opacity-90"
+              className="mt-8 block w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)]"
             >
-              Start your plan for €39/month
+              Start Lensly Care
             </a>
           </div>
         </div>
 
         {/* The math */}
-        <div className="mt-6 grid gap-4 rounded-xl border border-border bg-card p-6 md:grid-cols-3 md:p-8">
-          <Math k="€468" l="What you pay per year with Lensly" highlight />
-          <Math k="€1,200+" l="What one pair at an optician costs" />
-          <Math k="€732" l="Saved in year one, you get 2 fresh pairs" />
+        <div className="mt-8 grid gap-6 rounded-2xl border border-border bg-card p-8 md:grid-cols-3">
+          <Math k="€1,500" l="Traditional optician (3 pairs)" />
+          <Math k="€29/mo" l="Lensly subscription (€348/yr)" highlight />
+          <Math k="€1,152" l="Saved per year with replacements" />
+        </div>
+
+        {/* Insurance Comparison */}
+        <div className="mt-16 border-t border-border/60 pt-16">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <h3 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
+              Lensly vs. Glasses Insurance
+            </h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Supplemental insurance plans look cheap upfront but often leave you with heavy out-of-pocket costs.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Glasses Insurance */}
+            <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
+              <div className="flex items-center justify-between border-b border-border/60 pb-5">
+                <div>
+                  <h4 className="font-display text-lg font-semibold text-foreground">Glasses Insurance</h4>
+                  <p className="text-xs text-muted-foreground mt-1">Typical supplementary plan</p>
+                </div>
+                <div className="text-right">
+                  <span className="font-display text-2xl font-bold text-foreground">€7-20<span className="text-sm font-normal text-muted-foreground">/mo</span></span>
+                </div>
+              </div>
+              
+              <ul className="mt-6 space-y-4 text-sm text-muted-foreground">
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span>Covers 1 pair every 2 years</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span>Average pair costs €400+ at optician</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span>Insurance pays ~€150 max</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span>You still pay €250+ out of pocket</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span>Replacements not covered</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Lensly */}
+            <div className="relative rounded-2xl border-2 border-primary bg-card p-8 shadow-md">
+              <div className="absolute -top-3 right-8 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
+                Recommended
+              </div>
+              <div className="flex items-center justify-between border-b border-border/60 pb-5">
+                <div>
+                  <h4 className="font-display text-lg font-semibold text-primary">Lensly Care</h4>
+                  <p className="text-xs text-primary/80 mt-1">Complete continuous vision plan</p>
+                </div>
+                <div className="text-right">
+                  <span className="font-display text-2xl font-bold text-primary">€29<span className="text-sm font-normal text-muted-foreground">/mo</span></span>
+                </div>
+              </div>
+              
+              <ul className="mt-6 space-y-4 text-sm text-foreground/95">
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>1 complete pair delivered to you</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>2 free replacements included</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Nothing extra to pay ever</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -196,7 +328,17 @@ function Feature({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Math({ k, l, highlight = false }: { k: string; l: string; highlight?: boolean }) {
+function Math({
+  k,
+  l,
+  sub,
+  highlight = false,
+}: {
+  k: string;
+  l: string;
+  sub?: string;
+  highlight?: boolean;
+}) {
   return (
     <div>
       <div
@@ -208,6 +350,7 @@ function Math({ k, l, highlight = false }: { k: string; l: string; highlight?: b
         {k}
       </div>
       <div className="mt-2 text-[13px] leading-snug text-muted-foreground">{l}</div>
+      {sub && <div className="mt-1 text-[11px] text-muted-foreground/75 font-medium">{sub}</div>}
     </div>
   );
 }
@@ -218,9 +361,14 @@ function Footer() {
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-8 label-mono text-[10px] uppercase tracking-[0.18em] text-background/60">
         <div className="flex items-center gap-2 text-background/85">
           <LensMark />
-          <span className="font-display text-sm font-semibold">Lensly</span>
+          <span className="font-display text-sm font-semibold">Lensly.care</span>
         </div>
-        <span>© 2026 Lensly · EU</span>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <a href="mailto:lenslycare@gmail.com" className="hover:text-background transition-colors lowercase tracking-normal font-sans text-xs">
+            lenslycare@gmail.com
+          </a>
+          <span>© 2026 Lensly · Lab-crafted in Germany &amp; EU</span>
+        </div>
       </div>
     </footer>
   );
