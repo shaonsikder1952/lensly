@@ -205,6 +205,12 @@ function Plan() {
             >
               Start Lensly Care
             </a>
+            <p className="mt-3.5 text-center text-[11px] leading-relaxed text-muted-foreground/85">
+              For any help or requests regarding your subscription, please contact us at{" "}
+              <a href="mailto:lenslycare@gmail.com" className="font-medium text-primary hover:underline">
+                lenslycare@gmail.com
+              </a>
+            </p>
           </div>
         </div>
 
