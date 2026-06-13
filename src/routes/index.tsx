@@ -97,8 +97,8 @@ function Hero() {
         </div>
 
         <p className="mx-auto mt-5 max-w-md text-[14px] leading-relaxed text-muted-foreground md:max-w-xl md:text-base">
-          A single, honest plan. Up-to-date prescription lenses delivered every year,
-          plus three free replacements if you break or scratch them.
+          A single, honest plan. Up-to-date prescription lenses delivered every year.
+          Theft, broken, power change? We got you covered with three free replacements.
         </p>
         <div className="mt-5 flex items-center justify-center gap-4">
           <a
@@ -193,7 +193,7 @@ function Plan() {
             </p>
             <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-sm">
               <Feature>1 new pair of precision lenses every year</Feature>
-              <Feature>3 free replacements per year (lost, broken, scratched)</Feature>
+              <Feature>3 free replacements (theft, broken, power change? We got you covered)</Feature>
               <Feature>Premium lenses, anti-reflective &amp; UV-400 coatings included</Feature>
               <Feature>Free shipping EU-wide · cancel anytime</Feature>
             </ul>
@@ -305,7 +305,7 @@ function Plan() {
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>3 free replacements included</span>
+                  <span>3 free replacements (theft, broken, power change)</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
