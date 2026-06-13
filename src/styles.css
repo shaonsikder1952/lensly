@@ -1,0 +1,171 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  @font-face {
+    font-family: "DM Sans";
+    src: url("https://fonts.gstatic.com/s/dmsans/v15/rP2Hp2ywxg089UriCZOIHQ.woff2") format("woff2");
+    font-display: swap;
+  }
+}
+
+/* Google fonts via CSS @import */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-mint: var(--mint);
+  --color-amber: var(--amber);
+  --color-deep: var(--deep);
+  --font-display: "DM Sans", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+:root {
+  --radius: 0.5rem;
+  /* Sterile white & light mint */
+  --background: oklch(1 0 0);
+  --mint: oklch(0.975 0.012 180);
+  --foreground: oklch(0.18 0.03 220);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.03 220);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.03 220);
+  /* Clinical teal #006677 */
+  --primary: oklch(0.46 0.07 210);
+  --primary-foreground: oklch(0.99 0 0);
+  --deep: oklch(0.32 0.06 215);
+  --secondary: oklch(0.96 0.012 200);
+  --secondary-foreground: oklch(0.25 0.04 215);
+  --muted: oklch(0.965 0.008 210);
+  --muted-foreground: oklch(0.48 0.02 220);
+  --accent: oklch(0.94 0.025 195);
+  --accent-foreground: oklch(0.25 0.04 215);
+  --destructive: oklch(0.62 0.22 27);
+  --destructive-foreground: oklch(0.99 0 0);
+  /* Medical amber #D97706 */
+  --amber: oklch(0.7 0.17 55);
+  --border: oklch(0.92 0.01 210);
+  --input: oklch(0.92 0.01 210);
+  --ring: oklch(0.46 0.07 210);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  .font-mono, .label-mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+}
+
+@utility grid-bg {
+  background-image:
+    linear-gradient(to right, oklch(0.46 0.07 210 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.46 0.07 210 / 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@utility radial-glow {
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 40%,
+    oklch(0.46 0.07 210 / 0.18),
+    transparent 70%
+  );
+}
+
+@utility float-slow {
+  animation: float-y 7s ease-in-out infinite;
+}
+
+@utility spin-slow {
+  animation: spin-slow 40s linear infinite;
+}
+
+@utility animate-fade-in {
+  animation: fade-in 0.7s ease both;
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-14px) rotate(1deg); }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer-x {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility shimmer-text {
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    oklch(0.7 0.17 55) 50%,
+    var(--primary) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer-x 6s linear infinite;
+}
