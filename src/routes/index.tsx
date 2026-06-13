@@ -321,7 +321,7 @@ function Plan() {
                   </svg>
                   <div>
                     <span className="font-semibold text-foreground">{t("Covers 1 pair every 2 years")}</span>
-                    <p className="text-xs text-muted-foreground/80 mt-0.5">{t("Max €150 allowance — you pay the remaining balance out of pocket")}</p>
+                    <p className="text-xs text-muted-foreground/80 mt-0.5">{t("Max €150 allowance, you pay the remaining balance out of pocket")}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -367,7 +367,7 @@ function Plan() {
                   </svg>
                   <div>
                     <span className="font-semibold text-foreground">{t("1 complete pair delivered to you")}</span>
-                    <p className="text-xs text-primary/70 mt-0.5">{t("Fully covered every single year — zero waiting periods")}</p>
+                    <p className="text-xs text-primary/70 mt-0.5">{t("Fully covered every single year, zero waiting periods")}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
