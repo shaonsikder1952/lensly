@@ -50,7 +50,7 @@
 :root {
   --radius: 0.5rem;
   /* Sterile white & light mint */
-  --background: oklch(1 0 0);
+  --background: oklch(0.99 0.003 210);
   --mint: oklch(0.975 0.012 180);
   --foreground: oklch(0.18 0.03 220);
   --card: oklch(1 0 0);
@@ -106,21 +106,21 @@
 
 @utility grid-bg {
   background-image:
-    linear-gradient(to right, oklch(0.46 0.07 210 / 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(0.46 0.07 210 / 0.05) 1px, transparent 1px);
+    linear-gradient(to right, oklch(0.46 0.07 210 / 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.46 0.07 210 / 0.015) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
 @utility radial-glow {
   background: radial-gradient(
     ellipse 60% 50% at 50% 40%,
-    oklch(0.46 0.07 210 / 0.18),
+    oklch(0.46 0.07 210 / 0.15),
     transparent 70%
   );
 }
 
 @utility float-slow {
-  animation: float-y 7s ease-in-out infinite;
+  animation: float-y 8s ease-in-out infinite;
 }
 
 @utility spin-slow {
@@ -132,8 +132,8 @@
 }
 
 @keyframes float-y {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-14px) rotate(1deg); }
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-7px) rotate(0.5deg); }
 }
 
 @keyframes spin-slow {
@@ -158,14 +158,11 @@
 
 @utility shimmer-text {
   background: linear-gradient(
-    90deg,
+    135deg,
     var(--primary) 0%,
-    oklch(0.7 0.17 55) 50%,
-    var(--primary) 100%
+    var(--deep) 100%
   );
-  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: shimmer-x 6s linear infinite;
 }

@@ -44,7 +44,7 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2">
           <LensMark />
           <span className="font-display text-[15px] font-semibold tracking-tight">
@@ -127,7 +127,7 @@ function Hero() {
       <div className="pointer-events-none absolute inset-0 grid-bg opacity-50" />
       <div className="pointer-events-none absolute left-1/2 top-[62%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 radial-glow" />
 
-      <div className="relative mx-auto max-w-3xl px-6 pt-10 pb-12 text-center md:pt-14 md:pb-16">
+      <div className="relative mx-auto max-w-3xl px-4 sm:px-6 pt-10 pb-12 text-center md:pt-14 md:pb-16">
         <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
           {t("One plan · €29 / month")}
         </p>
@@ -140,11 +140,11 @@ function Hero() {
         <div className="relative mx-auto mt-5 flex h-[170px] w-full items-center justify-center md:h-[210px]">
           {/* Orbital rings centered on glasses */}
           <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div className="spin-slow h-[300px] w-[300px] rounded-full border border-primary/15 md:h-[380px] md:w-[380px]" />
+            <div className="spin-slow h-[300px] w-[300px] rounded-full border border-primary/5 md:h-[380px] md:w-[380px]" />
           </div>
           <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <div
-              className="spin-slow h-[220px] w-[220px] rounded-full border border-dashed border-primary/25 md:h-[280px] md:w-[280px]"
+              className="spin-slow h-[220px] w-[220px] rounded-full border border-dashed border-primary/10 md:h-[280px] md:w-[280px]"
               style={{ animationDirection: "reverse", animationDuration: "60s" }}
             />
           </div>
@@ -203,11 +203,11 @@ function Plan() {
   const { t } = useLanguage();
   return (
     <section id="plan" className="border-b border-border/60 bg-[var(--mint)]/30">
-      <div className="mx-auto max-w-5xl px-6 py-16">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12 sm:py-20">
         {/* Comparison Grid */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Traditional Optician Card */}
-          <div className="rounded-2xl border border-border bg-card p-8 shadow-sm transition hover:shadow-md">
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-8 shadow-sm transition hover:shadow-md">
             <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               {t("Traditional optician")}
             </p>
@@ -238,7 +238,7 @@ function Plan() {
           </div>
 
           {/* Lensly Care Card (Featured) */}
-          <div className="relative rounded-2xl border-2 border-primary bg-card p-8 shadow-md transition hover:shadow-lg">
+          <div className="relative rounded-2xl border-2 border-primary bg-card p-5 sm:p-8 shadow-md transition hover:shadow-lg">
             <div className="absolute -top-3 right-8 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
               {t("Lensly Care")}
             </div>
@@ -285,7 +285,7 @@ function Plan() {
         </div>
 
         {/* The math */}
-        <div className="mt-8 grid gap-6 rounded-2xl border border-border bg-card p-8 md:grid-cols-3">
+        <div className="mt-8 grid gap-6 rounded-2xl border border-border bg-card p-5 sm:p-8 md:grid-cols-3">
           <Math k="€1,600" l={t("Traditional optician (4 pairs)")} />
           <Math k="€29/mo" l={t("Lensly subscription (€348/yr)")} highlight />
           <Math k="€1,252" l={t("Saved per year with replacements")} />
@@ -304,7 +304,7 @@ function Plan() {
 
           <div className="grid gap-6 md:grid-cols-2">
             {/* Glasses Insurance */}
-            <div className="rounded-2xl border border-border bg-card p-8 shadow-sm flex flex-col justify-between">
+            <div className="rounded-2xl border border-border bg-card p-5 sm:p-8 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between border-b border-border/60 pb-5">
                   <div>
@@ -363,7 +363,7 @@ function Plan() {
             </div>
 
             {/* Lensly */}
-            <div className="relative rounded-2xl border-2 border-primary bg-card p-8 shadow-md flex flex-col justify-between">
+            <div className="relative rounded-2xl border-2 border-primary bg-card p-5 sm:p-8 shadow-md flex flex-col justify-between">
               <div className="absolute -top-3 right-8 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
                 Recommended
               </div>
@@ -623,7 +623,7 @@ export function Footer() {
           lenslycare@gmail.com
         </a>
       </div>
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-8 label-mono text-[10px] uppercase tracking-[0.18em] text-background/60">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 py-8 label-mono text-[10px] uppercase tracking-[0.18em] text-background/60">
         <Link to="/" className="flex items-center gap-2 text-background/85 hover:opacity-90 transition-opacity">
           <LensMark />
           <span className="font-display text-sm font-semibold">Lensly</span>
