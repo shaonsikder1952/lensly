@@ -33,7 +33,7 @@ function Nav() {
         <a href="#" className="flex items-center gap-2">
           <LensMark />
           <span className="font-display text-[15px] font-semibold tracking-tight">
-            Lensly<span className="text-primary">.</span>care
+            Lensly
           </span>
         </a>
         <a
@@ -197,19 +197,26 @@ function Plan() {
               <Feature>Premium lenses, anti-reflective &amp; UV-400 coatings included</Feature>
               <Feature>Free shipping EU-wide · cancel anytime</Feature>
             </ul>
+            <div className="mt-6 border-t border-border/60 pt-6 text-left">
+              <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground">
+                What's next?
+              </h4>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.
+              </p>
+            </div>
+            
             <a
               href="https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-8 block w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)]"
+              className="mt-5 block w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)]"
             >
-              Start Lensly Care
+              Subscribe to Lensly Care
             </a>
-            <p className="mt-3.5 text-center text-[11px] leading-relaxed text-muted-foreground/85">
-              For any help or requests regarding your subscription, please contact us at{" "}
-              <a href="mailto:lenslycare@gmail.com" className="font-medium text-primary hover:underline">
-                lenslycare@gmail.com
-              </a>
+            
+            <p className="mt-3 text-center text-[10px] text-muted-foreground/80">
+              Secure checkout via Stripe
             </p>
           </div>
         </div>
@@ -367,13 +374,13 @@ function Footer() {
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-8 label-mono text-[10px] uppercase tracking-[0.18em] text-background/60">
         <div className="flex items-center gap-2 text-background/85">
           <LensMark />
-          <span className="font-display text-sm font-semibold">Lensly.care</span>
+          <span className="font-display text-sm font-semibold">Lensly</span>
         </div>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <a href="mailto:lenslycare@gmail.com" className="hover:text-background transition-colors lowercase tracking-normal font-sans text-xs">
             lenslycare@gmail.com
           </a>
-          <span>© 2026 Lensly · Lab-crafted in Germany &amp; EU</span>
+          <span>© 2026 Lensly</span>
         </div>
       </div>
     </footer>
