@@ -409,7 +409,7 @@ function Plan() {
               </div>
 
               <div className="mt-8 border-t border-border/60 pt-5">
-                <div className="text-[15px] font-bold text-primary">{t("Total realistic cost over 2 years: €696")}</div>
+                <div className="text-[15px] font-bold text-primary">{t("Only €29/month, no matter what happens")}</div>
                 <div className="text-[11px] font-medium text-muted-foreground/75 mt-0.5">{t("Zero hidden fees, 2 new pairs, 6 replacements included")}</div>
               </div>
             </div>
