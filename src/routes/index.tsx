@@ -23,6 +23,7 @@ function Index() {
       <Nav />
       <Hero />
       <Plan />
+      <Faq />
       <Footer />
     </div>
   );
@@ -456,6 +457,144 @@ function Math({
       <div className="mt-2 text-[13px] leading-snug text-muted-foreground">{l}</div>
       {sub && <div className="mt-1 text-[11px] text-muted-foreground/75 font-medium">{sub}</div>}
     </div>
+  );
+}
+
+export function Faq() {
+  const { t } = useLanguage();
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const faqs = [
+    {
+      q: t("Who is behind Lensly?"),
+      a: (
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t("Lensly is a small independent team focused on making quality prescription eyewear affordable and accessible across Europe. We work directly with certified optical labs to cut out retail markups.")}
+        </p>
+      ),
+    },
+    {
+      q: t("Can I see frame options before subscribing?"),
+      a: (
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t("Yes. You choose any frame you like, from any brand, online shop, or store. Send us a photo or screenshot and we source it for you. No limitations.")}
+        </p>
+      ),
+    },
+    {
+      q: t("What is the exact process for my first pair?"),
+      a: (
+        <div className="mt-1 space-y-4">
+          <div className="relative pl-5 border-l border-primary/30 space-y-3.5 py-1">
+            <div className="relative">
+              <div className="absolute -left-[25px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary" />
+              <h5 className="font-semibold text-xs text-foreground uppercase tracking-wider">{t("Subscribe via Stripe")}</h5>
+            </div>
+            <div className="relative">
+              <div className="absolute -left-[25px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary" />
+              <h5 className="font-semibold text-xs text-foreground uppercase tracking-wider">{t("We contact you by email within 24 hours")}</h5>
+            </div>
+            <div className="relative">
+              <div className="absolute -left-[25px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary" />
+              <h5 className="font-semibold text-xs text-foreground uppercase tracking-wider">{t("You send us your prescription, pupillary distance measurement, and your chosen frame")}</h5>
+            </div>
+            <div className="relative">
+              <div className="absolute -left-[25px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary" />
+              <h5 className="font-semibold text-xs text-foreground uppercase tracking-wider">{t("We source and produce your glasses")}</h5>
+            </div>
+            <div className="relative">
+              <div className="absolute -left-[25px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary" />
+              <h5 className="font-semibold text-xs text-foreground uppercase tracking-wider">{t("Delivered to your door within approximately 15 days")}</h5>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      q: t("How do I get my pupillary distance measured?"),
+      a: (
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t("Visit any local optician or doctor for a quick measurement. It takes 2 minutes and is usually free. Then just include it in your email to us.")}
+        </p>
+      ),
+    },
+    {
+      q: t("What if my lenses are wrong?"),
+      a: (
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t("We send a replacement pair free of charge, no questions asked.")}
+        </p>
+      ),
+    },
+    {
+      q: t("How do returns or refunds work?"),
+      a: (
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t("If there is a production error on our side we fix it completely free. Custom prescription lenses cannot be refunded once produced, but we will always make it right.")}
+        </p>
+      ),
+    },
+    {
+      q: t("Do I buy the frame or do you?"),
+      a: (
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {t("We source the frame for you based on your photo or screenshot. It is included in your subscription, nothing extra to pay.")}
+        </p>
+      ),
+    },
+  ];
+
+  return (
+    <section className="py-16 border-t border-border/40 bg-muted/10">
+      <div className="mx-auto max-w-2xl px-4 sm:px-6">
+        <div className="text-center mb-10">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {t("Frequently Asked Questions")}
+          </h2>
+          <p className="mt-2 text-xs text-muted-foreground uppercase tracking-wider">
+            {t("Everything you need to know")}
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {faqs.map((faq, idx) => {
+            const isOpen = openIndex === idx;
+            return (
+              <div
+                key={idx}
+                className="overflow-hidden rounded-lg border border-border bg-card transition-all duration-200"
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenIndex(isOpen ? null : idx)}
+                  className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-semibold text-foreground hover:bg-muted/30 transition-colors"
+                >
+                  <span>{faq.q}</span>
+                  <svg
+                    className={`h-4 w-4 text-muted-foreground shrink-0 ml-4 transition-transform duration-200 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div
+                  className={`transition-all duration-200 ease-in-out ${
+                    isOpen ? "max-h-[600px] opacity-100 border-t border-border/40 px-5 py-4 bg-muted/5" : "max-h-0 opacity-0 overflow-hidden"
+                  }`}
+                >
+                  {faq.a}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }
 
