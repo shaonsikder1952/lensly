@@ -177,3 +177,27 @@
   background-clip: text;
   color: transparent;
 }
+
+/* Custom animation helpers to ensure entry animations work natively */
+@utility animate-in {
+  animation-duration: 300ms;
+  animation-fill-mode: both;
+}
+@utility fade-in {
+  animation-name: keyframe-fade-in;
+}
+@utility zoom-in {
+  animation-name: keyframe-zoom-in;
+}
+@utility duration-300 {
+  animation-duration: 300ms;
+}
+
+@keyframes keyframe-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes keyframe-zoom-in {
+  from { transform: scale(0.95); }
+  to { transform: scale(1); }
+}

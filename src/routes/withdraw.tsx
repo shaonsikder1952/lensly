@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useLanguage } from "../lib/i18n";
 import { updateSubscriptionStatus } from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
-import { AlertCircle, CheckCircle2, ShieldCheck, Mail, User, FileText } from "lucide-react";
+import { AlertCircle, CheckCircle2, ShieldCheck, Mail, User, FileText, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/withdraw")({
   head: () => ({
@@ -229,7 +229,10 @@ function WithdrawPage() {
                   className="w-full rounded-lg bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground hover:bg-primary/95 transition shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
-                    t("Processing...")
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      {t("Processing...")}
+                    </>
                   ) : (
                     <>
                       <ShieldCheck className="w-3.5 h-3.5" />

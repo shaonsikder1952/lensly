@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../lib/i18n";
-import { saveSubscription } from "../lib/api/subscriptions.functions";
+import { saveSubscription, checkStripeConfig, createStripeSession, confirmStripeSession, sendVerificationCodes, verifyCodes } from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
 import {
   ShieldCheck,
@@ -43,12 +43,27 @@ interface CheckoutData {
   birthDate: string;
   birthPlace: string;
   profession: string;
+  streetAddress: string;
+  postalCode: string;
+  city: string;
+  state?: string;
+  country?: string;
   paymentMethod: "sepa" | "wallet";
   maskedIban?: string;
   timestamp: string;
   signatureType: "draw" | "type";
   signatureData: string;
+  contractHash: string;
 }
+
+// Generate SHA-256 hash for contract integrity
+const generateContractHash = async (data: string): Promise<string> => {
+  const encoder = new TextEncoder();
+  const dataBuffer = encoder.encode(data);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", dataBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+};
 
 function CheckoutPage() {
   const { t } = useLanguage();
@@ -57,15 +72,90 @@ function CheckoutPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
 
+  // Stripe integration states
+  const [stripeEnabled, setStripeEnabled] = useState(false);
+  const [isVerifyingStripe, setIsVerifyingStripe] = useState(false);
+
+  useEffect(() => {
+    // 1. Query Stripe configuration status
+    checkStripeConfig()
+      .then((res) => {
+        setStripeEnabled(res.enabled);
+      })
+      .catch((err) => {
+        console.error("Failed to check Stripe config:", err);
+      });
+
+    // 2. Check Stripe checkout redirect parameters
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    if (sessionId) {
+      setIsVerifyingStripe(true);
+      confirmStripeSession({ data: { sessionId } })
+        .then(async (updatedRecord) => {
+          const hashInput = `${updatedRecord.contractId}|${updatedRecord.fullName}|${updatedRecord.email}|${updatedRecord.timestamp}`;
+          const contractHash = await generateContractHash(hashInput);
+          setCheckoutData({
+            contractId: updatedRecord.contractId,
+            fullName: updatedRecord.fullName,
+            email: updatedRecord.email,
+            phone: updatedRecord.phone,
+            birthDate: updatedRecord.birthDate,
+            birthPlace: updatedRecord.birthPlace,
+            profession: updatedRecord.profession,
+            streetAddress: updatedRecord.streetAddress,
+            postalCode: updatedRecord.postalCode,
+            city: updatedRecord.city,
+            paymentMethod: updatedRecord.paymentMethod,
+            maskedIban: updatedRecord.maskedIban,
+            signatureType: updatedRecord.signatureType,
+            signatureData: updatedRecord.signatureData,
+            timestamp: updatedRecord.timestamp,
+            contractHash,
+          });
+          setIsSuccess(true);
+          // Remove session_id parameter from URL history without page reload
+          window.history.replaceState({}, document.title, window.location.pathname);
+        })
+        .catch((error) => {
+          console.error("Stripe session confirmation error:", error);
+          setValidationError(t("Payment verification failed. Please try again or contact support."));
+        })
+        .finally(() => {
+          setIsVerifyingStripe(false);
+        });
+    }
+
+    if (params.get("cancelled") === "true") {
+      setValidationError(t("Payment was cancelled. You can try again."));
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   // Form inputs
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [phoneCountryCode, setPhoneCountryCode] = useState("+49");
   const [phone, setPhone] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [birthPlace, setBirthPlace] = useState("");
   const [profession, setProfession] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [city, setCity] = useState("");
+  const [stateInput, setStateInput] = useState("");
+  const [countryInput, setCountryInput] = useState("DE");
   const [consentLocked, setConsentLocked] = useState(false);
   const [paymentType, setPaymentType] = useState<"sepa" | "wallet">("sepa");
+
+  // OTP Verification States
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otpEmailInput, setOtpEmailInput] = useState("");
+  const [otpPhoneInput, setOtpPhoneInput] = useState("");
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [devCodes, setDevCodes] = useState<{ emailCode: string; phoneCode: string } | null>(null);
+  const [pendingPaymentAction, setPendingPaymentAction] = useState<(() => void) | null>(null);
 
   // SEPA Details
   const [accountHolder, setAccountHolder] = useState("");
@@ -94,18 +184,35 @@ function CheckoutPage() {
     return `LNS-2026-${rand}`;
   });
 
-  // Set up canvas drawing properties
+  // Set up canvas drawing properties with Retina DPI scaling
   useEffect(() => {
     if (signatureType === "draw" && canvasRef.current && !isSuccess) {
       const canvas = canvasRef.current;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        ctx.strokeStyle = "#006677"; // Match primary teal
+        ctx.scale(dpr, dpr);
+        ctx.strokeStyle = "#006677";
         ctx.lineWidth = 2.5;
         ctx.lineCap = "round";
       }
     }
   }, [signatureType, isSuccess]);
+
+  // Close modals on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (showWalletModal) setShowWalletModal(false);
+        if (showOtpModal) setShowOtpModal(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [showWalletModal, showOtpModal]);
 
   // Drawing Event Handlers
   const startDrawing = (
@@ -173,19 +280,7 @@ function CheckoutPage() {
     setHasDrawn(false);
   };
 
-  // Reset checkout state if needed
-  const resetCheckout = () => {
-    setIsSuccess(false);
-    setCheckoutData(null);
-    setFullName("");
-    setEmail("");
-    setConsentLocked(false);
-    setAccountHolder("");
-    setIban("");
-    setTypedSignature("");
-    setHasDrawn(false);
-    setValidationError("");
-  };
+  // Hash function moved to top level
 
   // Format IBAN with spaces for cleaner aesthetics
   const handleIbanChange = (val: string) => {
@@ -200,24 +295,58 @@ function CheckoutPage() {
       setValidationError(t("Please enter your full name."));
       return { valid: false, signatureVal: "" };
     }
-    if (!email.trim() || !email.includes("@")) {
+    // Proper email validation: must have @ with domain containing a dot
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim() || !emailRegex.test(email.trim())) {
       setValidationError(t("Please enter a valid email address."));
       return { valid: false, signatureVal: "" };
     }
-    if (!phone.trim()) {
-      setValidationError(t("Please enter your phone number."));
+    // Phone validation: must be digits/spaces/dashes/plus, at least 5 digits
+    const phoneDigits = phone.replace(/[^\d]/g, "");
+    if (!phone.trim() || phoneDigits.length < 5 || !/^[\d\s()-]+$/.test(phone.trim())) {
+      setValidationError(t("Please enter a valid phone number."));
       return { valid: false, signatureVal: "" };
     }
-    if (!birthDate.trim()) {
+    // Birth date validation: must be valid date and subscriber must be 18+
+    if (!birthDate) {
       setValidationError(t("Please enter your date of birth."));
       return { valid: false, signatureVal: "" };
     }
+    const parsedDate = new Date(birthDate);
+    if (isNaN(parsedDate.getTime())) {
+      setValidationError(t("Please enter a valid date of birth."));
+      return { valid: false, signatureVal: "" };
+    }
+    const today = new Date();
+    const age = today.getFullYear() - parsedDate.getFullYear();
+    const monthDiff = today.getMonth() - parsedDate.getMonth();
+    const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < parsedDate.getDate()) ? age - 1 : age;
+    if (actualAge < 18) {
+      setValidationError(t("You must be at least 18 years old to subscribe."));
+      return { valid: false, signatureVal: "" };
+    }
     if (!birthPlace.trim()) {
-      setValidationError(t("Please enter your place of birth / address."));
+      setValidationError(t("Please enter your place of birth."));
       return { valid: false, signatureVal: "" };
     }
     if (!profession.trim()) {
       setValidationError(t("Please enter your profession."));
+      return { valid: false, signatureVal: "" };
+    }
+    if (!streetAddress.trim()) {
+      setValidationError(t("Please enter your street address."));
+      return { valid: false, signatureVal: "" };
+    }
+    if (!postalCode.trim()) {
+      setValidationError(t("Please enter your postal code."));
+      return { valid: false, signatureVal: "" };
+    }
+    if (!city.trim()) {
+      setValidationError(t("Please enter your city."));
+      return { valid: false, signatureVal: "" };
+    }
+    if (!stateInput.trim()) {
+      setValidationError(t("Please enter your state / province / region."));
       return { valid: false, signatureVal: "" };
     }
     if (!consentLocked) {
@@ -257,69 +386,189 @@ function CheckoutPage() {
     }
 
     const cleanedIban = iban.replace(/\s+/g, "");
-    if (cleanedIban.length < 15) {
-      setValidationError(t("Please enter a valid IBAN."));
+    const ibanRegex = /^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/;
+    if (!ibanRegex.test(cleanedIban)) {
+      setValidationError(t("Please enter a valid IBAN (e.g. DE89 3704 0044 0532 0130 00)."));
       return;
     }
 
+    const fullPhone = phoneCountryCode + " " + phone.trim();
     setIsSubmitting(true);
 
-    const masked = cleanedIban.slice(0, 4) + " **** **** **** " + cleanedIban.slice(-4);
-    saveSubscription({
-      data: {
-        contractId,
-        fullName: fullName.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
-        birthDate: birthDate.trim(),
-        birthPlace: birthPlace.trim(),
-        profession: profession.trim(),
-        paymentMethod: "sepa",
-        maskedIban: masked,
-        signatureType,
-        signatureData: signatureVal,
-      },
-    })
-      .then((saved) => {
+    sendVerificationCodes({ data: { email: email.trim(), phone: fullPhone } })
+      .then((res) => {
         setIsSubmitting(false);
-        const data: CheckoutData = {
-          contractId: saved.contractId,
-          fullName: saved.fullName,
-          email: saved.email,
-          phone: saved.phone,
-          birthDate: saved.birthDate,
-          birthPlace: saved.birthPlace,
-          profession: saved.profession,
-          paymentMethod: "sepa",
-          maskedIban: saved.maskedIban,
-          signatureType: saved.signatureType,
-          signatureData: saved.signatureData,
-          timestamp: saved.createdAt || new Date().toISOString(),
-        };
-        setCheckoutData(data);
-        setIsSuccess(true);
+        if (res.success) {
+          if (res.devCodes) {
+            setDevCodes(res.devCodes);
+          }
+          setPendingPaymentAction(() => () => startSepaPayment(signatureVal, fullPhone));
+          setShowOtpModal(true);
+        } else {
+          setValidationError(t("Failed to send verification codes. Please try again."));
+        }
       })
-      .catch((error) => {
-        console.error("SEPA save error:", error);
+      .catch((err) => {
         setIsSubmitting(false);
-        setValidationError(t("An error occurred during submission. Please try again."));
+        console.error("Failed to send verification codes:", err);
+        setValidationError(t("Failed to send verification codes. Please try again."));
       });
+  };
+
+  const startSepaPayment = (signatureVal: string, fullPhone: string) => {
+    setIsSubmitting(true);
+    const cleanedIban = iban.replace(/\s+/g, "");
+    const masked = cleanedIban.slice(0, 4) + " **** **** **** " + cleanedIban.slice(-4);
+
+    const saveData = {
+      contractId,
+      fullName: fullName.trim(),
+      email: email.trim(),
+      phone: fullPhone,
+      birthDate: birthDate,
+      birthPlace: birthPlace.trim(),
+      profession: profession.trim(),
+      streetAddress: streetAddress.trim(),
+      postalCode: postalCode.trim(),
+      city: city.trim(),
+      state: stateInput.trim(),
+      country: countryInput,
+      paymentMethod: "sepa" as const,
+      maskedIban: masked,
+      signatureType,
+      signatureData: signatureVal,
+    };
+
+    if (stripeEnabled) {
+      saveSubscription({ data: { ...saveData, status: "pending" } })
+        .then(() => {
+          const successUrl = `${window.location.origin}/checkout?success=true`;
+          const cancelUrl = `${window.location.origin}/checkout?cancelled=true`;
+          return createStripeSession({
+            data: {
+              ...saveData,
+              successUrl,
+              cancelUrl,
+            }
+          });
+        })
+        .then((res) => {
+          if (res.sessionUrl) {
+            window.location.href = res.sessionUrl;
+          } else {
+            throw new Error("No Stripe checkout URL returned.");
+          }
+        })
+        .catch((error) => {
+          console.error("Stripe Checkout Session creation error:", error);
+          setIsSubmitting(false);
+          setValidationError(t("Failed to initiate Stripe Checkout. Please try again."));
+        });
+    } else {
+      saveSubscription({ data: { ...saveData, status: "active" } })
+        .then(async (saved) => {
+          const hashInput = `${saved.contractId}|${saved.fullName}|${saved.email}|${saved.createdAt}`;
+          const contractHash = await generateContractHash(hashInput);
+          setIsSubmitting(false);
+          setCheckoutData({
+            ...saveData,
+            timestamp: saved.createdAt || new Date().toISOString(),
+            contractHash,
+          });
+          setIsSuccess(true);
+        })
+        .catch((error) => {
+          console.error("SEPA save error (simulation):", error);
+          setIsSubmitting(false);
+          setValidationError(t("An error occurred during submission. Please try again."));
+        });
+    }
   };
 
   // Trigger Apple / Google Pay Modal
   const handleWalletClick = () => {
     setValidationError("");
-    const { valid } = validateForm();
+    const { valid, signatureVal } = validateForm();
     if (!valid) return;
 
-    // Launch simulated wallet authorization
-    setWalletStep("instructions");
-    setShowWalletModal(true);
+    const fullPhone = phoneCountryCode + " " + phone.trim();
+    setIsSubmitting(true);
+
+    sendVerificationCodes({ data: { email: email.trim(), phone: fullPhone } })
+      .then((res) => {
+        setIsSubmitting(false);
+        if (res.success) {
+          if (res.devCodes) {
+            setDevCodes(res.devCodes);
+          }
+          setPendingPaymentAction(() => () => startWalletPayment(signatureVal, fullPhone));
+          setShowOtpModal(true);
+        } else {
+          setValidationError(t("Failed to send verification codes. Please try again."));
+        }
+      })
+      .catch((err) => {
+        setIsSubmitting(false);
+        console.error("Failed to send verification codes:", err);
+        setValidationError(t("Failed to send verification codes. Please try again."));
+      });
+  };
+
+  const startWalletPayment = (signatureVal: string, fullPhone: string) => {
+    const saveData = {
+      contractId,
+      fullName: fullName.trim(),
+      email: email.trim(),
+      phone: fullPhone,
+      birthDate: birthDate,
+      birthPlace: birthPlace.trim(),
+      profession: profession.trim(),
+      streetAddress: streetAddress.trim(),
+      postalCode: postalCode.trim(),
+      city: city.trim(),
+      state: stateInput.trim(),
+      country: countryInput,
+      paymentMethod: "wallet" as const,
+      signatureType,
+      signatureData: signatureVal,
+    };
+
+    if (stripeEnabled) {
+      setIsSubmitting(true);
+      saveSubscription({ data: { ...saveData, status: "pending" } })
+        .then(() => {
+          const successUrl = `${window.location.origin}/checkout?success=true`;
+          const cancelUrl = `${window.location.origin}/checkout?cancelled=true`;
+          return createStripeSession({
+            data: {
+              ...saveData,
+              successUrl,
+              cancelUrl,
+            }
+          });
+        })
+        .then((res) => {
+          if (res.sessionUrl) {
+            window.location.href = res.sessionUrl;
+          } else {
+            throw new Error("No Stripe checkout URL returned.");
+          }
+        })
+        .catch((error) => {
+          console.error("Stripe Checkout Session creation error (wallet):", error);
+          setIsSubmitting(false);
+          setValidationError(t("Failed to initiate Stripe Checkout. Please try again."));
+        });
+    } else {
+      setWalletStep("instructions");
+      setShowWalletModal(true);
+    }
   };
 
   // Simulate Biometric Bi-pass
   const handleSimulateBiometric = () => {
     const { signatureVal } = validateForm();
+    const fullPhone = phoneCountryCode + " " + phone.trim();
     setWalletStep("scanning");
 
     // Scan biometric
@@ -337,18 +586,26 @@ function CheckoutPage() {
               contractId,
               fullName: fullName.trim(),
               email: email.trim(),
-              phone: phone.trim(),
-              birthDate: birthDate.trim(),
+              phone: fullPhone,
+              birthDate: birthDate,
               birthPlace: birthPlace.trim(),
               profession: profession.trim(),
+              streetAddress: streetAddress.trim(),
+              postalCode: postalCode.trim(),
+              city: city.trim(),
+              state: stateInput.trim(),
+              country: countryInput,
               paymentMethod: "wallet",
               signatureType,
               signatureData: signatureVal,
+              status: "active",
             },
           })
-            .then((saved) => {
+            .then(async (saved) => {
+              const hashInput = `${saved.contractId}|${saved.fullName}|${saved.email}|${saved.createdAt}`;
+              const contractHash = await generateContractHash(hashInput);
               setShowWalletModal(false);
-              const data: CheckoutData = {
+              setCheckoutData({
                 contractId: saved.contractId,
                 fullName: saved.fullName,
                 email: saved.email,
@@ -356,22 +613,63 @@ function CheckoutPage() {
                 birthDate: saved.birthDate,
                 birthPlace: saved.birthPlace,
                 profession: saved.profession,
-                paymentMethod: "wallet",
+                streetAddress: saved.streetAddress || "",
+                postalCode: saved.postalCode || "",
+                city: saved.city || "",
+                state: saved.state || "",
+                country: saved.country || "",
+                paymentMethod: saved.paymentMethod,
+                maskedIban: saved.maskedIban,
                 signatureType: saved.signatureType,
                 signatureData: saved.signatureData,
                 timestamp: saved.createdAt || new Date().toISOString(),
-              };
-              setCheckoutData(data);
+                contractHash,
+              });
               setIsSuccess(true);
             })
             .catch((error) => {
-              console.error("Wallet save error:", error);
+              console.error("Wallet save error (simulation):", error);
               setShowWalletModal(false);
               setValidationError(t("An error occurred during payment processing."));
             });
         }, 1200);
       }, 1500);
     }, 1500);
+  };
+
+  const handleVerifyOtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    setOtpError("");
+    setIsVerifyingOtp(true);
+
+    const fullPhone = phoneCountryCode + " " + phone.trim();
+    verifyCodes({
+      data: {
+        email: email.trim(),
+        phone: fullPhone,
+        emailCode: otpEmailInput,
+        phoneCode: otpPhoneInput,
+      },
+    })
+      .then((res) => {
+        setIsVerifyingOtp(false);
+        if (res.valid) {
+          setShowOtpModal(false);
+          setOtpEmailInput("");
+          setOtpPhoneInput("");
+          setDevCodes(null);
+          if (pendingPaymentAction) {
+            pendingPaymentAction();
+          }
+        } else {
+          setOtpError(t(res.error || "Invalid verification codes."));
+        }
+      })
+      .catch((err) => {
+        setIsVerifyingOtp(false);
+        console.error("OTP verification error:", err);
+        setOtpError(t("Failed to verify codes. Please try again."));
+      });
   };
 
   // Print function with dynamic filename
@@ -389,6 +687,23 @@ function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col justify-between">
+      {isVerifyingStripe && (
+        <div className="fixed inset-0 z-[100] bg-background/85 backdrop-blur-md flex flex-col items-center justify-center p-4">
+          <div className="text-center space-y-4 max-w-sm">
+            <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
+              <span className="absolute inset-0 rounded-full bg-primary/10 animate-ping" />
+              <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            </div>
+            <h3 className="font-display font-semibold text-lg text-foreground">
+              {t("Verifying payment with Stripe...")}
+            </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {t("We are validating your secure checkout session and securing your signed vision contract. This will only take a moment.")}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Dynamic CSS Print block to make the contract document beautifully formatted for PDF print/save */}
       {isSuccess && (
         <style>{`
@@ -501,7 +816,7 @@ function CheckoutPage() {
                     </div>
                     <div>
                       <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
-                        {t("Place of Birth / Address")}
+                        {t("Place of Birth")}
                       </span>
                       <span className="text-foreground block mt-0.5">
                         {checkoutData.birthPlace}
@@ -515,6 +830,14 @@ function CheckoutPage() {
                         {checkoutData.profession}
                       </span>
                     </div>
+                    <div className="sm:col-span-2">
+                      <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                        {t("Delivery Address")}
+                      </span>
+                      <span className="text-foreground block mt-0.5">
+                        {checkoutData.streetAddress}, {checkoutData.postalCode} {checkoutData.city}, {checkoutData.state || ""} ({checkoutData.country || ""})
+                      </span>
+                    </div>
                     <div>
                       <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
                         {t("Payment Method")}
@@ -522,7 +845,7 @@ function CheckoutPage() {
                       <span className="text-foreground block mt-0.5">
                         {checkoutData.paymentMethod === "sepa"
                           ? `${t("SEPA Lastschrift")} (${checkoutData.maskedIban})`
-                          : "Express Wallet (Apple/Google Pay)"}
+                          : t("Apple Pay / Google Pay")}
                       </span>
                     </div>
                   </div>
@@ -585,7 +908,7 @@ function CheckoutPage() {
                     </div>
                     <div className="flex justify-between items-center mt-2 text-[8px] font-mono text-muted-foreground">
                       <span>{t("E-SIGNATURE COMPLIANT (eIDAS REGULATION)")}</span>
-                      <span>SHA-256: {checkoutData.contractId.replace("-", "")}CE8F...</span>
+                      <span>SHA-256: {checkoutData.contractHash.slice(0, 16).toUpperCase()}...</span>
                     </div>
                   </div>
                 </div>
@@ -602,7 +925,7 @@ function CheckoutPage() {
                         1
                       </span>
                       <span>
-                        {t("Check your email for a copy of your 1-year contract and PDF mandate.")}
+                        {t("Download your signed contract below. Email confirmation will follow shortly.")}
                       </span>
                     </li>
                     <li className="flex items-start gap-2.5">
@@ -641,12 +964,7 @@ function CheckoutPage() {
                   >
                     {t("Return Home")}
                   </Link>
-                  <button
-                    onClick={resetCheckout}
-                    className="rounded-lg border border-input bg-background px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted"
-                  >
-                    {t("Simulate Another Subscribe")}
-                  </button>
+
                 </div>
               </div>
             </div>
@@ -752,7 +1070,7 @@ function CheckoutPage() {
                     <div className="rounded-lg border border-primary/20 bg-primary/[0.02] p-3 text-[11px] text-foreground leading-relaxed font-medium mb-4">
                       <span className="font-bold text-primary block text-[9px] uppercase tracking-wider mb-1 flex items-center gap-1">
                         <Info className="w-3.5 h-3.5" />
-                        {t("Vertragsinformationen (German Compliance)")}
+                        {t("Contract Information (German Compliance)")}
                       </span>
                       {t(
                         "Minimum term 12 months, billing €29 monthly, automatic renewal with monthly cancellation thereafter.",
@@ -768,9 +1086,9 @@ function CheckoutPage() {
                         className="mt-0.5 rounded border-border text-primary focus:ring-primary focus:ring-offset-0 focus:outline-none accent-primary w-4.5 h-4.5 cursor-pointer shrink-0"
                       />
                       <span className="text-[11px] text-muted-foreground/95 select-none leading-relaxed transition-colors group-hover:text-foreground">
-                        {t(
-                          "I agree to the Terms of Service, the 12-month contract lock-in, and the custom-lens refund rules.",
-                        )}{" "}
+                        {t("I agree to the")}{" "}
+                        <a href="/agb" target="_blank" className="text-primary hover:underline font-medium">{t("Terms of Service (AGB)")}</a>
+                        {t(", the 12-month contract lock-in, and the custom-lens refund rules.")}{" "}
                         <span className="text-destructive font-bold">*</span>
                       </span>
                     </label>
@@ -791,6 +1109,8 @@ function CheckoutPage() {
                 <h3 className="font-display font-semibold text-lg text-foreground mb-4">
                   {t("Subscriber & Payment Information")}
                 </h3>
+
+
 
                 {/* Error Box */}
                 {validationError && (
@@ -841,37 +1161,53 @@ function CheckoutPage() {
                       <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
                         {t("Phone Number")}
                       </label>
-                      <input
-                        type="tel"
-                        required
-                        value={phone}
-                        placeholder="+49 170 1234567"
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
-                      />
+                      <div className="flex gap-2">
+                        <select
+                          value={phoneCountryCode}
+                          onChange={(e) => setPhoneCountryCode(e.target.value)}
+                          className="rounded-lg border border-border bg-background px-2 py-2 text-xs focus:border-primary focus:outline-none transition-colors w-24 cursor-pointer shrink-0"
+                        >
+                          <option value="+49">🇩🇪 +49</option>
+                          <option value="+43">🇦🇹 +43</option>
+                          <option value="+41">🇨🇭 +41</option>
+                          <option value="+33">🇫🇷 +33</option>
+                          <option value="+44">🇬🇧 +44</option>
+                          <option value="+34">🇪🇸 +34</option>
+                          <option value="+39">🇮🇹 +39</option>
+                          <option value="+1">🇺🇸 +1</option>
+                        </select>
+                        <input
+                          type="tel"
+                          required
+                          value={phone}
+                          placeholder="170 1234567"
+                          onChange={(e) => setPhone(e.target.value)}
+                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
+                        />
+                      </div>
                     </div>
                     <div>
                       <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
                         {t("Birth Date")}
                       </label>
                       <input
-                        type="text"
+                        type="date"
                         required
                         value={birthDate}
-                        placeholder="DD.MM.YYYY"
+                        max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
                         onChange={(e) => setBirthDate(e.target.value)}
                         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
                       />
                     </div>
                     <div>
                       <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                        {t("Place of Birth / Address")}
+                        {t("Place of Birth")}
                       </label>
                       <input
                         type="text"
                         required
                         value={birthPlace}
-                        placeholder="Düsseldorf, Germany"
+                        placeholder="Düsseldorf"
                         onChange={(e) => setBirthPlace(e.target.value)}
                         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
                       />
@@ -888,6 +1224,67 @@ function CheckoutPage() {
                         onChange={(e) => setProfession(e.target.value)}
                         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
                       />
+                    </div>
+                  </div>
+
+                  {/* Delivery Address */}
+                  <div className="border-t border-border/60 pt-4 mt-2">
+                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                      {t("Delivery Address")}
+                    </label>
+                    <div className="grid gap-3">
+                      <div>
+                        <input
+                          type="text"
+                          required
+                          value={streetAddress}
+                          placeholder={t("Street Address (e.g. Königsallee 14)")}
+                          onChange={(e) => setStreetAddress(e.target.value)}
+                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <input
+                          type="text"
+                          required
+                          value={postalCode}
+                          placeholder={t("Postal code")}
+                          onChange={(e) => setPostalCode(e.target.value)}
+                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
+                        />
+                        <input
+                          type="text"
+                          required
+                          value={city}
+                          placeholder={t("City")}
+                          onChange={(e) => setCity(e.target.value)}
+                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <input
+                          type="text"
+                          required
+                          value={stateInput}
+                          placeholder={t("State / Province / Region")}
+                          onChange={(e) => setStateInput(e.target.value)}
+                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
+                        />
+                        <select
+                          value={countryInput}
+                          onChange={(e) => setCountryInput(e.target.value)}
+                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors cursor-pointer"
+                        >
+                          <option value="DE">{t("Germany")}</option>
+                          <option value="AT">{t("Austria")}</option>
+                          <option value="CH">{t("Switzerland")}</option>
+                          <option value="FR">{t("France")}</option>
+                          <option value="GB">{t("United Kingdom")}</option>
+                          <option value="US">{t("United States")}</option>
+                          <option value="ES">{t("Spain")}</option>
+                          <option value="IT">{t("Italy")}</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
 
@@ -945,8 +1342,8 @@ function CheckoutPage() {
                         <div className="border border-border rounded-lg bg-background overflow-hidden relative touch-none">
                           <canvas
                             ref={canvasRef}
-                            width={400}
-                            height={120}
+                            width={800}
+                            height={240}
                             className="w-full bg-background block cursor-crosshair h-24"
                             onMouseDown={startDrawing}
                             onMouseMove={draw}
@@ -1011,7 +1408,7 @@ function CheckoutPage() {
                         }`}
                       >
                         <Wallet className="w-3.5 h-3.5 text-primary" />
-                        {t("Express Wallet")}
+                        {t("Apple Pay / Google Pay")}
                       </button>
                     </div>
                   </div>
@@ -1081,30 +1478,39 @@ function CheckoutPage() {
                       {/* Custom Apple Pay Button */}
                       <button
                         type="button"
+                        disabled={isSubmitting}
                         onClick={handleWalletClick}
-                        className="w-full rounded-lg bg-black text-white hover:bg-black/90 py-2.5 text-center text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer border border-black"
+                        className="w-full rounded-lg bg-black text-white hover:bg-black/90 py-2.5 text-center text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer border border-black disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <span className="font-sans text-xs tracking-tight">{t("Pay with")}</span>
-                        <span className="font-bold tracking-tight text-sm font-serif italic">
-                           Pay
-                        </span>
+                        {isSubmitting ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <>
+                            <span className="font-sans text-xs tracking-tight">{t("Pay with")}</span>
+                            <span className="font-bold tracking-tight text-sm">
+                              Apple Pay
+                            </span>
+                          </>
+                        )}
                       </button>
 
                       {/* Custom Google Pay Button */}
                       <button
                         type="button"
+                        disabled={isSubmitting}
                         onClick={handleWalletClick}
-                        className="w-full rounded-lg bg-white text-black hover:bg-muted/60 border border-border py-2.5 text-center text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                        className="w-full rounded-lg bg-white text-black hover:bg-muted/60 border border-border py-2.5 text-center text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <span className="font-sans text-xs tracking-tight">{t("Pay with")}</span>
-                        <span className="font-bold tracking-wide text-sm text-foreground/90 font-mono">
-                          <span className="text-blue-500">G</span>
-                          <span className="text-red-500">o</span>
-                          <span className="text-yellow-500">o</span>
-                          <span className="text-blue-500">g</span>
-                          <span className="text-green-500">l</span>
-                          <span className="text-red-500">e</span> Pay
-                        </span>
+                        {isSubmitting ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-black" />
+                        ) : (
+                          <>
+                            <span className="font-sans text-xs tracking-tight">{t("Pay with")}</span>
+                            <span className="font-bold tracking-wide text-sm text-foreground/90">
+                              Google Pay
+                            </span>
+                          </>
+                        )}
                       </button>
 
                       <div className="text-[10px] text-muted-foreground max-w-xs mx-auto pt-2">
@@ -1140,11 +1546,11 @@ function CheckoutPage() {
                   <Smartphone className="w-6 h-6" />
                 </div>
                 <h4 className="font-display font-semibold text-foreground text-base">
-                  {t("Express Wallet Checkout")}
+                  {t("Authorize Payment")}
                 </h4>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                   {t(
-                    "You are about to authorize the Lensly 1-year contract and recurring billing of €29/month via Apple/Google Pay.",
+                    "You are about to authorize the Lensly 1-year subscription contract and recurring billing of €29/month via Apple Pay / Google Pay.",
                   )}
                 </p>
                 <button
@@ -1152,7 +1558,7 @@ function CheckoutPage() {
                   className="w-full mt-6 rounded-lg bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground hover:bg-primary/95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  {t("Confirm & Simulate Pay")}
+                  {t("Confirm & Authorize Payment")}
                 </button>
               </div>
             )}
@@ -1165,10 +1571,10 @@ function CheckoutPage() {
                   <Loader2 className="w-10 h-10 text-primary animate-spin" />
                 </div>
                 <h4 className="font-display font-semibold text-foreground text-sm">
-                  {t("Waiting for Biometric ID...")}
+                  {t("Verifying Identity...")}
                 </h4>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {t("Simulating FaceID / TouchID scan on device...")}
+                  {t("Authenticating via biometric verification...")}
                 </p>
               </div>
             )}
@@ -1182,7 +1588,7 @@ function CheckoutPage() {
                   {t("Authorizing with Stripe...")}
                 </h4>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {t("Encrypting secure key and locking in 12-month mandate...")}
+                  {t("Processing secure payment authorization...")}
                 </p>
               </div>
             )}
@@ -1196,10 +1602,91 @@ function CheckoutPage() {
                   {t("Payment Authorized")}
                 </h4>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {t("Secure tokens stored. Onboarding loading...")}
+                  {t("Payment confirmed. Setting up your subscription...")}
                 </p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {/* OTP Verification Modal */}
+      {showOtpModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl p-6 relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setShowOtpModal(false)}
+              className="absolute top-4 right-4 text-xs text-muted-foreground hover:text-foreground font-semibold cursor-pointer"
+            >
+              ✕
+            </button>
+
+            <div className="text-center py-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto text-primary mb-4">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h4 className="font-display font-semibold text-foreground text-base">
+                {t("Verify Contact Details")}
+              </h4>
+              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                {t("For contract execution and shipping safety, please enter the verification codes sent to your email and phone number.")}
+              </p>
+
+              {otpError && (
+                <div className="mt-4 flex items-center gap-2 rounded-lg bg-destructive/10 p-2.5 text-xs text-destructive text-left">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{otpError}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleVerifyOtp} className="mt-6 space-y-4 text-left">
+                <div>
+                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                    {t("Email OTP Code")}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={6}
+                    value={otpEmailInput}
+                    onChange={(e) => setOtpEmailInput(e.target.value.replace(/\D/g, ""))}
+                    placeholder="123456"
+                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-center text-sm font-mono tracking-widest focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                    {t("SMS OTP Code")}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={6}
+                    value={otpPhoneInput}
+                    onChange={(e) => setOtpPhoneInput(e.target.value.replace(/\D/g, ""))}
+                    placeholder="123456"
+                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-center text-sm font-mono tracking-widest focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+
+
+                <button
+                  type="submit"
+                  disabled={isVerifyingOtp}
+                  className="w-full rounded-lg bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground hover:bg-primary/95 transition-all cursor-pointer flex items-center justify-center gap-1.5 mt-6"
+                >
+                  {isVerifyingOtp ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      {t("Verifying...")}
+                    </>
+                  ) : (
+                    t("Confirm & Continue to Payment")
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       )}

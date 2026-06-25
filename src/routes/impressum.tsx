@@ -28,7 +28,11 @@ function Impressum() {
               <h2 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2">
                 {t("Angaben gemäß § 5 TMG")}
               </h2>
-              <p className="font-medium text-foreground">Md Shaon Sikder</p>
+              <p className="font-medium text-foreground">Lensly UG (haftungsbeschränkt) i.Gr.</p>
+              <p>{t("Vertreten durch:")} Md Shaon Sikder</p>
+              <p>Königsallee 14</p>
+              <p>40212 Düsseldorf</p>
+              <p>{t("Germany")}</p>
             </section>
 
             <section>
@@ -38,17 +42,17 @@ function Impressum() {
               <p>
                 {t("E-Mail:")}{" "}
                 <a
-                  href="mailto:lenslycare@gmail.com"
+                  href="mailto:hello@lensly.care"
                   className="text-primary hover:underline font-medium"
                 >
-                  lenslycare@gmail.com
+                  hello@lensly.care
                 </a>
               </p>
             </section>
 
             <section className="border-t border-border/60 pt-6">
-              <p className="italic text-muted-foreground/80">
-                {t("Address will be updated shortly.")}
+              <p className="text-xs text-muted-foreground/60">
+                {t("Hinweis: Die Gesellschaft befindet sich in Gründung. Umsatzsteuer-Identifikationsnummer und Handelsregistereintragung folgen nach Abschluss des Registrierungsprozesses.")}
               </p>
             </section>
           </div>

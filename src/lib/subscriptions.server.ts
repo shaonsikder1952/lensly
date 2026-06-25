@@ -13,11 +13,16 @@ export interface Subscription {
   birth_date: string;
   birth_place: string;
   profession: string;
+  street_address: string;
+  postal_code: string;
+  city: string;
+  state?: string;
+  country?: string;
   payment_method: "sepa" | "wallet";
   masked_iban?: string;
   signature_type: "draw" | "type";
   signature_data: string;
-  status: "active" | "cancelled" | "withdrawn";
+  status: "active" | "cancelled" | "withdrawn" | "pending" | "paused" | "archived";
   created_at?: string;
   updated_at?: string;
 }
@@ -71,6 +76,11 @@ export async function ensureDbInitialized(): Promise<boolean> {
         birth_date VARCHAR(50),
         birth_place VARCHAR(255),
         profession VARCHAR(100),
+        street_address VARCHAR(500),
+        postal_code VARCHAR(20),
+        city VARCHAR(255),
+        state VARCHAR(255),
+        country VARCHAR(255),
         payment_method VARCHAR(50) NOT NULL,
         masked_iban VARCHAR(100),
         signature_type VARCHAR(20) NOT NULL,
@@ -86,6 +96,11 @@ export async function ensureDbInitialized(): Promise<boolean> {
     await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS birth_date VARCHAR(50);`;
     await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS birth_place VARCHAR(255);`;
     await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS profession VARCHAR(100);`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS street_address VARCHAR(500);`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS postal_code VARCHAR(20);`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS city VARCHAR(255);`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS state VARCHAR(255);`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS country VARCHAR(255);`;
 
     // Add indices to speed up common searches
     await client`
@@ -134,14 +149,14 @@ async function writeToJsonFile(data: Subscription[]): Promise<void> {
 }
 
 export async function saveSubscriptionServer(
-  sub: Omit<Subscription, "status" | "created_at" | "updated_at">,
+  sub: Omit<Subscription, "created_at" | "updated_at">,
 ): Promise<Subscription> {
   const isDb = await ensureDbInitialized();
   const client = getSqlClient();
 
   const newSub: Subscription = {
     ...sub,
-    status: "active",
+    status: sub.status || "active",
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
@@ -157,6 +172,11 @@ export async function saveSubscriptionServer(
           birth_date,
           birth_place,
           profession,
+          street_address,
+          postal_code,
+          city,
+          state,
+          country,
           payment_method,
           masked_iban,
           signature_type,
@@ -172,13 +192,18 @@ export async function saveSubscriptionServer(
           ${newSub.birth_date},
           ${newSub.birth_place},
           ${newSub.profession},
+          ${newSub.street_address || ""},
+          ${newSub.postal_code || ""},
+          ${newSub.city || ""},
+          ${newSub.state || ""},
+          ${newSub.country || ""},
           ${newSub.payment_method},
           ${newSub.masked_iban || null},
           ${newSub.signature_type},
           ${newSub.signature_data},
           ${newSub.status},
-          ${newSub.created_at},
-          ${newSub.updated_at}
+          ${newSub.created_at || ""},
+          ${newSub.updated_at || ""}
         )
         RETURNING *
       `;
@@ -193,6 +218,11 @@ export async function saveSubscriptionServer(
           birth_date: row.birth_date || "",
           birth_place: row.birth_place || "",
           profession: row.profession || "",
+          street_address: row.street_address || "",
+          postal_code: row.postal_code || "",
+          city: row.city || "",
+          state: row.state || "",
+          country: row.country || "",
           payment_method: row.payment_method,
           masked_iban: row.masked_iban || undefined,
           signature_type: row.signature_type,
@@ -233,6 +263,11 @@ export async function getSubscriptionsServer(): Promise<Subscription[]> {
         birth_date: row.birth_date || "",
         birth_place: row.birth_place || "",
         profession: row.profession || "",
+        street_address: row.street_address || "",
+        postal_code: row.postal_code || "",
+        city: row.city || "",
+        state: row.state || "",
+        country: row.country || "",
         payment_method: row.payment_method,
         masked_iban: row.masked_iban || undefined,
         signature_type: row.signature_type,
@@ -255,7 +290,7 @@ export async function getSubscriptionsServer(): Promise<Subscription[]> {
 export async function updateSubscriptionStatusServer(
   contractId: string,
   email: string,
-  status: "active" | "cancelled" | "withdrawn",
+  status: "active" | "cancelled" | "withdrawn" | "paused" | "archived",
 ): Promise<boolean> {
   const isDb = await ensureDbInitialized();
   const client = getSqlClient();
@@ -267,7 +302,7 @@ export async function updateSubscriptionStatusServer(
       const rows = await client`
         UPDATE subscriptions
         SET status = ${status}, updated_at = CURRENT_TIMESTAMP
-        WHERE UPPER(contract_id) = ${normalizedContract} AND LOWER(email) = ${normalizedEmail}
+        WHERE TRIM(UPPER(contract_id)) = ${normalizedContract} AND TRIM(LOWER(email)) = ${normalizedEmail}
         RETURNING id
       `;
       if (rows && rows.length > 0) {
@@ -283,13 +318,181 @@ export async function updateSubscriptionStatusServer(
   let updated = false;
   const updatedList = list.map((item) => {
     if (
-      item.contract_id.toUpperCase() === normalizedContract &&
-      item.email.toLowerCase() === normalizedEmail
+      item.contract_id.trim().toUpperCase() === normalizedContract &&
+      item.email.trim().toLowerCase() === normalizedEmail
     ) {
       updated = true;
       return {
         ...item,
         status,
+        updated_at: new Date().toISOString(),
+      };
+    }
+    return item;
+  });
+
+  if (updated) {
+    await writeToJsonFile(updatedList);
+  }
+  return updated;
+}
+
+export async function confirmSubscriptionPaymentServer(
+  contractId: string,
+  email: string,
+  paymentMethod: "sepa" | "wallet",
+  maskedIban: string,
+): Promise<boolean> {
+  const isDb = await ensureDbInitialized();
+  const client = getSqlClient();
+  const normalizedContract = contractId.trim().toUpperCase();
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (isDb && client) {
+    try {
+      const rows = await client`
+        UPDATE subscriptions
+        SET status = 'active',
+            payment_method = ${paymentMethod},
+            masked_iban = ${maskedIban},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE TRIM(UPPER(contract_id)) = ${normalizedContract} AND TRIM(LOWER(email)) = ${normalizedEmail}
+        RETURNING id
+      `;
+      if (rows && rows.length > 0) {
+        return true;
+      }
+    } catch (error) {
+      console.error("PostgreSQL payment confirmation failed, trying fallback:", error);
+    }
+  }
+
+  // Fallback: JSON file update
+  const list = await readFromJsonFile();
+  let updated = false;
+  const updatedList = list.map((item) => {
+    if (
+      item.contract_id.trim().toUpperCase() === normalizedContract &&
+      item.email.trim().toLowerCase() === normalizedEmail
+    ) {
+      updated = true;
+      return {
+        ...item,
+        status: "active" as const,
+        payment_method: paymentMethod,
+        masked_iban: maskedIban,
+        updated_at: new Date().toISOString(),
+      };
+    }
+    return item;
+  });
+
+  if (updated) {
+    await writeToJsonFile(updatedList);
+  }
+  return updated;
+}
+
+export async function deleteSubscriptionServer(
+  contractId: string,
+  email: string,
+): Promise<boolean> {
+  const isDb = await ensureDbInitialized();
+  const client = getSqlClient();
+  const normalizedContract = contractId.trim().toUpperCase();
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (isDb && client) {
+    try {
+      const rows = await client`
+        DELETE FROM subscriptions
+        WHERE TRIM(UPPER(contract_id)) = ${normalizedContract} AND TRIM(LOWER(email)) = ${normalizedEmail}
+        RETURNING id
+      `;
+      if (rows && rows.length > 0) {
+        return true;
+      }
+    } catch (error) {
+      console.error("PostgreSQL delete failed, trying fallback:", error);
+    }
+  }
+
+  // Fallback: JSON file update
+  const list = await readFromJsonFile();
+  const initialLength = list.length;
+  const filtered = list.filter(
+    (item) =>
+      item.contract_id.trim().toUpperCase() !== normalizedContract ||
+      item.email.trim().toLowerCase() !== normalizedEmail,
+  );
+  if (filtered.length !== initialLength) {
+    await writeToJsonFile(filtered);
+    return true;
+  }
+  return false;
+}
+
+export async function editSubscriptionServer(
+  contractId: string,
+  email: string,
+  updatedFields: Partial<Omit<Subscription, "id" | "contract_id" | "created_at" | "updated_at">>,
+): Promise<boolean> {
+  const isDb = await ensureDbInitialized();
+  const client = getSqlClient();
+  const normalizedContract = contractId.trim().toUpperCase();
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (isDb && client) {
+    try {
+      const rows = await client`
+        UPDATE subscriptions
+        SET full_name = COALESCE(${updatedFields.full_name ?? null}, full_name),
+            email = COALESCE(${updatedFields.email ?? null}, email),
+            phone = COALESCE(${updatedFields.phone ?? null}, phone),
+            birth_date = COALESCE(${updatedFields.birth_date ?? null}, birth_date),
+            birth_place = COALESCE(${updatedFields.birth_place ?? null}, birth_place),
+            profession = COALESCE(${updatedFields.profession ?? null}, profession),
+            street_address = COALESCE(${updatedFields.street_address ?? null}, street_address),
+            postal_code = COALESCE(${updatedFields.postal_code ?? null}, postal_code),
+            city = COALESCE(${updatedFields.city ?? null}, city),
+            state = COALESCE(${updatedFields.state ?? null}, state),
+            country = COALESCE(${updatedFields.country ?? null}, country),
+            status = COALESCE(${updatedFields.status ?? null}, status),
+            updated_at = CURRENT_TIMESTAMP
+        WHERE TRIM(UPPER(contract_id)) = ${normalizedContract} AND TRIM(LOWER(email)) = ${normalizedEmail}
+        RETURNING id
+      `;
+      if (rows && rows.length > 0) {
+        return true;
+      }
+    } catch (error) {
+      console.error("PostgreSQL edit failed, trying fallback:", error);
+    }
+  }
+
+  // Fallback: JSON file update
+  const list = await readFromJsonFile();
+  let updated = false;
+  const updatedList = list.map((item) => {
+    if (
+      item.contract_id.trim().toUpperCase() === normalizedContract &&
+      item.email.trim().toLowerCase() === normalizedEmail
+    ) {
+      updated = true;
+      return {
+        ...item,
+        full_name: updatedFields.full_name ?? item.full_name,
+        email: updatedFields.email ?? item.email,
+        phone: updatedFields.phone ?? item.phone,
+        birth_date: updatedFields.birth_date ?? item.birth_date,
+        birth_place: updatedFields.birth_place ?? item.birth_place,
+        profession: updatedFields.profession ?? item.profession,
+        street_address: updatedFields.street_address ?? item.street_address,
+        postal_code: updatedFields.postal_code ?? item.postal_code,
+        city: updatedFields.city ?? item.city,
+        state: updatedFields.state ?? item.state,
+        country: updatedFields.country ?? item.country,
+        status: updatedFields.status ?? item.status,
         updated_at: new Date().toISOString(),
       };
     }

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Nav, Footer } from "./index";
 import { useLanguage } from "../lib/i18n";
-import { ShieldAlert, Scale, HelpCircle } from "lucide-react";
+import { ShieldAlert, Scale, HelpCircle, FileCheck } from "lucide-react";
 
 export const Route = createFileRoute("/agb")({
   head: () => ({
@@ -53,10 +53,11 @@ function Agb() {
                   {t("(2) The contractual partner and Provider of the subscription platform is:")}
                 </p>
                 <div className="bg-muted/40 p-3 rounded-lg border border-border/80 font-medium text-foreground my-2">
+                  {/* TODO: Legal review prior to launch. Verify UG registration status. */}
                   <p className="font-bold">Lensly UG (haftungsbeschränkt)</p>
                   <p>Düsseldorf, Germany</p>
                   <p className="font-normal text-xs text-muted-foreground mt-1">
-                    Email: lenslycare@gmail.com
+                    Email: hello@lensly.care
                   </p>
                   <p className="text-xs text-muted-foreground font-normal">
                     {t('(hereinafter referred to as the "Provider").')}
@@ -262,7 +263,7 @@ function Agb() {
               <div className="space-y-2 text-xs sm:text-sm">
                 <p>
                   {t(
-                    "Independent of the statutory legal exclusion of the right of withdrawal for custom medical items, the Provider grants a voluntary 14-day satisfaction guarantee. If the custom-ground lenses or frame fit do not provide absolute eye comfort within the first 14 days following delivery, the Customer can contact support at lenslycare@gmail.com. The Provider will perform an advanced prescription re-verification and dispatch a corrected replacement pair completely free of charge.",
+                    "Independent of the statutory legal exclusion of the right of withdrawal for custom medical items, the Provider grants a voluntary 14-day satisfaction guarantee. If the custom-ground lenses or frame fit do not provide absolute eye comfort within the first 14 days following delivery, the Customer can contact support at hello@lensly.care. The Provider will perform an advanced prescription re-verification and dispatch a corrected replacement pair completely free of charge.",
                   )}
                 </p>
               </div>
@@ -323,7 +324,7 @@ function Agb() {
                   </p>
                   <p className="mt-2">
                     {t(
-                      'To exercise your right of withdrawal, you must inform us (Lensly UG, Düsseldorf, Germany, Email: lenslycare@gmail.com) of your decision to withdraw from this contract by means of a clear, unambiguous statement (e.g., a letter sent by post or an email), or by directly executing the electronic withdrawal form via the permanent "Vertrag widerrufen" button link on our platform interface.',
+                      'To exercise your right of withdrawal, you must inform us (Lensly UG, Düsseldorf, Germany, Email: hello@lensly.care) of your decision to withdraw from this contract by means of a clear, unambiguous statement (e.g., a letter sent by post or an email), or by directly executing the electronic withdrawal form via the permanent "Vertrag widerrufen" button link on our platform interface.',
                     )}
                   </p>
                 </div>

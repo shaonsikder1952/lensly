@@ -1,7 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useLanguage } from "../lib/i18n";
-import { getSubscriptions, updateSubscriptionStatus } from "../lib/api/subscriptions.functions";
+import {
+  getSubscriptions,
+  adminUpdateSubscriptionStatus,
+  adminLogin,
+  adminDeleteSubscription,
+  adminEditSubscription,
+} from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
 import {
   Users,
@@ -23,16 +29,19 @@ import {
   ChevronDown,
   Building2,
   FileCheck,
+  Trash2,
+  Edit,
+  Archive,
+  Pause,
+  Play,
+  Clock,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
       { title: "Admin-Dashboard | Lensly" },
-      {
-        name: "description",
-        content: "Secure dashboard to manage and audit Lensly Care subscriptions.",
-      },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: AdminPage,
@@ -43,11 +52,20 @@ interface SubscriptionItem {
   contractId: string;
   fullName: string;
   email: string;
+  phone?: string;
+  birthDate?: string;
+  birthPlace?: string;
+  profession?: string;
+  streetAddress?: string;
+  postalCode?: string;
+  city?: string;
+  state?: string;
+  country?: string;
   paymentMethod: "sepa" | "wallet";
   maskedIban?: string;
   signatureType: "draw" | "type";
   signatureData: string;
-  status: "active" | "cancelled" | "withdrawn";
+  status: "active" | "cancelled" | "withdrawn" | "pending" | "paused" | "archived";
   createdAt?: string;
   updatedAt?: string;
 }
@@ -67,18 +85,40 @@ function AdminPage() {
 
   // Search & Filter State
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "cancelled" | "withdrawn">(
-    "all",
-  );
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "cancelled" | "withdrawn" | "pending" | "paused" | "archived"
+  >("all");
 
   // Modal State for Viewing Contract
   const [selectedSub, setSelectedSub] = useState<SubscriptionItem | null>(null);
 
+  // Modal State for Editing Subscriber
+  const [editingSub, setEditingSub] = useState<SubscriptionItem | null>(null);
+  const [editForm, setEditForm] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    birthDate: "",
+    birthPlace: "",
+    profession: "",
+    streetAddress: "",
+    postalCode: "",
+    city: "",
+    state: "",
+    country: "",
+    status: "active" as SubscriptionItem["status"],
+  });
+
+  // Modal State for Deleting Subscriber
+  const [deletingSub, setDeletingSub] = useState<SubscriptionItem | null>(null);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleteConfirmCheckbox, setDeleteConfirmCheckbox] = useState(false);
+
   // Load unlock state from sessionStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const stored = sessionStorage.getItem("lensly_admin_unlocked");
-      if (stored === "true") {
+      const storedToken = sessionStorage.getItem("lensly_admin_token");
+      if (storedToken) {
         setUnlocked(true);
       }
     }
@@ -86,8 +126,13 @@ function AdminPage() {
 
   // Fetch subscriptions from the server
   const fetchSubscriptions = () => {
+    const token = sessionStorage.getItem("lensly_admin_token") || "";
+    if (!token) {
+      setUnlocked(false);
+      return;
+    }
     setLoading(true);
-    getSubscriptions()
+    getSubscriptions({ data: { adminToken: token } })
       .then((data) => {
         setSubscriptions(data as SubscriptionItem[]);
         setLoading(false);
@@ -95,6 +140,7 @@ function AdminPage() {
       .catch((err) => {
         console.error("Failed to load subscriptions:", err);
         setLoading(false);
+        handleLogout();
       });
   };
 
@@ -108,40 +154,49 @@ function AdminPage() {
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError("");
+    setLoading(true);
 
-    if (passcode.trim() === "lensly2026") {
-      setUnlocked(true);
-      sessionStorage.setItem("lensly_admin_unlocked", "true");
-    } else {
-      setAuthError(t("Invalid password"));
-    }
-  };
-
-  // Auto-fill passcode for developers
-  const handleQuickUnlock = () => {
-    setPasscode("lensly2026");
-    setUnlocked(true);
-    sessionStorage.setItem("lensly_admin_unlocked", "true");
+    adminLogin({ data: { password: passcode } })
+      .then((res) => {
+        setLoading(false);
+        if (res.success && res.token) {
+          sessionStorage.setItem("lensly_admin_token", res.token);
+          setUnlocked(true);
+        } else {
+          setAuthError(t("Invalid password"));
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.error("Login failed:", err);
+        setAuthError(t("An error occurred during authentication"));
+      });
   };
 
   const handleLogout = () => {
     setUnlocked(false);
     setPasscode("");
-    sessionStorage.removeItem("lensly_admin_unlocked");
+    sessionStorage.removeItem("lensly_admin_token");
   };
 
   // Change user status manually in the dashboard
   const handleStatusChange = (
     contractId: string,
     email: string,
-    nextStatus: "active" | "cancelled" | "withdrawn",
+    nextStatus: "active" | "cancelled" | "withdrawn" | "paused" | "archived" | "pending",
   ) => {
+    const token = sessionStorage.getItem("lensly_admin_token") || "";
+    if (!token) {
+      handleLogout();
+      return;
+    }
     setUpdatingId(contractId);
-    updateSubscriptionStatus({
+    adminUpdateSubscriptionStatus({
       data: {
+        adminToken: token,
         contractId,
         email,
-        status: nextStatus,
+        status: nextStatus as any,
       },
     })
       .then((success) => {
@@ -166,12 +221,141 @@ function AdminPage() {
       });
   };
 
+  const startEditing = (sub: SubscriptionItem) => {
+    setEditingSub(sub);
+    setEditForm({
+      fullName: sub.fullName,
+      email: sub.email,
+      phone: sub.phone || "",
+      birthDate: sub.birthDate || "",
+      birthPlace: sub.birthPlace || "",
+      profession: sub.profession || "",
+      streetAddress: sub.streetAddress || "",
+      postalCode: sub.postalCode || "",
+      city: sub.city || "",
+      state: sub.state || "",
+      country: sub.country || "",
+      status: sub.status,
+    });
+  };
+
+  const handleEditSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingSub) return;
+    const token = sessionStorage.getItem("lensly_admin_token") || "";
+    if (!token) {
+      handleLogout();
+      return;
+    }
+    setUpdatingId(editingSub.contractId);
+    adminEditSubscription({
+      data: {
+        adminToken: token,
+        contractId: editingSub.contractId,
+        email: editingSub.email, // Original email as identifier
+        updatedFields: {
+          fullName: editForm.fullName,
+          email: editForm.email,
+          phone: editForm.phone,
+          birthDate: editForm.birthDate,
+          birthPlace: editForm.birthPlace,
+          profession: editForm.profession,
+          streetAddress: editForm.streetAddress,
+          postalCode: editForm.postalCode,
+          city: editForm.city,
+          state: editForm.state,
+          country: editForm.country,
+          status: editForm.status,
+        },
+      },
+    })
+      .then((success) => {
+        setUpdatingId(null);
+        if (success) {
+          setSubscriptions((prev) =>
+            prev.map((sub) =>
+              sub.contractId === editingSub.contractId
+                ? {
+                    ...sub,
+                    fullName: editForm.fullName,
+                    email: editForm.email,
+                    phone: editForm.phone,
+                    birthDate: editForm.birthDate,
+                    birthPlace: editForm.birthPlace,
+                    profession: editForm.profession,
+                    streetAddress: editForm.streetAddress,
+                    postalCode: editForm.postalCode,
+                    city: editForm.city,
+                    state: editForm.state,
+                    country: editForm.country,
+                    status: editForm.status,
+                    updatedAt: new Date().toISOString(),
+                  }
+                : sub,
+            ),
+          );
+          setEditingSub(null);
+        } else {
+          alert(t("Failed to update subscription."));
+        }
+      })
+      .catch((err) => {
+        setUpdatingId(null);
+        console.error("Edit save error:", err);
+        alert(t("An error occurred while saving updates."));
+      });
+  };
+
+  const handleDeleteSubscription = () => {
+    if (!deletingSub) return;
+    const token = sessionStorage.getItem("lensly_admin_token") || "";
+    if (!token) {
+      handleLogout();
+      return;
+    }
+    setUpdatingId(deletingSub.contractId);
+    adminDeleteSubscription({
+      data: {
+        adminToken: token,
+        contractId: deletingSub.contractId,
+        email: deletingSub.email,
+      },
+    })
+      .then((success) => {
+        setUpdatingId(null);
+        if (success) {
+          setSubscriptions((prev) =>
+            prev.filter((sub) => sub.contractId !== deletingSub.contractId),
+          );
+          setDeletingSub(null);
+          setDeleteConfirmText("");
+          setDeleteConfirmCheckbox(false);
+        } else {
+          alert(t("Failed to delete subscription. Record not found."));
+        }
+      })
+      .catch((err) => {
+        setUpdatingId(null);
+        console.error("Delete error:", err);
+        alert(t("An error occurred during deleting subscription."));
+      });
+  };
+
   // Export search/filter results to CSV
   const handleExportCSV = () => {
     const csvHeaders = [
       "Contract ID",
       "Full Name",
       "Email",
+      "Phone",
+      "Birth Date",
+      "Place of Birth",
+      "Profession",
+      "Street Address",
+      "Postal Code",
+      "City",
+      "State",
+      "Country",
       "Payment Method",
       "Masked IBAN",
       "Status",
@@ -181,6 +365,15 @@ function AdminPage() {
       sub.contractId,
       sub.fullName,
       sub.email,
+      sub.phone || "",
+      sub.birthDate || "",
+      sub.birthPlace || "",
+      sub.profession || "",
+      sub.streetAddress || "",
+      sub.postalCode || "",
+      sub.city || "",
+      sub.state || "",
+      sub.country || "",
       sub.paymentMethod,
       sub.maskedIban || "",
       sub.status,
@@ -221,19 +414,71 @@ function AdminPage() {
   // KPI calculations
   const totalCount = subscriptions.length;
   const activeCount = subscriptions.filter((s) => s.status === "active").length;
+  const pendingCount = subscriptions.filter((s) => s.status === "pending").length;
+  const pausedCount = subscriptions.filter((s) => s.status === "paused").length;
   const cancelledCount = subscriptions.filter((s) => s.status === "cancelled").length;
   const withdrawnCount = subscriptions.filter((s) => s.status === "withdrawn").length;
+  const archivedCount = subscriptions.filter((s) => s.status === "archived").length;
 
-  // Print function inside modal with dynamic filename
-  const handlePrintModalContract = () => {
-    if (selectedSub) {
-      const firstName = selectedSub.fullName.trim().split(" ")[0].toLowerCase();
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
+
+  const loadScript = (src: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve();
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = (err) => reject(err);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!selectedSub) return;
+    setDownloadingPDF(true);
+    const firstName = selectedSub.fullName.trim().split(" ")[0].toLowerCase();
+    const filename = `lensly_contract_${firstName}.pdf`;
+
+    const element = document.getElementById("printable-contract-document");
+    if (!element) {
+      setDownloadingPDF(false);
+      return;
+    }
+
+    try {
+      await loadScript(
+        "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js",
+      );
+
+      const clone = element.cloneNode(true) as HTMLElement;
+      clone.classList.remove("hidden");
+      clone.style.display = "block";
+      clone.style.background = "#ffffff";
+      clone.style.color = "#000000";
+      clone.style.padding = "24px";
+      clone.style.width = "750px";
+
+      const opt = {
+        margin: 0.25,
+        filename: filename,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2.5, useCORS: true, letterRendering: true },
+        jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+      };
+
+      // @ts-ignore
+      await window.html2pdf().set(opt).from(clone).save();
+      setDownloadingPDF(false);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
       const originalTitle = document.title;
       document.title = `lensly_contract_${firstName}`;
       window.print();
       document.title = originalTitle;
-    } else {
-      window.print();
+      setDownloadingPDF(false);
     }
   };
 
@@ -281,20 +526,13 @@ function AdminPage() {
 
               <button
                 type="submit"
-                className="w-full rounded-lg bg-primary py-2 text-xs font-semibold text-primary-foreground transition hover:opacity-90 active:scale-[0.99] cursor-pointer"
+                disabled={loading}
+                className="w-full rounded-lg bg-primary py-2 text-xs font-semibold text-primary-foreground transition hover:opacity-90 active:scale-[0.99] cursor-pointer flex items-center justify-center gap-1.5"
               >
+                {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                 {t("Unlock")}
               </button>
             </form>
-
-            <div className="mt-6 border-t border-border/85 pt-4 text-center">
-              <button
-                onClick={handleQuickUnlock}
-                className="text-[11px] font-semibold text-primary hover:underline transition cursor-pointer"
-              >
-                {t("Unlock with default passcode (lensly2026)")}
-              </button>
-            </div>
           </div>
         </main>
         <Footer />
@@ -362,9 +600,29 @@ function AdminPage() {
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold text-gray-500 block">
-                Place of Birth / Address
+                Place of Birth
               </span>
               <span className="block mt-0.5">{selectedSub.birthPlace}</span>
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-gray-500 block">
+                Street Address
+              </span>
+              <span className="block mt-0.5">{selectedSub.streetAddress}</span>
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-gray-500 block">
+                Postal Code & City
+              </span>
+              <span className="block mt-0.5">{selectedSub.postalCode} {selectedSub.city}</span>
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-gray-500 block">
+                State & Country
+              </span>
+              <span className="block mt-0.5">
+                {selectedSub.state || "N/A"} / {selectedSub.country || "N/A"}
+              </span>
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold text-gray-500 block">
@@ -483,45 +741,75 @@ function AdminPage() {
           </div>
 
           {/* KPI grid row */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="bg-card border border-border/70 p-5 rounded-xl shadow-xs transition hover:border-primary/20">
-              <div className="flex items-center justify-between text-muted-foreground mb-3">
-                <span className="text-[11px] font-semibold uppercase tracking-wider">
-                  {t("Total Subscriptions")}
+          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-4 mb-8">
+            <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
+              <div className="flex items-center justify-between text-muted-foreground mb-2">
+                <span className="text-[10px] font-semibold uppercase tracking-wider">
+                  {t("Total")}
                 </span>
                 <Users className="w-4 h-4 text-primary/80" />
               </div>
-              <div className="text-3xl font-bold">{totalCount}</div>
+              <div className="text-2xl font-bold">{totalCount}</div>
             </div>
 
-            <div className="bg-card border border-border/70 p-5 rounded-xl shadow-xs transition hover:border-primary/20">
-              <div className="flex items-center justify-between text-muted-foreground mb-3">
-                <span className="text-[11px] font-semibold uppercase tracking-wider">
-                  {t("Active Subscriptions")}
+            <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
+              <div className="flex items-center justify-between text-muted-foreground mb-2">
+                <span className="text-[10px] font-semibold uppercase tracking-wider">
+                  {t("Active")}
                 </span>
                 <CalendarCheck className="w-4 h-4 text-emerald-600" />
               </div>
-              <div className="text-3xl font-bold text-primary">{activeCount}</div>
+              <div className="text-2xl font-bold text-emerald-600">{activeCount}</div>
             </div>
 
-            <div className="bg-card border border-border/70 p-5 rounded-xl shadow-xs transition hover:border-primary/20">
-              <div className="flex items-center justify-between text-muted-foreground mb-3">
-                <span className="text-[11px] font-semibold uppercase tracking-wider">
-                  {t("Total Terminated")}
+            <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
+              <div className="flex items-center justify-between text-muted-foreground mb-2">
+                <span className="text-[10px] font-semibold uppercase tracking-wider">
+                  {t("Pending")}
                 </span>
-                <ShieldAlert className="w-4 h-4 text-amber-600" />
+                <Clock className="w-4 h-4 text-blue-600" />
               </div>
-              <div className="text-3xl font-bold text-amber-600">{cancelledCount}</div>
+              <div className="text-2xl font-bold text-blue-600">{pendingCount}</div>
             </div>
 
-            <div className="bg-card border border-border/70 p-5 rounded-xl shadow-xs transition hover:border-primary/20">
-              <div className="flex items-center justify-between text-muted-foreground mb-3">
-                <span className="text-[11px] font-semibold uppercase tracking-wider">
+            <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
+              <div className="flex items-center justify-between text-muted-foreground mb-2">
+                <span className="text-[10px] font-semibold uppercase tracking-wider">
+                  {t("Paused")}
+                </span>
+                <Pause className="w-4 h-4 text-amber-600" />
+              </div>
+              <div className="text-2xl font-bold text-amber-600">{pausedCount}</div>
+            </div>
+
+            <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
+              <div className="flex items-center justify-between text-muted-foreground mb-2">
+                <span className="text-[10px] font-semibold uppercase tracking-wider">
+                  {t("Terminated")}
+                </span>
+                <X className="w-4 h-4 text-orange-600" />
+              </div>
+              <div className="text-2xl font-bold text-orange-600">{cancelledCount}</div>
+            </div>
+
+            <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
+              <div className="flex items-center justify-between text-muted-foreground mb-2">
+                <span className="text-[10px] font-semibold uppercase tracking-wider">
                   {t("Withdrawn")}
                 </span>
-                <X className="w-4 h-4 text-rose-600" />
+                <ShieldAlert className="w-4 h-4 text-rose-600" />
               </div>
-              <div className="text-3xl font-bold text-rose-600">{withdrawnCount}</div>
+              <div className="text-2xl font-bold text-rose-600">{withdrawnCount}</div>
+            </div>
+
+            <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
+              <div className="flex items-center justify-between text-muted-foreground mb-2">
+                <span className="text-[10px] font-semibold uppercase tracking-wider">
+                  {t("Archived")}
+                </span>
+                <Archive className="w-4 h-4 text-slate-600" />
+              </div>
+              <div className="text-2xl font-bold text-slate-600">{archivedCount}</div>
             </div>
           </div>
 
@@ -544,14 +832,26 @@ function AdminPage() {
               <select
                 value={statusFilter}
                 onChange={(e) =>
-                  setStatusFilter(e.target.value as "all" | "active" | "cancelled" | "withdrawn")
+                  setStatusFilter(
+                    e.target.value as
+                      | "all"
+                      | "active"
+                      | "cancelled"
+                      | "withdrawn"
+                      | "pending"
+                      | "paused"
+                      | "archived",
+                  )
                 }
                 className="rounded-lg border border-border/80 bg-background/80 px-3.5 py-2 text-xs font-semibold text-foreground/80 focus:border-primary focus:outline-none"
               >
                 <option value="all">{t("All Statuses")}</option>
                 <option value="active">{t("Active")}</option>
+                <option value="pending">{t("Pending")}</option>
+                <option value="paused">{t("Paused")}</option>
                 <option value="cancelled">{t("Terminated")}</option>
                 <option value="withdrawn">{t("Withdrawn Status")}</option>
+                <option value="archived">{t("Archived")}</option>
               </select>
 
               <button
@@ -630,8 +930,20 @@ function AdminPage() {
                               {t("Active")}
                             </span>
                           )}
-                          {sub.status === "cancelled" && (
+                          {sub.status === "pending" && (
+                            <span className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 px-2 py-1 text-[10px] font-semibold text-blue-700 dark:bg-blue-500/20 dark:text-blue-400">
+                              <Clock className="w-3 h-3" />
+                              {t("Pending")}
+                            </span>
+                          )}
+                          {sub.status === "paused" && (
                             <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-1 text-[10px] font-semibold text-amber-700 dark:bg-amber-500/20 dark:text-amber-400">
+                              <Pause className="w-3 h-3" />
+                              {t("Paused")}
+                            </span>
+                          )}
+                          {sub.status === "cancelled" && (
+                            <span className="inline-flex items-center gap-1 rounded-md bg-orange-500/10 px-2 py-1 text-[10px] font-semibold text-orange-700 dark:bg-orange-500/20 dark:text-orange-400">
                               <AlertCircle className="w-3 h-3" />
                               {t("Terminated")}
                             </span>
@@ -640,6 +952,12 @@ function AdminPage() {
                             <span className="inline-flex items-center gap-1 rounded-md bg-rose-500/10 px-2 py-1 text-[10px] font-semibold text-rose-700 dark:bg-rose-500/20 dark:text-rose-400">
                               <X className="w-3 h-3" />
                               {t("Withdrawn Status")}
+                            </span>
+                          )}
+                          {sub.status === "archived" && (
+                            <span className="inline-flex items-center gap-1 rounded-md bg-slate-500/10 px-2 py-1 text-[10px] font-semibold text-slate-700 dark:bg-slate-500/20 dark:text-slate-400">
+                              <Archive className="w-3 h-3" />
+                              {t("Archived")}
                             </span>
                           )}
                         </td>
@@ -651,6 +969,24 @@ function AdminPage() {
                           >
                             <Eye className="w-3.5 h-3.5" />
                             <span>{t("View")}</span>
+                          </button>
+
+                          <button
+                            onClick={() => startEditing(sub)}
+                            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 hover:bg-muted font-medium transition text-primary hover:text-primary/80 cursor-pointer"
+                            title={t("Edit Subscriber")}
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                            <span>{t("Edit")}</span>
+                          </button>
+
+                          <button
+                            onClick={() => setDeletingSub(sub)}
+                            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 hover:bg-destructive/10 hover:border-destructive/30 font-medium transition text-destructive cursor-pointer"
+                            title={t("Delete Subscriber")}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>{t("Delete")}</span>
                           </button>
 
                           <div className="inline-block relative group">
@@ -674,12 +1010,34 @@ function AdminPage() {
                                   <span>{t("Set Active")}</span>
                                 </button>
                               )}
+                              {sub.status !== "paused" && (
+                                <button
+                                  onClick={() =>
+                                    handleStatusChange(sub.contractId, sub.email, "paused")
+                                  }
+                                  className="flex w-full items-center gap-1.5 rounded-md px-2.5 py-2 hover:bg-muted transition text-amber-600 font-semibold cursor-pointer"
+                                >
+                                  <Pause className="w-3.5 h-3.5" />
+                                  <span>{t("Pause Plan")}</span>
+                                </button>
+                              )}
+                              {sub.status === "paused" && (
+                                <button
+                                  onClick={() =>
+                                    handleStatusChange(sub.contractId, sub.email, "active")
+                                  }
+                                  className="flex w-full items-center gap-1.5 rounded-md px-2.5 py-2 hover:bg-muted transition text-emerald-600 font-semibold cursor-pointer"
+                                >
+                                  <Play className="w-3.5 h-3.5" />
+                                  <span>{t("Resume Plan")}</span>
+                                </button>
+                              )}
                               {sub.status !== "cancelled" && (
                                 <button
                                   onClick={() =>
                                     handleStatusChange(sub.contractId, sub.email, "cancelled")
                                   }
-                                  className="flex w-full items-center gap-1.5 rounded-md px-2.5 py-2 hover:bg-muted transition text-amber-600 font-semibold cursor-pointer"
+                                  className="flex w-full items-center gap-1.5 rounded-md px-2.5 py-2 hover:bg-muted transition text-orange-600 font-semibold cursor-pointer"
                                 >
                                   <AlertCircle className="w-3.5 h-3.5" />
                                   <span>{t("Cancel Plan")}</span>
@@ -694,6 +1052,17 @@ function AdminPage() {
                                 >
                                   <X className="w-3.5 h-3.5" />
                                   <span>{t("Withdraw")}</span>
+                                </button>
+                              )}
+                              {sub.status !== "archived" && (
+                                <button
+                                  onClick={() =>
+                                    handleStatusChange(sub.contractId, sub.email, "archived")
+                                  }
+                                  className="flex w-full items-center gap-1.5 rounded-md px-2.5 py-2 hover:bg-muted transition text-slate-600 font-semibold cursor-pointer"
+                                >
+                                  <Archive className="w-3.5 h-3.5" />
+                                  <span>{t("Archive Plan")}</span>
                                 </button>
                               )}
                             </div>
@@ -790,9 +1159,23 @@ function AdminPage() {
                 </div>
                 <div>
                   <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
-                    {t("Place of Birth / Address")}
+                    {t("Place of Birth")}
                   </span>
                   <span className="text-foreground block mt-0.5">{selectedSub.birthPlace}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
+                    {t("Street Address")}
+                  </span>
+                  <span className="text-foreground block mt-0.5">{selectedSub.streetAddress}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
+                    {t("Postal Code, City, State & Country")}
+                  </span>
+                  <span className="text-foreground block mt-0.5">
+                    {selectedSub.postalCode} {selectedSub.city}, {selectedSub.state || ""} ({selectedSub.country || ""})
+                  </span>
                 </div>
                 <div>
                   <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
@@ -883,18 +1266,325 @@ function AdminPage() {
                 {t("Close")}
               </button>
               <button
-                onClick={handlePrintModalContract}
-                className="rounded-lg bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90 transition flex items-center gap-1 cursor-pointer"
+                onClick={handleDownloadPDF}
+                disabled={downloadingPDF}
+                className="rounded-lg bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>{t("Print / Save PDF")}</span>
+                {downloadingPDF ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                <span>{downloadingPDF ? t("Downloading...") : t("Save PDF")}</span>
               </button>
             </div>
           </div>
         </div>
       )}
 
-      <Footer noPrint />
+      {/* Edit Subscriber Modal */}
+      {editingSub && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm no-print">
+          <div className="fixed inset-0" onClick={() => setEditingSub(null)} />
+          <div className="relative w-full max-w-2xl bg-card border border-border rounded-xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-border/80 px-5 py-4">
+              <div className="flex items-center gap-2">
+                <Edit className="w-4 h-4 text-primary" />
+                <h3 className="font-display font-semibold text-sm">
+                  {t("Edit Subscriber Details")}
+                </h3>
+              </div>
+              <button
+                onClick={() => setEditingSub(null)}
+                className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg transition"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
+            </div>
+
+            {/* Modal Body / Form */}
+            <form onSubmit={handleEditSave} className="flex-1 overflow-y-auto p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("Full Name")}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editForm.fullName}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, fullName: e.target.value }))}
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("Email Address")}
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={editForm.email}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, email: e.target.value }))}
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("Phone Number")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.phone}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, phone: e.target.value }))}
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("Birth Date")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.birthDate}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, birthDate: e.target.value }))}
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                    placeholder="YYYY-MM-DD"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("Place of Birth")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.birthPlace}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, birthPlace: e.target.value }))}
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("Profession")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.profession}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, profession: e.target.value }))}
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("Street Address")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.streetAddress}
+                    onChange={(e) =>
+                      setEditForm((prev) => ({ ...prev, streetAddress: e.target.value }))
+                    }
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("Postal Code")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.postalCode}
+                    onChange={(e) =>
+                      setEditForm((prev) => ({ ...prev, postalCode: e.target.value }))
+                    }
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("City")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.city}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, city: e.target.value }))}
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("State")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.state}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, state: e.target.value }))}
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("Country")}
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.country}
+                    onChange={(e) => setEditForm((prev) => ({ ...prev, country: e.target.value }))}
+                    className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                    {t("Status")}
+                  </label>
+                  <select
+                    value={editForm.status}
+                    onChange={(e) =>
+                      setEditForm((prev) => ({
+                        ...prev,
+                        status: e.target.value as SubscriptionItem["status"],
+                      }))
+                    }
+                    className="w-full rounded-lg border border-border/80 bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                  >
+                    <option value="active">{t("Active")}</option>
+                    <option value="pending">{t("Pending")}</option>
+                    <option value="paused">{t("Paused")}</option>
+                    <option value="cancelled">{t("Terminated")}</option>
+                    <option value="withdrawn">{t("Withdrawn Status")}</option>
+                    <option value="archived">{t("Archived")}</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Form Actions */}
+              <div className="border-t border-border bg-muted/20 -mx-6 -mb-6 px-5 py-3 flex justify-end gap-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setEditingSub(null)}
+                  className="rounded-lg border border-border px-3.5 py-1.5 text-xs font-semibold text-foreground/80 hover:bg-muted transition cursor-pointer"
+                >
+                  {t("Cancel")}
+                </button>
+                <button
+                  type="submit"
+                  disabled={updatingId === editingSub.contractId}
+                  className="rounded-lg bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90 transition flex items-center gap-1 cursor-pointer"
+                >
+                  {updatingId === editingSub.contractId && <Loader2 className="w-3 h-3 animate-spin" />}
+                  <span>{t("Save Changes")}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deletingSub && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm no-print">
+          <div className="fixed inset-0" onClick={() => setDeletingSub(null)} />
+          <div className="relative w-full max-w-md bg-card border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-destructive/20 bg-destructive/5 px-5 py-4">
+              <div className="flex items-center gap-2 text-destructive">
+                <ShieldAlert className="w-4 h-4" />
+                <h3 className="font-display font-semibold text-sm">
+                  {t("Confirm Permanent Deletion")}
+                </h3>
+              </div>
+              <button
+                onClick={() => setDeletingSub(null)}
+                className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg transition"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-4">
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {t("Warning: You are about to permanently delete the subscription details for")}{" "}
+                <strong className="text-foreground">{deletingSub.fullName}</strong> (
+                {deletingSub.contractId}).{" "}
+                {t("This action is permanent and cannot be undone.")}
+              </p>
+
+              {/* Checkbox safety 1 */}
+              <label className="flex items-start gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={deleteConfirmCheckbox}
+                  onChange={(e) => setDeleteConfirmCheckbox(e.target.checked)}
+                  className="mt-0.5 rounded border-border"
+                />
+                <span className="text-[11px] text-muted-foreground select-none leading-tight">
+                  {t("I understand this will permanently delete all records of this subscriber.")}
+                </span>
+              </label>
+
+              {/* Text validation safety 2 */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                  {t("Type contract ID to confirm:")}{" "}
+                  <span className="font-mono text-foreground font-semibold">
+                    {deletingSub.contractId}
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  value={deleteConfirmText}
+                  onChange={(e) => setDeleteConfirmText(e.target.value)}
+                  placeholder={deletingSub.contractId}
+                  className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none font-mono"
+                />
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setDeletingSub(null)}
+                  className="rounded-lg border border-border px-3.5 py-1.5 text-xs font-semibold text-foreground/80 hover:bg-muted transition cursor-pointer"
+                >
+                  {t("Cancel")}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteSubscription}
+                  disabled={
+                    !deleteConfirmCheckbox ||
+                    deleteConfirmText !== deletingSub.contractId ||
+                    updatingId === deletingSub.contractId
+                  }
+                  className="rounded-lg bg-destructive px-3.5 py-1.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer"
+                >
+                  {updatingId === deletingSub.contractId && (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  )}
+                  <span>{t("Permanently Delete")}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="no-print">
+        <Footer />
+      </div>
     </div>
   );
 }

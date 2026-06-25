@@ -190,8 +190,6 @@ function ContractPage() {
       }
       signatureVal = typedSignature;
     }
-
-    // Save Data
     const data: SignedContractData = {
       signed: true,
       fullName: fullName.trim(),
@@ -202,6 +200,7 @@ function ContractPage() {
       signatureData: signatureVal,
     };
 
+    // TODO: Standalone contract signing uses localStorage. Integrate with backend database in production.
     localStorage.setItem("lensly_signed_contract", JSON.stringify(data));
     setSignedData(data);
   };
@@ -238,6 +237,21 @@ function ContractPage() {
       <div>
         <Nav />
         <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+          {/* Preview Warning Banner */}
+          <div className="max-w-2xl mx-auto mb-8 rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-amber-700 dark:text-amber-400 flex items-start gap-2.5 leading-relaxed no-print">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold">{t("Contract Preview Mode")}</p>
+              <p className="mt-1">
+                {t("This standalone page is for reviewing and previewing the contract layout only. Signing here will not start an active subscription or trigger payments. To complete a real subscription, please go to the")}{" "}
+                <Link to="/checkout" className="underline font-semibold hover:text-amber-800 dark:hover:text-amber-300">
+                  {t("Checkout Page")}
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
+
           {/* Header */}
           <div className="text-center mb-10">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary">

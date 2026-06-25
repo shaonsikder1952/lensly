@@ -54,7 +54,10 @@ export function Nav() {
           <div className="relative">
             <button
               onClick={() => setOpen(!open)}
-              className="flex items-center gap-1.5 rounded-md border border-border/80 bg-background/50 px-2.5 py-1.5 text-xs font-semibold text-foreground/80 transition hover:bg-muted/80 hover:text-foreground"
+              aria-label={t("Select Language")}
+              aria-haspopup="listbox"
+              aria-expanded={open}
+              className="flex items-center gap-1.5 rounded-md border border-border/80 bg-background/50 px-2.5 py-1.5 text-xs font-semibold text-foreground/80 transition hover:bg-muted/80 hover:text-foreground cursor-pointer"
             >
               <span>{currentLang.flag}</span>
               <span className="uppercase">{currentLang.code}</span>
@@ -74,15 +77,20 @@ export function Nav() {
             {open && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-                <div className="absolute right-0 mt-1.5 z-50 w-36 rounded-lg border border-border bg-card/95 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in-50 slide-in-from-top-1 duration-150">
+                <div
+                  role="listbox"
+                  className="absolute right-0 mt-1.5 z-50 w-36 rounded-lg border border-border bg-card/95 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in-50 slide-in-from-top-1 duration-150"
+                >
                   {languages.map((l) => (
                     <button
                       key={l.code}
+                      role="option"
+                      aria-selected={lang === l.code}
                       onClick={() => {
                         setLang(l.code as Language);
                         setOpen(false);
                       }}
-                      className={`flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors hover:bg-muted ${
+                      className={`flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors hover:bg-muted cursor-pointer ${
                         lang === l.code
                           ? "bg-muted text-primary font-semibold"
                           : "text-foreground/90"
@@ -97,12 +105,20 @@ export function Nav() {
             )}
           </div>
 
-          <a
-            href="/#plan"
-            className="rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:opacity-90"
+          <Link
+            to="/"
+            hash="plan"
+            onClick={(e) => {
+              if (window.location.pathname === "/") {
+                e.preventDefault();
+                const el = document.getElementById("plan");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+            className="rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:opacity-90 cursor-pointer"
           >
             {t("Start for €29/mo")}
-          </a>
+          </Link>
         </div>
       </div>
     </header>
@@ -291,17 +307,17 @@ function Plan() {
               {t("Lensly Care")}
             </div>
             <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-primary">
-              The subscription
+              {t("The subscription")}
             </p>
             <div className="mt-5 flex items-baseline gap-2">
               <span className="font-display text-6xl font-semibold tracking-tight text-primary">
                 €29
               </span>
-              <span className="text-base font-medium text-muted-foreground">/ month</span>
+              <span className="text-base font-medium text-muted-foreground">{t("/ month")}</span>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Continuous vision care ·{" "}
-              <span className="font-semibold text-foreground">€0.95 a day</span> (
+              {t("Continuous vision care")} ·{" "}
+              <span className="font-semibold text-foreground">{t("€0.95 a day")}</span> (
               {t("less than a daily coffee")}).
             </p>
             <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-sm">
@@ -339,8 +355,8 @@ function Plan() {
         {/* The math */}
         <div className="mt-8 grid gap-6 rounded-2xl border border-border bg-card p-5 sm:p-8 md:grid-cols-3">
           <Math k="€1,600" l={t("Traditional optician (4 pairs)")} />
-          <Math k="€29/mo" l={t("Lensly subscription (€348/yr)")} highlight />
-          <Math k="€1,252" l={t("Saved per year with replacements")} />
+          <Math k="€348/yr" l={t("Lensly subscription (incl. replacements)")} highlight />
+          <Math k="€1,252" l={t("Saved when using replacements")} />
         </div>
 
         {/* Insurance Comparison */}
@@ -467,7 +483,7 @@ function Plan() {
             {/* Lensly */}
             <div className="relative rounded-2xl border-2 border-primary bg-card p-5 sm:p-8 shadow-md flex flex-col justify-between">
               <div className="absolute -top-3 right-8 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
-                Recommended
+                {t("Recommended")}
               </div>
               <div>
                 <div className="flex items-center justify-between border-b border-border/60 pb-5">
@@ -767,8 +783,10 @@ export function Faq() {
               >
                 <button
                   type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${idx}`}
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="flex w-full items-center justify-between px-4 py-3.5 sm:px-6 sm:py-5 text-left text-[13px] sm:text-base font-semibold text-foreground hover:bg-muted/30 transition-colors"
+                  className="flex w-full items-center justify-between px-4 py-3.5 sm:px-6 sm:py-5 text-left text-[13px] sm:text-base font-semibold text-foreground hover:bg-muted/30 transition-colors cursor-pointer"
                 >
                   <span>{faq.q}</span>
                   <svg
@@ -784,6 +802,8 @@ export function Faq() {
                   </svg>
                 </button>
                 <div
+                  id={`faq-answer-${idx}`}
+                  role="region"
                   className={`transition-all duration-200 ease-in-out ${
                     isOpen
                       ? "max-h-[700px] opacity-100 border-t border-border/40 px-4 py-4 sm:px-6 sm:py-5 bg-muted/5"
@@ -807,8 +827,8 @@ export function Footer() {
     <footer className="bg-foreground text-background">
       <div className="border-b border-background/10 py-5 text-center text-xs text-background/60">
         {t("For any help or requests regarding subscription please contact at")}{" "}
-        <a href="mailto:lenslycare@gmail.com" className="text-primary hover:underline font-medium">
-          lenslycare@gmail.com
+        <a href="mailto:hello@lensly.care" className="text-primary hover:underline font-medium">
+          hello@lensly.care
         </a>
       </div>
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 py-8 label-mono text-[10px] uppercase tracking-[0.18em] text-background/60">
@@ -821,22 +841,22 @@ export function Footer() {
         </Link>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <a
-            href="mailto:lenslycare@gmail.com"
+            href="mailto:hello@lensly.care"
             className="hover:text-background transition-colors lowercase tracking-normal font-sans text-xs mr-2"
           >
-            lenslycare@gmail.com
+            hello@lensly.care
           </a>
           <Link to="/contract" className="hover:text-background transition-colors">
             {t("Sign Contract")}
           </Link>
           <Link to="/impressum" className="hover:text-background transition-colors">
-            Impressum
+            {t("Impressum")}
           </Link>
           <Link to="/datenschutz" className="hover:text-background transition-colors">
-            Datenschutz
+            {t("Datenschutz")}
           </Link>
           <Link to="/agb" className="hover:text-background transition-colors">
-            AGB
+            {t("AGB")}
           </Link>
           <Link
             to="/cancel"
