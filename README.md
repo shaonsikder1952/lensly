@@ -2,7 +2,7 @@
 
 **Prescription eyewear on a subscription. €39/month.**
 
-New lenses every 6 months. Two free replacements a year (lost, broken, or scratched). Free EU shipping. Cancel anytime.
+New lenses every 6 months. Two free replacements a year (lost, broken, or scratched). Free EU shipping. Minimum 1 year contract.
 
 ---
 
@@ -10,26 +10,26 @@ New lenses every 6 months. Two free replacements a year (lost, broken, or scratc
 
 Lensly is a direct-to-lab vision care subscription. Instead of paying €1,000+ upfront for a single pair of glasses that goes out of date, you pay €39/month and always have a current prescription.
 
-| | Traditional optician | Lensly Care |
-|---|---|---|
-| Cost | €1,200+ one-time | €39/month (€468/year) |
-| Fresh lenses | Every 2–3 years | Every 6 months |
-| Replacements | Full price | 2 free per year |
-| Shipping | In-store collection | Free EU delivery |
+|              | Traditional optician | Lensly Care           |
+| ------------ | -------------------- | --------------------- |
+| Cost         | €1,200+ one-time     | €39/month (€468/year) |
+| Fresh lenses | Every 2–3 years      | Every 6 months        |
+| Replacements | Full price           | 2 free per year       |
+| Shipping     | In-store collection  | Free EU delivery      |
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | [TanStack Start](https://tanstack.com/start) (React 19, SSR) |
-| Routing | TanStack Router (file-based) |
-| Styling | Tailwind CSS v4 |
-| UI primitives | Radix UI + shadcn/ui |
-| Build tool | Vite 7 |
-| Package manager | Bun |
-| Payments | Stripe Checkout |
+| Layer           | Technology                                                   |
+| --------------- | ------------------------------------------------------------ |
+| Framework       | [TanStack Start](https://tanstack.com/start) (React 19, SSR) |
+| Routing         | TanStack Router (file-based)                                 |
+| Styling         | Tailwind CSS v4                                              |
+| UI primitives   | Radix UI + shadcn/ui                                         |
+| Build tool      | Vite 7                                                       |
+| Package manager | Bun                                                          |
+| Payments        | Stripe Checkout                                              |
 
 ---
 

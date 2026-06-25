@@ -93,12 +93,16 @@
     font-feature-settings: "cv11", "ss01";
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
   }
 
-  .font-mono, .label-mono {
+  .font-mono,
+  .label-mono {
     font-family: var(--font-mono);
     letter-spacing: 0.02em;
   }
@@ -132,17 +136,28 @@
 }
 
 @keyframes float-y {
-  0%, 100% { transform: translateY(0) rotate(-1deg); }
-  50% { transform: translateY(-7px) rotate(0.5deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(0.5deg);
+  }
 }
 
 @keyframes spin-slow {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes shimmer-x {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes fade-in {
@@ -157,11 +172,7 @@
 }
 
 @utility shimmer-text {
-  background: linear-gradient(
-    135deg,
-    var(--primary) 0%,
-    var(--deep) 100%
-  );
+  background: linear-gradient(135deg, var(--primary) 0%, var(--deep) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

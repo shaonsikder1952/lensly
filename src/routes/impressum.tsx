@@ -22,7 +22,7 @@ function Impressum() {
           <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground md:text-4xl mb-8">
             {t("Impressum")}
           </h1>
-          
+
           <div className="space-y-6 text-sm leading-relaxed text-muted-foreground">
             <section>
               <h2 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2">
@@ -30,19 +30,22 @@ function Impressum() {
               </h2>
               <p className="font-medium text-foreground">Md Shaon Sikder</p>
             </section>
-            
+
             <section>
               <h2 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2">
                 {t("Kontakt")}
               </h2>
               <p>
                 {t("E-Mail:")}{" "}
-                <a href="mailto:lenslycare@gmail.com" className="text-primary hover:underline font-medium">
+                <a
+                  href="mailto:lenslycare@gmail.com"
+                  className="text-primary hover:underline font-medium"
+                >
                   lenslycare@gmail.com
                 </a>
               </p>
             </section>
-            
+
             <section className="border-t border-border/60 pt-6">
               <p className="italic text-muted-foreground/80">
                 {t("Address will be updated shortly.")}

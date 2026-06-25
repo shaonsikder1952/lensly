@@ -78,15 +78,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Lensly" },
-      { name: "description", content: "Lensly: direct-to-lab prescription eyewear and continuous vision care." },
+      {
+        name: "description",
+        content: "Lensly: direct-to-lab prescription eyewear and continuous vision care.",
+      },
       { name: "author", content: "Lensly" },
       { property: "og:title", content: "Lensly" },
-      { property: "og:description", content: "Lensly: direct-to-lab prescription eyewear and continuous vision care." },
+      {
+        property: "og:description",
+        content: "Lensly: direct-to-lab prescription eyewear and continuous vision care.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lensly" },
       { name: "twitter:title", content: "Lensly" },
-      { name: "twitter:description", content: "Lensly: direct-to-lab prescription eyewear and continuous vision care." },
+      {
+        name: "twitter:description",
+        content: "Lensly: direct-to-lab prescription eyewear and continuous vision care.",
+      },
     ],
     links: [
       {

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { useLanguage } from "../lib/i18n";
+import { useLanguage, Language } from "../lib/i18n";
 import glasses3d from "@/assets/glasses-3d.png";
 
 export const Route = createFileRoute("/")({
@@ -47,9 +47,7 @@ export function Nav() {
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2">
           <LensMark />
-          <span className="font-display text-[15px] font-semibold tracking-tight">
-            Lensly
-          </span>
+          <span className="font-display text-[15px] font-semibold tracking-tight">Lensly</span>
         </Link>
         <div className="flex items-center gap-3">
           {/* Language Dropdown Selector */}
@@ -72,7 +70,7 @@ export function Nav() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            
+
             {open && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
@@ -81,11 +79,13 @@ export function Nav() {
                     <button
                       key={l.code}
                       onClick={() => {
-                        setLang(l.code as any);
+                        setLang(l.code as Language);
                         setOpen(false);
                       }}
                       className={`flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors hover:bg-muted ${
-                        lang === l.code ? "bg-muted text-primary font-semibold" : "text-foreground/90"
+                        lang === l.code
+                          ? "bg-muted text-primary font-semibold"
+                          : "text-foreground/90"
                       }`}
                     >
                       <span>{l.flag}</span>
@@ -112,8 +112,22 @@ export function Nav() {
 export function LensMark() {
   return (
     <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-      <circle cx="11" cy="16" r="7" stroke="currentColor" strokeWidth="1.5" className="text-primary" />
-      <circle cx="22" cy="16" r="7" stroke="currentColor" strokeWidth="1.5" className="text-primary" />
+      <circle
+        cx="11"
+        cy="16"
+        r="7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        className="text-primary"
+      />
+      <circle
+        cx="22"
+        cy="16"
+        r="7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        className="text-primary"
+      />
       <path d="M18 16h-3" stroke="currentColor" strokeWidth="1.5" className="text-primary" />
     </svg>
   );
@@ -160,7 +174,9 @@ function Hero() {
         </div>
 
         <p className="mx-auto mt-5 max-w-md text-[14px] leading-relaxed text-muted-foreground md:max-w-xl md:text-base">
-          {t("Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.")}
+          {t(
+            "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.",
+          )}
         </p>
         <div className="mt-5 flex items-center justify-center gap-4">
           <a
@@ -175,19 +191,51 @@ function Hero() {
         {/* Trust Indicators */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-border/40 pt-6 text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80">
           <div className="flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.17 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118L2.05 9.43c-.783-.57-.38-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z" />
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              className="text-primary"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.17 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118L2.05 9.43c-.783-.57-.38-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z"
+              />
             </svg>
             <span>{t("Premium Optical Lenses")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v4m0 0L4 7m8 4v10M4 7v10l8 4" />
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              className="text-primary"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v4m0 0L4 7m8 4v10M4 7v10l8 4"
+              />
             </svg>
             <span>{t("Free EU-Wide Shipping")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              className="text-primary"
+            >
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0110 0v4" />
             </svg>
@@ -252,32 +300,36 @@ function Plan() {
               <span className="text-base font-medium text-muted-foreground">/ month</span>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Continuous vision care · <span className="font-semibold text-foreground">€0.95 a day</span> ({t("less than a daily coffee")}).
+              Continuous vision care ·{" "}
+              <span className="font-semibold text-foreground">€0.95 a day</span> (
+              {t("less than a daily coffee")}).
             </p>
             <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-sm">
               <Feature>{t("1 new pair of precision lenses every year")}</Feature>
-              <Feature>{t("3 free replacements (broken, power change? We got you covered)")}</Feature>
+              <Feature>
+                {t("3 free replacements (broken, power change? We got you covered)")}
+              </Feature>
               <Feature>{t("Premium lenses, anti-reflective & UV-400 coatings included")}</Feature>
-              <Feature>{t("Free shipping EU-wide · cancel anytime")}</Feature>
+              <Feature>{t("Free shipping EU-wide · minimum 1 year contract")}</Feature>
             </ul>
             <div className="mt-6 border-t border-border/60 pt-6 text-left">
               <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground">
                 {t("What's next?")}
               </h4>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                {t("To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.")}
+                {t(
+                  "To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.",
+                )}
               </p>
             </div>
-            
-            <a
-              href="https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01"
-              target="_blank"
-              rel="noopener noreferrer"
+
+            <Link
+              to="/checkout"
               className="mt-5 block w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)]"
             >
               {t("Subscribe to Lensly Care")}
-            </a>
-            
+            </Link>
+
             <p className="mt-3 text-center text-[10px] text-muted-foreground/80">
               {t("Secure checkout via Stripe")}
             </p>
@@ -298,7 +350,9 @@ function Plan() {
               {t("Lensly vs. Glasses Insurance")}
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              {t("Supplemental insurance plans look cheap upfront but often leave you with heavy out-of-pocket costs.")}
+              {t(
+                "Supplemental insurance plans look cheap upfront but often leave you with heavy out-of-pocket costs.",
+              )}
             </p>
           </div>
 
@@ -308,57 +362,105 @@ function Plan() {
               <div>
                 <div className="flex items-center justify-between border-b border-border/60 pb-5">
                   <div>
-                    <h4 className="font-display text-lg font-semibold text-foreground">{t("Glasses Insurance")}</h4>
-                    <p className="text-xs text-muted-foreground mt-1">{t("Standard supplemental policy")}</p>
+                    <h4 className="font-display text-lg font-semibold text-foreground">
+                      {t("Glasses Insurance")}
+                    </h4>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {t("Standard supplemental policy")}
+                    </p>
                   </div>
                   <div className="text-right">
-                    <span className="font-display text-2xl font-bold text-foreground">€7-20<span className="text-sm font-normal text-muted-foreground">/month</span></span>
+                    <span className="font-display text-2xl font-bold text-foreground">
+                      €7-20<span className="text-sm font-normal text-muted-foreground">/month</span>
+                    </span>
                   </div>
                 </div>
-                
+
                 <ul className="mt-6 space-y-4 text-sm text-muted-foreground">
                   <li className="flex items-start gap-3">
-                    <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className="w-4 h-4 mt-0.5 shrink-0 text-destructive"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                     <div>
-                      <span className="font-semibold text-foreground">{t("1 pair every 2 years")}</span>
-                      <p className="text-xs text-muted-foreground/80 mt-0.5">{t("pay €240 in premiums, get €150 back, lose €90 minimum")}</p>
+                      <span className="font-semibold text-foreground">
+                        {t("1 pair every 2 years")}
+                      </span>
+                      <p className="text-xs text-muted-foreground/80 mt-0.5">
+                        {t("pay €240 in premiums, get €150 back, lose €90 minimum")}
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
-                    <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className="w-4 h-4 mt-0.5 shrink-0 text-destructive"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                     <div>
                       <span className="font-semibold text-foreground">{t("Break them once")}</span>
-                      <p className="text-xs text-muted-foreground/80 mt-0.5">{t("€400 out of pocket, not covered")}</p>
+                      <p className="text-xs text-muted-foreground/80 mt-0.5">
+                        {t("€400 out of pocket, not covered")}
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
-                    <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className="w-4 h-4 mt-0.5 shrink-0 text-destructive"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                     <div>
-                      <span className="font-semibold text-foreground">{t("Need anti-reflective or thin lenses")}</span>
-                      <p className="text-xs text-muted-foreground/80 mt-0.5">{t("€150+ extra, not covered")}</p>
+                      <span className="font-semibold text-foreground">
+                        {t("Need anti-reflective or thin lenses")}
+                      </span>
+                      <p className="text-xs text-muted-foreground/80 mt-0.5">
+                        {t("€150+ extra, not covered")}
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
-                    <svg className="w-4 h-4 mt-0.5 shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className="w-4 h-4 mt-0.5 shrink-0 text-destructive"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                     <div>
-                      <span className="font-semibold text-foreground">{t("Prescription changes")}</span>
-                      <p className="text-xs text-muted-foreground/80 mt-0.5">{t("full retail price, not covered")}</p>
+                      <span className="font-semibold text-foreground">
+                        {t("Prescription changes")}
+                      </span>
+                      <p className="text-xs text-muted-foreground/80 mt-0.5">
+                        {t("full retail price, not covered")}
+                      </p>
                     </div>
                   </li>
                 </ul>
               </div>
-              
+
               <div className="mt-8 border-t border-border/60 pt-5">
-                <div className="text-[15px] font-bold text-destructive">{t("Total realistic cost over 2 years: €800-1,200+")}</div>
-                <div className="text-[11px] font-medium text-muted-foreground/75 mt-0.5">{t("Premiums + gaps + extras + one replacement")}</div>
+                <div className="text-[15px] font-bold text-destructive">
+                  {t("Total realistic cost over 2 years: €800-1,200+")}
+                </div>
+                <div className="text-[11px] font-medium text-muted-foreground/75 mt-0.5">
+                  {t("Premiums + gaps + extras + one replacement")}
+                </div>
               </div>
             </div>
 
@@ -370,48 +472,90 @@ function Plan() {
               <div>
                 <div className="flex items-center justify-between border-b border-border/60 pb-5">
                   <div>
-                    <h4 className="font-display text-lg font-semibold text-primary">{t("Lensly Care")}</h4>
-                    <p className="text-xs text-primary/80 mt-1">{t("Complete continuous vision plan")}</p>
+                    <h4 className="font-display text-lg font-semibold text-primary">
+                      {t("Lensly Care")}
+                    </h4>
+                    <p className="text-xs text-primary/80 mt-1">
+                      {t("Complete continuous vision plan")}
+                    </p>
                   </div>
                   <div className="text-right">
-                    <span className="font-display text-2xl font-bold text-primary">€29<span className="text-sm font-normal text-muted-foreground">/month</span></span>
+                    <span className="font-display text-2xl font-bold text-primary">
+                      €29<span className="text-sm font-normal text-muted-foreground">/month</span>
+                    </span>
                   </div>
                 </div>
-                
+
                 <ul className="mt-6 space-y-4 text-sm text-foreground/95">
                   <li className="flex items-start gap-3">
-                    <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className="w-4 h-4 mt-0.5 shrink-0 text-primary"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                     <div>
-                      <span className="font-semibold text-foreground">{t("1 complete pair delivered to you")}</span>
-                      <p className="text-xs text-primary/70 mt-0.5">{t("Fully covered every single year, zero waiting periods")}</p>
+                      <span className="font-semibold text-foreground">
+                        {t("1 complete pair delivered to you")}
+                      </span>
+                      <p className="text-xs text-primary/70 mt-0.5">
+                        {t("Fully covered every single year, zero waiting periods")}
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
-                    <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className="w-4 h-4 mt-0.5 shrink-0 text-primary"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                     <div>
-                      <span className="font-semibold text-foreground">{t("3 free replacements (broken, power change)")}</span>
-                      <p className="text-xs text-primary/70 mt-0.5">{t("€0 out-of-pocket costs for prescription changes or accident replacements")}</p>
+                      <span className="font-semibold text-foreground">
+                        {t("3 free replacements (broken, power change)")}
+                      </span>
+                      <p className="text-xs text-primary/70 mt-0.5">
+                        {t(
+                          "€0 out-of-pocket costs for prescription changes or accident replacements",
+                        )}
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
-                    <svg className="w-4 h-4 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className="w-4 h-4 mt-0.5 shrink-0 text-primary"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                     <div>
-                      <span className="font-semibold text-foreground">{t("Nothing extra to pay ever")}</span>
-                      <p className="text-xs text-primary/70 mt-0.5">{t("Premium lenses, anti-reflective & UV-400 coatings are 100% included")}</p>
+                      <span className="font-semibold text-foreground">
+                        {t("Nothing extra to pay ever")}
+                      </span>
+                      <p className="text-xs text-primary/70 mt-0.5">
+                        {t("Premium lenses, anti-reflective & UV-400 coatings are 100% included")}
+                      </p>
                     </div>
                   </li>
                 </ul>
               </div>
 
               <div className="mt-8 border-t border-border/60 pt-5">
-                <div className="text-[15px] font-bold text-primary">{t("Flat €29/month, completely covered")}</div>
-                <div className="text-[11px] font-medium text-muted-foreground/75 mt-0.5">{t("Zero hidden fees, 1 pair per year and 3 replacements per year")}</div>
+                <div className="text-[15px] font-bold text-primary">
+                  {t("Flat €29/month, completely covered")}
+                </div>
+                <div className="text-[11px] font-medium text-muted-foreground/75 mt-0.5">
+                  {t("Zero hidden fees, 1 pair per year and 3 replacements per year")}
+                </div>
               </div>
             </div>
           </div>
@@ -424,9 +568,21 @@ function Plan() {
 function Feature({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-3 text-foreground/90">
-      <svg width="16" height="16" viewBox="0 0 16 16" className="mt-0.5 shrink-0 text-primary" fill="none">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        className="mt-0.5 shrink-0 text-primary"
+        fill="none"
+      >
         <circle cx="8" cy="8" r="7.25" stroke="currentColor" strokeWidth="1" opacity="0.4" />
-        <path d="M5 8.2l2.2 2.1L11 6.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d="M5 8.2l2.2 2.1L11 6.5"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
       <span>{children}</span>
     </li>
@@ -469,7 +625,9 @@ export function Faq() {
       q: t("Who is behind Lensly?"),
       a: (
         <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t("Lensly is a small independent team focused on making quality prescription eyewear affordable and accessible across Europe. We work directly with certified optical labs to cut out retail markups.")}
+          {t(
+            "Lensly is a small independent team focused on making quality prescription eyewear affordable and accessible across Europe. We work directly with certified optical labs to cut out retail markups.",
+          )}
         </p>
       ),
     },
@@ -477,7 +635,9 @@ export function Faq() {
       q: t("Can I see frame options before subscribing?"),
       a: (
         <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t("Yes. You choose any frame you like, from any brand, online shop, or store. Send us a photo or screenshot and we source it for you. No limitations.")}
+          {t(
+            "Yes. You choose any frame you like, from any brand, online shop, or store. Send us a photo or screenshot and we source it for you. No limitations.",
+          )}
         </p>
       ),
     },
@@ -490,36 +650,56 @@ export function Faq() {
               <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               </div>
-              <h5 className="font-semibold text-xs sm:text-sm text-foreground">{t("1. Subscribe via Stripe")}</h5>
-              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">{t("Select your plan and complete checkout securely.")}</p>
+              <h5 className="font-semibold text-xs sm:text-sm text-foreground">
+                {t("1. Subscribe via Stripe")}
+              </h5>
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">
+                {t("Select your plan and complete checkout securely.")}
+              </p>
             </div>
             <div className="relative">
               <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               </div>
-              <h5 className="font-semibold text-xs sm:text-sm text-foreground">{t("2. E-mail contact within 24 hours")}</h5>
-              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">{t("We reach out to gather your custom prescription details.")}</p>
+              <h5 className="font-semibold text-xs sm:text-sm text-foreground">
+                {t("2. E-mail contact within 24 hours")}
+              </h5>
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">
+                {t("We reach out to gather your custom prescription details.")}
+              </p>
             </div>
             <div className="relative">
               <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               </div>
-              <h5 className="font-semibold text-xs sm:text-sm text-foreground">{t("3. Send us prescription, pupillary distance & chosen frame")}</h5>
-              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">{t("Simply reply with your values and a photo/screenshot of any frame you want.")}</p>
+              <h5 className="font-semibold text-xs sm:text-sm text-foreground">
+                {t("3. Send us prescription, pupillary distance & chosen frame")}
+              </h5>
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">
+                {t("Simply reply with your values and a photo/screenshot of any frame you want.")}
+              </p>
             </div>
             <div className="relative">
               <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               </div>
-              <h5 className="font-semibold text-xs sm:text-sm text-foreground">{t("4. Sourcing & production")}</h5>
-              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">{t("We purchase your frame and craft your custom lenses to specification.")}</p>
+              <h5 className="font-semibold text-xs sm:text-sm text-foreground">
+                {t("4. Sourcing & production")}
+              </h5>
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">
+                {t("We purchase your frame and craft your custom lenses to specification.")}
+              </p>
             </div>
             <div className="relative">
               <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               </div>
-              <h5 className="font-semibold text-xs sm:text-sm text-foreground">{t("5. Delivered to your door")}</h5>
-              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">{t("Your finished prescription eyewear arrives in approximately 15 days.")}</p>
+              <h5 className="font-semibold text-xs sm:text-sm text-foreground">
+                {t("5. Delivered to your door")}
+              </h5>
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">
+                {t("Your finished prescription eyewear arrives in approximately 15 days.")}
+              </p>
             </div>
           </div>
         </div>
@@ -529,7 +709,9 @@ export function Faq() {
       q: t("How do I get my pupillary distance measured?"),
       a: (
         <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t("Visit any local optician or doctor for a quick measurement. It takes 2 minutes and is usually free. Then just include it in your email to us.")}
+          {t(
+            "Visit any local optician or doctor for a quick measurement. It takes 2 minutes and is usually free. Then just include it in your email to us.",
+          )}
         </p>
       ),
     },
@@ -545,7 +727,9 @@ export function Faq() {
       q: t("How do returns or refunds work?"),
       a: (
         <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t("If there is a production error on our side we fix it completely free. Custom prescription lenses cannot be refunded once produced, but we will always make it right.")}
+          {t(
+            "If there is a production error on our side we fix it completely free. Custom prescription lenses cannot be refunded once produced, but we will always make it right.",
+          )}
         </p>
       ),
     },
@@ -553,7 +737,9 @@ export function Faq() {
       q: t("Do I buy the frame or do you?"),
       a: (
         <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t("We source the frame for you based on your photo or screenshot. It is included in your subscription, nothing extra to pay.")}
+          {t(
+            "We source the frame for you based on your photo or screenshot. It is included in your subscription, nothing extra to pay.",
+          )}
         </p>
       ),
     },
@@ -599,7 +785,9 @@ export function Faq() {
                 </button>
                 <div
                   className={`transition-all duration-200 ease-in-out ${
-                    isOpen ? "max-h-[700px] opacity-100 border-t border-border/40 px-4 py-4 sm:px-6 sm:py-5 bg-muted/5" : "max-h-0 opacity-0 overflow-hidden"
+                    isOpen
+                      ? "max-h-[700px] opacity-100 border-t border-border/40 px-4 py-4 sm:px-6 sm:py-5 bg-muted/5"
+                      : "max-h-0 opacity-0 overflow-hidden"
                   }`}
                 >
                   {faq.a}
@@ -624,14 +812,23 @@ export function Footer() {
         </a>
       </div>
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 py-8 label-mono text-[10px] uppercase tracking-[0.18em] text-background/60">
-        <Link to="/" className="flex items-center gap-2 text-background/85 hover:opacity-90 transition-opacity">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-background/85 hover:opacity-90 transition-opacity"
+        >
           <LensMark />
           <span className="font-display text-sm font-semibold">Lensly</span>
         </Link>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          <a href="mailto:lenslycare@gmail.com" className="hover:text-background transition-colors lowercase tracking-normal font-sans text-xs mr-2">
+          <a
+            href="mailto:lenslycare@gmail.com"
+            className="hover:text-background transition-colors lowercase tracking-normal font-sans text-xs mr-2"
+          >
             lenslycare@gmail.com
           </a>
+          <Link to="/contract" className="hover:text-background transition-colors">
+            {t("Sign Contract")}
+          </Link>
           <Link to="/impressum" className="hover:text-background transition-colors">
             Impressum
           </Link>
@@ -641,10 +838,21 @@ export function Footer() {
           <Link to="/agb" className="hover:text-background transition-colors">
             AGB
           </Link>
+          <Link
+            to="/cancel"
+            className="hover:text-background/90 text-emerald-400 font-medium transition-colors"
+          >
+            {t("Vertrag hier kündigen")}
+          </Link>
+          <Link
+            to="/withdraw"
+            className="hover:text-background/90 text-emerald-400 font-medium transition-colors"
+          >
+            {t("Vertrag widerrufen")}
+          </Link>
           <span className="text-background/40">© 2026 Lensly</span>
         </div>
       </div>
     </footer>
   );
 }
-
