@@ -9,6 +9,10 @@ export interface Subscription {
   contract_id: string;
   full_name: string;
   email: string;
+  phone: string;
+  birth_date: string;
+  birth_place: string;
+  profession: string;
   payment_method: "sepa" | "wallet";
   masked_iban?: string;
   signature_type: "draw" | "type";
@@ -63,6 +67,10 @@ export async function ensureDbInitialized(): Promise<boolean> {
         contract_id VARCHAR(100) UNIQUE NOT NULL,
         full_name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
+        phone VARCHAR(50),
+        birth_date VARCHAR(50),
+        birth_place VARCHAR(255),
+        profession VARCHAR(100),
         payment_method VARCHAR(50) NOT NULL,
         masked_iban VARCHAR(100),
         signature_type VARCHAR(20) NOT NULL,
@@ -73,6 +81,12 @@ export async function ensureDbInitialized(): Promise<boolean> {
       );
     `;
 
+    // Add columns dynamically if the table already existed with the old schema (Auto-Migration)
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS phone VARCHAR(50);`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS birth_date VARCHAR(50);`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS birth_place VARCHAR(255);`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS profession VARCHAR(100);`;
+
     // Add indices to speed up common searches
     await client`
       CREATE INDEX IF NOT EXISTS idx_subscriptions_email ON subscriptions(email);
@@ -82,7 +96,7 @@ export async function ensureDbInitialized(): Promise<boolean> {
     `;
 
     dbInitialized = true;
-    console.log("Successfully connected to PostgreSQL and validated subscriptions table.");
+    console.log("Successfully connected to PostgreSQL and validated subscriptions table schema.");
     return true;
   } catch (error) {
     console.error(
@@ -139,6 +153,10 @@ export async function saveSubscriptionServer(
           contract_id,
           full_name,
           email,
+          phone,
+          birth_date,
+          birth_place,
+          profession,
           payment_method,
           masked_iban,
           signature_type,
@@ -150,6 +168,10 @@ export async function saveSubscriptionServer(
           ${newSub.contract_id},
           ${newSub.full_name},
           ${newSub.email},
+          ${newSub.phone},
+          ${newSub.birth_date},
+          ${newSub.birth_place},
+          ${newSub.profession},
           ${newSub.payment_method},
           ${newSub.masked_iban || null},
           ${newSub.signature_type},
@@ -167,6 +189,10 @@ export async function saveSubscriptionServer(
           contract_id: row.contract_id,
           full_name: row.full_name,
           email: row.email,
+          phone: row.phone || "",
+          birth_date: row.birth_date || "",
+          birth_place: row.birth_place || "",
+          profession: row.profession || "",
           payment_method: row.payment_method,
           masked_iban: row.masked_iban || undefined,
           signature_type: row.signature_type,
@@ -203,6 +229,10 @@ export async function getSubscriptionsServer(): Promise<Subscription[]> {
         contract_id: row.contract_id,
         full_name: row.full_name,
         email: row.email,
+        phone: row.phone || "",
+        birth_date: row.birth_date || "",
+        birth_place: row.birth_place || "",
+        profession: row.profession || "",
         payment_method: row.payment_method,
         masked_iban: row.masked_iban || undefined,
         signature_type: row.signature_type,

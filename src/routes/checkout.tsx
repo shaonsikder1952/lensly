@@ -39,6 +39,10 @@ interface CheckoutData {
   contractId: string;
   fullName: string;
   email: string;
+  phone: string;
+  birthDate: string;
+  birthPlace: string;
+  profession: string;
   paymentMethod: "sepa" | "wallet";
   maskedIban?: string;
   timestamp: string;
@@ -56,6 +60,10 @@ function CheckoutPage() {
   // Form inputs
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [birthPlace, setBirthPlace] = useState("");
+  const [profession, setProfession] = useState("");
   const [consentLocked, setConsentLocked] = useState(false);
   const [paymentType, setPaymentType] = useState<"sepa" | "wallet">("sepa");
 
@@ -196,6 +204,22 @@ function CheckoutPage() {
       setValidationError(t("Please enter a valid email address."));
       return { valid: false, signatureVal: "" };
     }
+    if (!phone.trim()) {
+      setValidationError(t("Please enter your phone number."));
+      return { valid: false, signatureVal: "" };
+    }
+    if (!birthDate.trim()) {
+      setValidationError(t("Please enter your date of birth."));
+      return { valid: false, signatureVal: "" };
+    }
+    if (!birthPlace.trim()) {
+      setValidationError(t("Please enter your place of birth / address."));
+      return { valid: false, signatureVal: "" };
+    }
+    if (!profession.trim()) {
+      setValidationError(t("Please enter your profession."));
+      return { valid: false, signatureVal: "" };
+    }
     if (!consentLocked) {
       setValidationError(t("You must agree to the contract lock-in terms."));
       return { valid: false, signatureVal: "" };
@@ -246,6 +270,10 @@ function CheckoutPage() {
         contractId,
         fullName: fullName.trim(),
         email: email.trim(),
+        phone: phone.trim(),
+        birthDate: birthDate.trim(),
+        birthPlace: birthPlace.trim(),
+        profession: profession.trim(),
         paymentMethod: "sepa",
         maskedIban: masked,
         signatureType,
@@ -258,6 +286,10 @@ function CheckoutPage() {
           contractId: saved.contractId,
           fullName: saved.fullName,
           email: saved.email,
+          phone: saved.phone,
+          birthDate: saved.birthDate,
+          birthPlace: saved.birthPlace,
+          profession: saved.profession,
           paymentMethod: "sepa",
           maskedIban: saved.maskedIban,
           signatureType: saved.signatureType,
@@ -305,6 +337,10 @@ function CheckoutPage() {
               contractId,
               fullName: fullName.trim(),
               email: email.trim(),
+              phone: phone.trim(),
+              birthDate: birthDate.trim(),
+              birthPlace: birthPlace.trim(),
+              profession: profession.trim(),
               paymentMethod: "wallet",
               signatureType,
               signatureData: signatureVal,
@@ -316,6 +352,10 @@ function CheckoutPage() {
                 contractId: saved.contractId,
                 fullName: saved.fullName,
                 email: saved.email,
+                phone: saved.phone,
+                birthDate: saved.birthDate,
+                birthPlace: saved.birthPlace,
+                profession: saved.profession,
                 paymentMethod: "wallet",
                 signatureType: saved.signatureType,
                 signatureData: saved.signatureData,
@@ -437,8 +477,42 @@ function CheckoutPage() {
                       <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
                         {t("Subscriber")}
                       </span>
-                      <span className="text-foreground font-medium block mt-0.5">
+                      <span className="text-foreground font-semibold block mt-0.5">
                         {checkoutData.fullName}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                        {t("Email Address")}
+                      </span>
+                      <span className="text-foreground block mt-0.5">{checkoutData.email}</span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                        {t("Phone Number")}
+                      </span>
+                      <span className="text-foreground block mt-0.5">{checkoutData.phone}</span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                        {t("Birth Date")}
+                      </span>
+                      <span className="text-foreground block mt-0.5">{checkoutData.birthDate}</span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                        {t("Place of Birth / Address")}
+                      </span>
+                      <span className="text-foreground block mt-0.5">
+                        {checkoutData.birthPlace}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                        {t("Profession")}
+                      </span>
+                      <span className="text-foreground block mt-0.5">
+                        {checkoutData.profession}
                       </span>
                     </div>
                     <div>
@@ -760,6 +834,58 @@ function CheckoutPage() {
                         value={email}
                         placeholder="john@example.com"
                         onChange={(e) => setEmail(e.target.value)}
+                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                        {t("Phone Number")}
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={phone}
+                        placeholder="+49 170 1234567"
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                        {t("Birth Date")}
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={birthDate}
+                        placeholder="DD.MM.YYYY"
+                        onChange={(e) => setBirthDate(e.target.value)}
+                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                        {t("Place of Birth / Address")}
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={birthPlace}
+                        placeholder="Düsseldorf, Germany"
+                        onChange={(e) => setBirthPlace(e.target.value)}
+                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                        {t("Profession")}
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={profession}
+                        placeholder="Software Engineer"
+                        onChange={(e) => setProfession(e.target.value)}
                         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
                       />
                     </div>

@@ -344,6 +344,36 @@ function AdminPage() {
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold text-gray-500 block">
+                Email Address
+              </span>
+              <span className="block mt-0.5">{selectedSub.email}</span>
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-gray-500 block">
+                Phone Number
+              </span>
+              <span className="block mt-0.5">{selectedSub.phone}</span>
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-gray-500 block">
+                Birth Date
+              </span>
+              <span className="block mt-0.5">{selectedSub.birthDate}</span>
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-gray-500 block">
+                Place of Birth / Address
+              </span>
+              <span className="block mt-0.5">{selectedSub.birthPlace}</span>
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-gray-500 block">
+                Profession
+              </span>
+              <span className="block mt-0.5">{selectedSub.profession}</span>
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-gray-500 block">
                 Payment Method
               </span>
               <span className="block mt-0.5">
@@ -568,7 +598,7 @@ function AdminPage() {
                         <td className="px-5 py-4">
                           <div className="font-semibold text-foreground">{sub.fullName}</div>
                           <div className="text-[10px] text-muted-foreground mt-0.5">
-                            {sub.email}
+                            {sub.email} | {sub.phone}
                           </div>
                         </td>
                         <td className="px-5 py-4 whitespace-nowrap text-muted-foreground">
@@ -736,9 +766,39 @@ function AdminPage() {
                   <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
                     {t("Subscriber")}
                   </span>
-                  <span className="text-foreground font-medium block mt-0.5">
+                  <span className="text-foreground font-semibold block mt-0.5">
                     {selectedSub.fullName}
                   </span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
+                    {t("Email Address")}
+                  </span>
+                  <span className="text-foreground block mt-0.5">{selectedSub.email}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
+                    {t("Phone Number")}
+                  </span>
+                  <span className="text-foreground block mt-0.5">{selectedSub.phone}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
+                    {t("Birth Date")}
+                  </span>
+                  <span className="text-foreground block mt-0.5">{selectedSub.birthDate}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
+                    {t("Place of Birth / Address")}
+                  </span>
+                  <span className="text-foreground block mt-0.5">{selectedSub.birthPlace}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
+                    {t("Profession")}
+                  </span>
+                  <span className="text-foreground block mt-0.5">{selectedSub.profession}</span>
                 </div>
                 <div>
                   <span className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider block">
