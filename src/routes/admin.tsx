@@ -224,9 +224,17 @@ function AdminPage() {
   const cancelledCount = subscriptions.filter((s) => s.status === "cancelled").length;
   const withdrawnCount = subscriptions.filter((s) => s.status === "withdrawn").length;
 
-  // Print function inside modal
+  // Print function inside modal with dynamic filename
   const handlePrintModalContract = () => {
-    window.print();
+    if (selectedSub) {
+      const firstName = selectedSub.fullName.trim().split(" ")[0].toLowerCase();
+      const originalTitle = document.title;
+      document.title = `lensly_contract_${firstName}`;
+      window.print();
+      document.title = originalTitle;
+    } else {
+      window.print();
+    }
   };
 
   /* ================= GATEWAY GATE LAYOUT ================= */

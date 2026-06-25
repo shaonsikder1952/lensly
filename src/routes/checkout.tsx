@@ -334,9 +334,17 @@ function CheckoutPage() {
     }, 1500);
   };
 
-  // Print function
+  // Print function with dynamic filename
   const handlePrint = () => {
-    window.print();
+    if (checkoutData) {
+      const firstName = checkoutData.fullName.trim().split(" ")[0].toLowerCase();
+      const originalTitle = document.title;
+      document.title = `lensly_contract_${firstName}`;
+      window.print();
+      document.title = originalTitle;
+    } else {
+      window.print();
+    }
   };
 
   return (
