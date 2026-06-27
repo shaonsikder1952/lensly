@@ -247,10 +247,40 @@ function Hero() {
       <div className="pointer-events-none absolute inset-0 grid-bg opacity-50" />
       <div className="pointer-events-none absolute left-1/2 top-[62%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 radial-glow" />
 
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 pt-10 pb-12 text-center md:pt-12 md:pb-16">
-        
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 pt-10 pb-12 text-center md:pt-14 md:pb-16">
+        <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
+          {t("One plan · €29 / month")}
+        </p>
+        <h1 className="animate-fade-in mx-auto mt-3 max-w-[18ch] font-display text-[34px] font-semibold leading-[1.05] tracking-tight md:text-[52px]">
+          {t("New glasses every ")}
+          <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
+        </h1>
+
+        {/* Floating 3D glasses with tight orbital rings */}
+        <div className="relative mx-auto mt-5 flex h-[170px] w-full items-center justify-center md:h-[210px]">
+          {/* Orbital rings centered on glasses */}
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="spin-slow h-[300px] w-[300px] rounded-full border border-primary/5 md:h-[380px] md:w-[380px]" />
+          </div>
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div
+              className="spin-slow h-[220px] w-[220px] rounded-full border border-dashed border-primary/10 md:h-[280px] md:w-[280px]"
+              style={{ animationDirection: "reverse", animationDuration: "60s" }}
+            />
+          </div>
+          {/* Shadow */}
+          <div className="absolute bottom-4 left-1/2 h-5 w-44 -translate-x-1/2 rounded-[50%] bg-primary/25 blur-2xl" />
+          <img
+            src={glasses3d}
+            alt="Lensly prescription glasses"
+            width={1024}
+            height={1024}
+            className="float-slow relative h-[150px] w-auto drop-shadow-[0_24px_30px_oklch(0.46_0.07_210/0.3)] md:h-[190px]"
+          />
+        </div>
+
         {/* 3 Premium Value Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 max-w-4xl mx-auto mb-12 text-left border-b border-border/60 pb-8 md:pb-10 no-print">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 max-w-4xl mx-auto mt-12 mb-12 text-left border-t border-border/60 pt-10 no-print">
           {/* Feature 1 */}
           <div className="border-t-2 border-primary/25 pt-6 transition duration-300 hover:border-primary">
             <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary/70 uppercase block">
@@ -293,43 +323,6 @@ function Hero() {
             </p>
           </div>
         </div>
-
-        <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
-          {t("One plan · €29 / month")}
-        </p>
-        <h1 className="animate-fade-in mx-auto mt-3 max-w-[18ch] font-display text-[34px] font-semibold leading-[1.05] tracking-tight md:text-[52px]">
-          {t("New glasses every ")}
-          <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
-        </h1>
-
-        {/* Floating 3D glasses with tight orbital rings */}
-        <div className="relative mx-auto mt-5 flex h-[170px] w-full items-center justify-center md:h-[210px]">
-          {/* Orbital rings centered on glasses */}
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div className="spin-slow h-[300px] w-[300px] rounded-full border border-primary/5 md:h-[380px] md:w-[380px]" />
-          </div>
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div
-              className="spin-slow h-[220px] w-[220px] rounded-full border border-dashed border-primary/10 md:h-[280px] md:w-[280px]"
-              style={{ animationDirection: "reverse", animationDuration: "60s" }}
-            />
-          </div>
-          {/* Shadow */}
-          <div className="absolute bottom-4 left-1/2 h-5 w-44 -translate-x-1/2 rounded-[50%] bg-primary/25 blur-2xl" />
-          <img
-            src={glasses3d}
-            alt="Lensly prescription glasses"
-            width={1024}
-            height={1024}
-            className="float-slow relative h-[150px] w-auto drop-shadow-[0_24px_30px_oklch(0.46_0.07_210/0.3)] md:h-[190px]"
-          />
-        </div>
-
-        <p className="mx-auto mt-6 max-w-md text-[14px] leading-relaxed text-muted-foreground md:max-w-xl md:text-base">
-          {t(
-            "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.",
-          )}
-        </p>
 
         <div className="mt-6 flex items-center justify-center gap-4">
           <a
