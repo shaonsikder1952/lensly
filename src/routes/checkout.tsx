@@ -606,17 +606,22 @@ function CheckoutPage() {
       return;
     }
 
+    let clone: HTMLElement | null = null;
     try {
       // @ts-ignore
       const html2pdf = (await import("html2pdf.js")).default;
 
-      const clone = element.cloneNode(true) as HTMLElement;
+      clone = element.cloneNode(true) as HTMLElement;
       clone.classList.remove("hidden");
       clone.style.display = "block";
       clone.style.background = "#ffffff";
       clone.style.color = "#000000";
       clone.style.padding = "24px";
       clone.style.width = "750px";
+      clone.style.position = "absolute";
+      clone.style.left = "-9999px";
+      clone.style.top = "0";
+      document.body.appendChild(clone);
 
       const opt = {
         margin: 0.25,
@@ -635,6 +640,10 @@ function CheckoutPage() {
       window.print();
       document.title = originalTitle;
       setDownloadingPDF(false);
+    } finally {
+      if (clone && document.body.contains(clone)) {
+        document.body.removeChild(clone);
+      }
     }
   };
 
