@@ -28,6 +28,33 @@ export interface Subscription {
 }
 
 const FALLBACK_FILE_PATH = path.resolve(process.cwd(), "subscriptions.json");
+const DELETED_FALLBACK_FILE_PATH = path.resolve(process.cwd(), "deleted_subscriptions.json");
+
+async function readFromDeletedJsonFile(): Promise<Subscription[]> {
+  try {
+    const content = await fs.readFile(DELETED_FALLBACK_FILE_PATH, "utf-8");
+    return JSON.parse(content);
+  } catch (error: unknown) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      (error as Record<string, unknown>).code === "ENOENT"
+    ) {
+      return [];
+    }
+    console.error("Error reading deleted_subscriptions.json fallback file:", error);
+    return [];
+  }
+}
+
+async function writeToDeletedJsonFile(data: Subscription[]): Promise<void> {
+  try {
+    await fs.writeFile(DELETED_FALLBACK_FILE_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch (error) {
+    console.error("Error writing deleted_subscriptions.json fallback file:", error);
+  }
+}
 
 let sql: postgres.Sql | null = null;
 let dbInitialized = false;
@@ -91,6 +118,33 @@ export async function ensureDbInitialized(): Promise<boolean> {
       );
     `;
 
+    // Create the deleted_subscriptions table if it does not exist
+    await client`
+      CREATE TABLE IF NOT EXISTS deleted_subscriptions (
+        id SERIAL PRIMARY KEY,
+        contract_id VARCHAR(100) UNIQUE NOT NULL,
+        full_name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        phone VARCHAR(50),
+        birth_date VARCHAR(50),
+        birth_place VARCHAR(255),
+        profession VARCHAR(100),
+        street_address VARCHAR(500),
+        postal_code VARCHAR(20),
+        city VARCHAR(255),
+        state VARCHAR(255),
+        country VARCHAR(255),
+        payment_method VARCHAR(50) NOT NULL,
+        masked_iban VARCHAR(100),
+        signature_type VARCHAR(20) NOT NULL,
+        signature_data TEXT NOT NULL,
+        status VARCHAR(50) DEFAULT 'active' NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+      );
+    `;
+
     // Add columns dynamically if the table already existed with the old schema (Auto-Migration)
     await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS phone VARCHAR(50);`;
     await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS birth_date VARCHAR(50);`;
@@ -102,12 +156,28 @@ export async function ensureDbInitialized(): Promise<boolean> {
     await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS state VARCHAR(255);`;
     await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS country VARCHAR(255);`;
 
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS phone VARCHAR(50);`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS birth_date VARCHAR(50);`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS birth_place VARCHAR(255);`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS profession VARCHAR(100);`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS street_address VARCHAR(500);`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS postal_code VARCHAR(20);`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS city VARCHAR(255);`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS state VARCHAR(255);`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS country VARCHAR(255);`;
+
     // Add indices to speed up common searches
     await client`
       CREATE INDEX IF NOT EXISTS idx_subscriptions_email ON subscriptions(email);
     `;
     await client`
       CREATE INDEX IF NOT EXISTS idx_subscriptions_contract_id ON subscriptions(contract_id);
+    `;
+    await client`
+      CREATE INDEX IF NOT EXISTS idx_deleted_subscriptions_email ON deleted_subscriptions(email);
+    `;
+    await client`
+      CREATE INDEX IF NOT EXISTS idx_deleted_subscriptions_contract_id ON deleted_subscriptions(contract_id);
     `;
 
     dbInitialized = true;
@@ -402,10 +472,274 @@ export async function deleteSubscriptionServer(
   const normalizedContract = contractId.trim().toUpperCase();
   const normalizedEmail = email.trim().toLowerCase();
 
+  let subscriptionToMove: Subscription | null = null;
+
+  if (isDb && client) {
+    try {
+      // Find the subscription first
+      const rows = await client`
+        SELECT * FROM subscriptions
+        WHERE TRIM(UPPER(contract_id)) = ${normalizedContract} AND TRIM(LOWER(email)) = ${normalizedEmail}
+      `;
+      if (rows && rows.length > 0) {
+        const row = rows[0];
+        subscriptionToMove = {
+          id: row.id,
+          contract_id: row.contract_id,
+          full_name: row.full_name,
+          email: row.email,
+          phone: row.phone || "",
+          birth_date: row.birth_date || "",
+          birth_place: row.birth_place || "",
+          profession: row.profession || "",
+          street_address: row.street_address || "",
+          postal_code: row.postal_code || "",
+          city: row.city || "",
+          state: row.state || "",
+          country: row.country || "",
+          payment_method: row.payment_method,
+          masked_iban: row.masked_iban || undefined,
+          signature_type: row.signature_type,
+          signature_data: row.signature_data,
+          status: row.status,
+          created_at: row.created_at,
+          updated_at: row.updated_at,
+        };
+
+        // Insert into deleted_subscriptions
+        await client`
+          INSERT INTO deleted_subscriptions (
+            contract_id, full_name, email, phone, birth_date, birth_place, profession,
+            street_address, postal_code, city, state, country, payment_method,
+            masked_iban, signature_type, signature_data, status, created_at, updated_at, deleted_at
+          ) VALUES (
+            ${subscriptionToMove.contract_id}, ${subscriptionToMove.full_name}, ${subscriptionToMove.email},
+            ${subscriptionToMove.phone}, ${subscriptionToMove.birth_date}, ${subscriptionToMove.birth_place},
+            ${subscriptionToMove.profession}, ${subscriptionToMove.street_address}, ${subscriptionToMove.postal_code},
+            ${subscriptionToMove.city}, ${subscriptionToMove.state ?? null}, ${subscriptionToMove.country ?? null},
+            ${subscriptionToMove.payment_method}, ${subscriptionToMove.masked_iban ?? null}, ${subscriptionToMove.signature_type},
+            ${subscriptionToMove.signature_data}, ${subscriptionToMove.status}, ${subscriptionToMove.created_at ?? null},
+            ${subscriptionToMove.updated_at ?? null}, CURRENT_TIMESTAMP
+          )
+          ON CONFLICT (contract_id) DO UPDATE SET
+            full_name = EXCLUDED.full_name,
+            email = EXCLUDED.email,
+            phone = EXCLUDED.phone,
+            birth_date = EXCLUDED.birth_date,
+            birth_place = EXCLUDED.birth_place,
+            profession = EXCLUDED.profession,
+            street_address = EXCLUDED.street_address,
+            postal_code = EXCLUDED.postal_code,
+            city = EXCLUDED.city,
+            state = EXCLUDED.state,
+            country = EXCLUDED.country,
+            payment_method = EXCLUDED.payment_method,
+            masked_iban = EXCLUDED.masked_iban,
+            signature_type = EXCLUDED.signature_type,
+            signature_data = EXCLUDED.signature_data,
+            status = EXCLUDED.status,
+            updated_at = CURRENT_TIMESTAMP,
+            deleted_at = CURRENT_TIMESTAMP
+        `;
+
+        // Now delete it from subscriptions
+        await client`
+          DELETE FROM subscriptions
+          WHERE TRIM(UPPER(contract_id)) = ${normalizedContract} AND TRIM(LOWER(email)) = ${normalizedEmail}
+        `;
+        return true;
+      }
+    } catch (error) {
+      console.error("PostgreSQL soft delete failed, trying fallback:", error);
+    }
+  }
+
+  // Fallback: JSON file update
+  const list = await readFromJsonFile();
+  const matchIndex = list.findIndex(
+    (item) =>
+      item.contract_id.trim().toUpperCase() === normalizedContract &&
+      item.email.trim().toLowerCase() === normalizedEmail,
+  );
+  if (matchIndex !== -1) {
+    const [removedItem] = list.splice(matchIndex, 1);
+    await writeToJsonFile(list);
+
+    // Save to deleted_subscriptions JSON
+    const deletedList = await readFromDeletedJsonFile();
+    // Prevent duplicate contract_id in deleted list
+    const filteredDeleted = deletedList.filter((item) => item.contract_id !== removedItem.contract_id);
+    filteredDeleted.push(removedItem);
+    await writeToDeletedJsonFile(filteredDeleted);
+    return true;
+  }
+  return false;
+}
+
+export async function getDeletedSubscriptionsServer(): Promise<Subscription[]> {
+  const isDb = await ensureDbInitialized();
+  const client = getSqlClient();
+
   if (isDb && client) {
     try {
       const rows = await client`
-        DELETE FROM subscriptions
+        SELECT * FROM deleted_subscriptions ORDER BY deleted_at DESC
+      `;
+      return rows.map((row) => ({
+        id: row.id,
+        contract_id: row.contract_id,
+        full_name: row.full_name,
+        email: row.email,
+        phone: row.phone || "",
+        birth_date: row.birth_date || "",
+        birth_place: row.birth_place || "",
+        profession: row.profession || "",
+        street_address: row.street_address || "",
+        postal_code: row.postal_code || "",
+        city: row.city || "",
+        state: row.state || "",
+        country: row.country || "",
+        payment_method: row.payment_method,
+        masked_iban: row.masked_iban || undefined,
+        signature_type: row.signature_type,
+        signature_data: row.signature_data,
+        status: row.status,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+      }));
+    } catch (error) {
+      console.error("PostgreSQL select deleted_subscriptions failed, falling back to local JSON:", error);
+    }
+  }
+
+  const list = await readFromDeletedJsonFile();
+  return list;
+}
+
+export async function restoreSubscriptionServer(
+  contractId: string,
+  email: string,
+): Promise<boolean> {
+  const isDb = await ensureDbInitialized();
+  const client = getSqlClient();
+  const normalizedContract = contractId.trim().toUpperCase();
+  const normalizedEmail = email.trim().toLowerCase();
+
+  let subscriptionToRestore: Subscription | null = null;
+
+  if (isDb && client) {
+    try {
+      // Find the subscription first in deleted_subscriptions
+      const rows = await client`
+        SELECT * FROM deleted_subscriptions
+        WHERE TRIM(UPPER(contract_id)) = ${normalizedContract} AND TRIM(LOWER(email)) = ${normalizedEmail}
+      `;
+      if (rows && rows.length > 0) {
+        const row = rows[0];
+        subscriptionToRestore = {
+          id: row.id,
+          contract_id: row.contract_id,
+          full_name: row.full_name,
+          email: row.email,
+          phone: row.phone || "",
+          birth_date: row.birth_date || "",
+          birth_place: row.birth_place || "",
+          profession: row.profession || "",
+          street_address: row.street_address || "",
+          postal_code: row.postal_code || "",
+          city: row.city || "",
+          state: row.state || "",
+          country: row.country || "",
+          payment_method: row.payment_method,
+          masked_iban: row.masked_iban || undefined,
+          signature_type: row.signature_type,
+          signature_data: row.signature_data,
+          status: row.status,
+          created_at: row.created_at,
+          updated_at: row.updated_at,
+        };
+
+        // Insert into subscriptions
+        await client`
+          INSERT INTO subscriptions (
+            contract_id, full_name, email, phone, birth_date, birth_place, profession,
+            street_address, postal_code, city, state, country, payment_method,
+            masked_iban, signature_type, signature_data, status, created_at, updated_at
+          ) VALUES (
+            ${subscriptionToRestore.contract_id}, ${subscriptionToRestore.full_name}, ${subscriptionToRestore.email},
+            ${subscriptionToRestore.phone}, ${subscriptionToRestore.birth_date}, ${subscriptionToRestore.birth_place},
+            ${subscriptionToRestore.profession}, ${subscriptionToRestore.street_address}, ${subscriptionToRestore.postal_code},
+            ${subscriptionToRestore.city}, ${subscriptionToRestore.state ?? null}, ${subscriptionToRestore.country ?? null},
+            ${subscriptionToRestore.payment_method}, ${subscriptionToRestore.masked_iban ?? null}, ${subscriptionToRestore.signature_type},
+            ${subscriptionToRestore.signature_data}, ${subscriptionToRestore.status}, ${subscriptionToRestore.created_at ?? null},
+            ${subscriptionToRestore.updated_at ?? null}
+          )
+          ON CONFLICT (contract_id) DO UPDATE SET
+            full_name = EXCLUDED.full_name,
+            email = EXCLUDED.email,
+            phone = EXCLUDED.phone,
+            birth_date = EXCLUDED.birth_date,
+            birth_place = EXCLUDED.birth_place,
+            profession = EXCLUDED.profession,
+            street_address = EXCLUDED.street_address,
+            postal_code = EXCLUDED.postal_code,
+            city = EXCLUDED.city,
+            state = EXCLUDED.state,
+            country = EXCLUDED.country,
+            payment_method = EXCLUDED.payment_method,
+            masked_iban = EXCLUDED.masked_iban,
+            signature_type = EXCLUDED.signature_type,
+            signature_data = EXCLUDED.signature_data,
+            status = EXCLUDED.status,
+            updated_at = CURRENT_TIMESTAMP
+        `;
+
+        // Now delete it from deleted_subscriptions
+        await client`
+          DELETE FROM deleted_subscriptions
+          WHERE TRIM(UPPER(contract_id)) = ${normalizedContract} AND TRIM(LOWER(email)) = ${normalizedEmail}
+        `;
+        return true;
+      }
+    } catch (error) {
+      console.error("PostgreSQL restore failed, trying fallback:", error);
+    }
+  }
+
+  // Fallback: JSON file restore
+  const deletedList = await readFromDeletedJsonFile();
+  const matchIndex = deletedList.findIndex(
+    (item) =>
+      item.contract_id.trim().toUpperCase() === normalizedContract &&
+      item.email.trim().toLowerCase() === normalizedEmail,
+  );
+  if (matchIndex !== -1) {
+    const [removedItem] = deletedList.splice(matchIndex, 1);
+    await writeToDeletedJsonFile(deletedList);
+
+    // Save to subscriptions JSON
+    const activeList = await readFromJsonFile();
+    const filteredActive = activeList.filter((item) => item.contract_id !== removedItem.contract_id);
+    filteredActive.push(removedItem);
+    await writeToJsonFile(filteredActive);
+    return true;
+  }
+  return false;
+}
+
+export async function permanentlyDeleteSubscriptionServer(
+  contractId: string,
+  email: string,
+): Promise<boolean> {
+  const isDb = await ensureDbInitialized();
+  const client = getSqlClient();
+  const normalizedContract = contractId.trim().toUpperCase();
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (isDb && client) {
+    try {
+      const rows = await client`
+        DELETE FROM deleted_subscriptions
         WHERE TRIM(UPPER(contract_id)) = ${normalizedContract} AND TRIM(LOWER(email)) = ${normalizedEmail}
         RETURNING id
       `;
@@ -413,12 +747,12 @@ export async function deleteSubscriptionServer(
         return true;
       }
     } catch (error) {
-      console.error("PostgreSQL delete failed, trying fallback:", error);
+      console.error("PostgreSQL permanent delete failed, trying fallback:", error);
     }
   }
 
   // Fallback: JSON file update
-  const list = await readFromJsonFile();
+  const list = await readFromDeletedJsonFile();
   const initialLength = list.length;
   const filtered = list.filter(
     (item) =>
@@ -426,7 +760,7 @@ export async function deleteSubscriptionServer(
       item.email.trim().toLowerCase() !== normalizedEmail,
   );
   if (filtered.length !== initialLength) {
-    await writeToJsonFile(filtered);
+    await writeToDeletedJsonFile(filtered);
     return true;
   }
   return false;

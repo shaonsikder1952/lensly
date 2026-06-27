@@ -7,6 +7,9 @@ import {
   adminLogin,
   adminDeleteSubscription,
   adminEditSubscription,
+  getDeletedSubscriptions,
+  restoreSubscription,
+  permanentlyDeleteSubscription,
 } from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
 import {
@@ -35,6 +38,7 @@ import {
   Pause,
   Play,
   Clock,
+  RotateCcw,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -112,6 +116,11 @@ function AdminPage() {
   // Modal State for Deleting Subscriber
   const [deletingSub, setDeletingSub] = useState<SubscriptionItem | null>(null);
 
+  // Trash & Deleted States
+  const [showTrash, setShowTrash] = useState(false);
+  const [deletedSubscriptions, setDeletedSubscriptions] = useState<SubscriptionItem[]>([]);
+  const [loadingDeleted, setLoadingDeleted] = useState(false);
+
   // Load unlock state from sessionStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -142,9 +151,29 @@ function AdminPage() {
       });
   };
 
+  // Fetch deleted subscriptions from the server
+  const fetchDeletedSubscriptions = () => {
+    const token = sessionStorage.getItem("lensly_admin_token") || "";
+    if (!token) {
+      setUnlocked(false);
+      return;
+    }
+    setLoadingDeleted(true);
+    getDeletedSubscriptions({ data: { adminToken: token } })
+      .then((data) => {
+        setDeletedSubscriptions(data as SubscriptionItem[]);
+        setLoadingDeleted(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load deleted subscriptions:", err);
+        setLoadingDeleted(false);
+      });
+  };
+
   useEffect(() => {
     if (unlocked) {
       fetchSubscriptions();
+      fetchDeletedSubscriptions();
     }
   }, [unlocked]);
 
@@ -325,6 +354,7 @@ function AdminPage() {
           setSubscriptions((prev) =>
             prev.filter((sub) => sub.contractId !== deletingSub.contractId),
           );
+          setDeletedSubscriptions((prev) => [deletingSub, ...prev]);
           setDeletingSub(null);
         } else {
           alert(t("Failed to delete subscription. Record not found."));
@@ -334,6 +364,72 @@ function AdminPage() {
         setUpdatingId(null);
         console.error("Delete error:", err);
         alert(t("An error occurred during deleting subscription."));
+      });
+  };
+
+  const handleRestoreSubscription = (sub: SubscriptionItem) => {
+    const token = sessionStorage.getItem("lensly_admin_token") || "";
+    if (!token) {
+      handleLogout();
+      return;
+    }
+    setUpdatingId(sub.contractId);
+    restoreSubscription({
+      data: {
+        adminToken: token,
+        contractId: sub.contractId,
+        email: sub.email,
+      },
+    })
+      .then((success) => {
+        setUpdatingId(null);
+        if (success) {
+          setDeletedSubscriptions((prev) =>
+            prev.filter((item) => item.contractId !== sub.contractId),
+          );
+          setSubscriptions((prev) => [sub, ...prev]);
+        } else {
+          alert(t("Failed to restore subscription."));
+        }
+      })
+      .catch((err) => {
+        setUpdatingId(null);
+        console.error("Restore error:", err);
+        alert(t("An error occurred during restoring subscription."));
+      });
+  };
+
+  const handlePermanentlyDeleteSubscription = (sub: SubscriptionItem) => {
+    if (!window.confirm(t("Are you sure you want to permanently delete this subscription? This action cannot be undone."))) {
+      return;
+    }
+    const token = sessionStorage.getItem("lensly_admin_token") || "";
+    if (!token) {
+      handleLogout();
+      return;
+    }
+    setUpdatingId(sub.contractId);
+    permanentlyDeleteSubscription({
+      data: {
+        adminToken: token,
+        contractId: sub.contractId,
+        email: sub.email,
+      },
+    })
+      .then((success) => {
+        setUpdatingId(null);
+        if (success) {
+          setDeletedSubscriptions((prev) =>
+            prev.filter((item) => item.contractId !== sub.contractId),
+          );
+        } else {
+          alert(t("Failed to permanently delete subscription."));
+        }
+      })
+      .catch((err) => {
+        setUpdatingId(null);
+        console.error("Permanent delete error:", err);
+        alert(t("An error occurred during permanent deletion."));
       });
   };
 
@@ -400,11 +496,22 @@ function AdminPage() {
     const matchesSearch =
       sub.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       sub.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      sub.contractId.toLowerCase().includes(searchTerm.toLowerCase());
+      sub.contractId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (sub.birthDate && sub.birthDate.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesStatus = statusFilter === "all" || sub.status === statusFilter;
 
     return matchesSearch && matchesStatus;
+  });
+
+  const filteredDeletedSubscriptions = deletedSubscriptions.filter((sub) => {
+    const matchesSearch =
+      sub.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sub.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sub.contractId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (sub.birthDate && sub.birthDate.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    return matchesSearch;
   });
 
   // KPI calculations
@@ -454,7 +561,6 @@ function AdminPage() {
       const canvas = await html2canvas(clone, {
         scale: 2.5,
         useCORS: true,
-        letterRendering: true,
         backgroundColor: "#ffffff",
       });
 
@@ -735,7 +841,10 @@ function AdminPage() {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={fetchSubscriptions}
+                onClick={() => {
+                  fetchSubscriptions();
+                  fetchDeletedSubscriptions();
+                }}
                 className="flex items-center gap-1.5 rounded-lg border border-border/80 bg-background px-3.5 py-2 text-xs font-semibold text-foreground/80 transition hover:bg-muted cursor-pointer"
               >
                 <span>{t("Refresh")}</span>
@@ -823,6 +932,37 @@ function AdminPage() {
             </div>
           </div>
 
+          {/* Tab Selection */}
+          <div className="flex gap-2 mb-6 border-b border-border pb-px no-print">
+            <button
+              onClick={() => {
+                setShowTrash(false);
+                setSearchTerm("");
+              }}
+              className={`px-4 py-2 text-xs font-semibold border-b-2 transition cursor-pointer ${
+                !showTrash
+                  ? "border-primary text-foreground font-bold"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t("Active Subscriptions")} ({subscriptions.length})
+            </button>
+            <button
+              onClick={() => {
+                setShowTrash(true);
+                setSearchTerm("");
+              }}
+              className={`px-4 py-2 text-xs font-semibold border-b-2 transition flex items-center gap-1.5 cursor-pointer ${
+                showTrash
+                  ? "border-primary text-foreground font-bold"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              {t("Trash Bin")} ({deletedSubscriptions.length})
+            </button>
+          </div>
+
           {/* Filtering bar */}
           <div className="bg-card border border-border rounded-xl p-4 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center shadow-xs">
             <div className="relative w-full md:max-w-md">
@@ -831,7 +971,7 @@ function AdminPage() {
               </span>
               <input
                 type="text"
-                placeholder={t("Search subscribers...")}
+                placeholder={showTrash ? t("Search deleted by name, DOB, email, contract number...") : t("Search by name, DOB, email, contract number...")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full rounded-lg border border-border/80 bg-background/50 pl-10 pr-4 py-2 text-xs focus:border-primary focus:outline-none"
@@ -839,45 +979,135 @@ function AdminPage() {
             </div>
 
             <div className="flex w-full md:w-auto items-center gap-3 self-stretch md:self-auto justify-end">
-              <select
-                value={statusFilter}
-                onChange={(e) =>
-                  setStatusFilter(
-                    e.target.value as
-                      | "all"
-                      | "active"
-                      | "cancelled"
-                      | "withdrawn"
-                      | "pending"
-                      | "paused"
-                      | "archived",
-                  )
-                }
-                className="rounded-lg border border-border/80 bg-background/80 px-3.5 py-2 text-xs font-semibold text-foreground/80 focus:border-primary focus:outline-none"
-              >
-                <option value="all">{t("All Statuses")}</option>
-                <option value="active">{t("Active")}</option>
-                <option value="pending">{t("Pending")}</option>
-                <option value="paused">{t("Paused")}</option>
-                <option value="cancelled">{t("Terminated")}</option>
-                <option value="withdrawn">{t("Withdrawn Status")}</option>
-                <option value="archived">{t("Archived")}</option>
-              </select>
+              {!showTrash && (
+                <>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) =>
+                      setStatusFilter(
+                        e.target.value as
+                          | "all"
+                          | "active"
+                          | "cancelled"
+                          | "withdrawn"
+                          | "pending"
+                          | "paused"
+                          | "archived",
+                      )
+                    }
+                    className="rounded-lg border border-border/80 bg-background/80 px-3.5 py-2 text-xs font-semibold text-foreground/80 focus:border-primary focus:outline-none"
+                  >
+                    <option value="all">{t("All Statuses")}</option>
+                    <option value="active">{t("Active")}</option>
+                    <option value="pending">{t("Pending")}</option>
+                    <option value="paused">{t("Paused")}</option>
+                    <option value="cancelled">{t("Terminated")}</option>
+                    <option value="withdrawn">{t("Withdrawn Status")}</option>
+                    <option value="archived">{t("Archived")}</option>
+                  </select>
 
-              <button
-                onClick={handleExportCSV}
-                disabled={filteredSubscriptions.length === 0}
-                className="flex items-center gap-1.5 rounded-lg bg-secondary border border-border/80 px-3.5 py-2 text-xs font-semibold text-secondary-foreground hover:bg-muted transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>{t("Export CSV")}</span>
-              </button>
+                  <button
+                    onClick={handleExportCSV}
+                    disabled={filteredSubscriptions.length === 0}
+                    className="flex items-center gap-1.5 rounded-lg bg-secondary border border-border/80 px-3.5 py-2 text-xs font-semibold text-secondary-foreground hover:bg-muted transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>{t("Export CSV")}</span>
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
           {/* Subscriptions Grid / Table */}
           <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-            {loading ? (
+            {showTrash ? (
+              loadingDeleted ? (
+                <div className="py-20 flex flex-col items-center justify-center gap-3 text-muted-foreground">
+                  <Loader2 className="w-7 h-7 animate-spin text-primary" />
+                  <span className="text-xs">{t("Loading trash data...")}</span>
+                </div>
+              ) : filteredDeletedSubscriptions.length === 0 ? (
+                <div className="py-20 text-center text-muted-foreground text-xs">
+                  {t("Trash bin is empty.")}
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-border bg-muted/30 text-muted-foreground/80 uppercase font-semibold tracking-wider">
+                        <th className="px-5 py-3.5">{t("Contract ID")}</th>
+                        <th className="px-5 py-3.5">{t("Customer")}</th>
+                        <th className="px-5 py-3.5">{t("Date of Birth")}</th>
+                        <th className="px-5 py-3.5">{t("Payment Method")}</th>
+                        <th className="px-5 py-3.5">{t("Signed At")}</th>
+                        <th className="px-5 py-3.5 text-right">{t("Actions")}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/60">
+                      {filteredDeletedSubscriptions.map((sub) => (
+                        <tr key={sub.contractId} className="hover:bg-muted/15 transition-colors">
+                          <td className="px-5 py-4 font-mono font-semibold text-foreground/90 whitespace-nowrap">
+                            {sub.contractId}
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="font-semibold text-foreground">{sub.fullName}</div>
+                            <div className="text-[10px] text-muted-foreground mt-0.5">
+                              {sub.email} | {sub.phone}
+                            </div>
+                          </td>
+                          <td className="px-5 py-4 text-muted-foreground whitespace-nowrap">
+                            {sub.birthDate || "-"}
+                          </td>
+                          <td className="px-5 py-4 whitespace-nowrap text-muted-foreground">
+                            {sub.paymentMethod === "sepa" ? (
+                              <div>
+                                <span className="font-semibold text-foreground/80">
+                                  {t("SEPA Lastschrift")}
+                                </span>
+                                <div className="text-[10px] font-mono mt-0.5">{sub.maskedIban}</div>
+                              </div>
+                            ) : (
+                              <span className="font-semibold text-foreground/80">
+                                {t("Wallet Express")}
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-5 py-4 text-muted-foreground whitespace-nowrap">
+                            {sub.createdAt
+                              ? new Date(sub.createdAt).toLocaleString("de-DE", {
+                                  dateStyle: "short",
+                                  timeStyle: "short",
+                                })
+                              : "-"}
+                          </td>
+                          <td className="px-5 py-4 whitespace-nowrap text-right space-x-1">
+                            <button
+                              onClick={() => handleRestoreSubscription(sub)}
+                              disabled={updatingId === sub.contractId}
+                              className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 hover:bg-muted font-medium transition text-emerald-600 hover:text-emerald-700 cursor-pointer disabled:opacity-50"
+                              title={t("Restore Subscription")}
+                            >
+                              <RotateCcw className="w-3.5 h-3.5" />
+                              <span>{t("Restore")}</span>
+                            </button>
+                            <button
+                              onClick={() => handlePermanentlyDeleteSubscription(sub)}
+                              disabled={updatingId === sub.contractId}
+                              className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 hover:bg-destructive/10 hover:border-destructive/30 font-medium transition text-destructive cursor-pointer disabled:opacity-50"
+                              title={t("Delete Permanently")}
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                              <span>{t("Delete Permanently")}</span>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )
+            ) : loading ? (
               <div className="py-20 flex flex-col items-center justify-center gap-3 text-muted-foreground">
                 <Loader2 className="w-7 h-7 animate-spin text-primary" />
                 <span className="text-xs">{t("Loading dashboard data...")}</span>

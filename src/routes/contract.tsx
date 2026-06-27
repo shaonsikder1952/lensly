@@ -265,7 +265,6 @@ function ContractPage() {
       const canvas = await html2canvas(clone, {
         scale: 2.5,
         useCORS: true,
-        letterRendering: true,
         backgroundColor: "#ffffff",
       });
 

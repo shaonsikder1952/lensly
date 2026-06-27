@@ -7,6 +7,9 @@ import {
   confirmSubscriptionPaymentServer,
   deleteSubscriptionServer,
   editSubscriptionServer,
+  getDeletedSubscriptionsServer,
+  restoreSubscriptionServer,
+  permanentlyDeleteSubscriptionServer,
 } from "../subscriptions.server";
 import { getServerConfig } from "../config.server";
 import Stripe from "stripe";
@@ -237,6 +240,69 @@ export const adminEditSubscription = createServerFn({ method: "POST" })
       country: data.updatedFields.country,
       status: data.updatedFields.status,
     });
+  });
+
+export const getDeletedSubscriptions = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      adminToken: z.string().min(1),
+    }),
+  )
+  .handler(async ({ data }) => {
+    if (!isValidAdminToken(data.adminToken)) {
+      throw new Error("Unauthorized: invalid admin token");
+    }
+    const list = await getDeletedSubscriptionsServer();
+    return list.map((item) => ({
+      id: item.id,
+      contractId: item.contract_id,
+      fullName: item.full_name,
+      email: item.email,
+      phone: item.phone,
+      birthDate: item.birth_date,
+      birthPlace: item.birth_place,
+      profession: item.profession,
+      streetAddress: item.street_address,
+      postalCode: item.postal_code,
+      city: item.city,
+      paymentMethod: item.payment_method,
+      maskedIban: item.masked_iban,
+      signatureType: item.signature_type,
+      signatureData: item.signature_data,
+      status: item.status,
+      createdAt: item.created_at,
+      updatedAt: item.updated_at,
+    }));
+  });
+
+export const restoreSubscription = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      adminToken: z.string().min(1),
+      contractId: z.string().min(1),
+      email: z.string().email(),
+    }),
+  )
+  .handler(async ({ data }) => {
+    if (!isValidAdminToken(data.adminToken)) {
+      throw new Error("Unauthorized: invalid admin token");
+    }
+    return await restoreSubscriptionServer(data.contractId, data.email);
+  });
+
+export const permanentlyDeleteSubscription = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      adminToken: z.string().min(1),
+      contractId: z.string().min(1),
+      email: z.string().email(),
+    }),
+  )
+  .handler(async ({ data }) => {
+    if (!isValidAdminToken(data.adminToken)) {
+      throw new Error("Unauthorized: invalid admin token");
+    }
+    return await permanentlyDeleteSubscriptionServer(data.contractId, data.email);
   });
 
 // --- Stripe Checkout Endpoints ---
