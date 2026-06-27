@@ -243,8 +243,12 @@ function ContractPage() {
 
     let clone: HTMLElement | null = null;
     try {
-      // @ts-ignore - use pre-bundled dist to avoid Vite SSR module resolution issues
-      const html2pdf = (await import("html2pdf.js/dist/html2pdf.bundle.min.js")).default;
+      const [html2canvasMod, jsPDFMod] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+      const html2canvas = html2canvasMod.default;
+      const jsPDF = jsPDFMod.default;
 
       clone = element.cloneNode(true) as HTMLElement;
       clone.classList.remove("hidden");
@@ -258,20 +262,40 @@ function ContractPage() {
       clone.style.top = "0";
       document.body.appendChild(clone);
 
-      const opt = {
-        margin: 0.25,
-        filename: filename,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2.5, useCORS: true, letterRendering: true },
-        jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-      };
+      const canvas = await html2canvas(clone, {
+        scale: 2.5,
+        useCORS: true,
+        letterRendering: true,
+        backgroundColor: "#ffffff",
+      });
 
-      await html2pdf().set(opt).from(clone).save();
+      const imgData = canvas.toDataURL("image/jpeg", 0.98);
+      const pdf = new jsPDF({ orientation: "portrait", unit: "in", format: "letter" });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const margin = 0.25;
+      const contentWidth = pdfWidth - margin * 2;
+      const imgHeight = (canvas.height * contentWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = margin;
+
+      pdf.addImage(imgData, "JPEG", margin, position, contentWidth, imgHeight);
+      heightLeft -= pdfHeight - margin * 2;
+
+      while (heightLeft > 0) {
+        position = -(pdfHeight - margin * 2 - margin) + margin;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", margin, position - (imgHeight - heightLeft - (pdfHeight - margin * 2)), contentWidth, imgHeight);
+        heightLeft -= pdfHeight - margin * 2;
+      }
+
+      pdf.save(filename);
       setDownloadingPDF(false);
     } catch (err) {
       console.error("PDF generation failed:", err);
       setDownloadingPDF(false);
-      alert("PDF download failed. Please try again.");
+      alert("PDF download failed: " + (err instanceof Error ? err.message : String(err)));
     } finally {
       if (clone && document.body.contains(clone)) {
         document.body.removeChild(clone);
