@@ -164,6 +164,7 @@ function CheckoutPage() {
   // UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState("");
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   // Apple Pay / Google Pay Modal Simulation
   const [showWalletModal, setShowWalletModal] = useState(false);
@@ -593,16 +594,63 @@ function CheckoutPage() {
 
 
 
-  // Print function with dynamic filename
-  const handlePrint = () => {
-    if (checkoutData) {
-      const firstName = checkoutData.fullName.trim().split(" ")[0].toLowerCase();
+  const loadScript = (src: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve();
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = (err) => reject(err);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!checkoutData) return;
+    setDownloadingPDF(true);
+    const firstName = checkoutData.fullName.trim().split(" ")[0].toLowerCase();
+    const filename = `lensly_contract_${firstName}.pdf`;
+
+    const element = document.getElementById("printable-contract-document");
+    if (!element) {
+      setDownloadingPDF(false);
+      return;
+    }
+
+    try {
+      await loadScript(
+        "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js",
+      );
+
+      const clone = element.cloneNode(true) as HTMLElement;
+      clone.classList.remove("hidden");
+      clone.style.display = "block";
+      clone.style.background = "#ffffff";
+      clone.style.color = "#000000";
+      clone.style.padding = "24px";
+      clone.style.width = "750px";
+
+      const opt = {
+        margin: 0.25,
+        filename: filename,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2.5, useCORS: true, letterRendering: true },
+        jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+      };
+
+      // @ts-ignore
+      await window.html2pdf().set(opt).from(clone).save();
+      setDownloadingPDF(false);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
       const originalTitle = document.title;
       document.title = `lensly_contract_${firstName}`;
       window.print();
       document.title = originalTitle;
-    } else {
-      window.print();
+      setDownloadingPDF(false);
     }
   };
 
@@ -873,11 +921,16 @@ function CheckoutPage() {
                 {/* Success action buttons */}
                 <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center no-print">
                   <button
-                    onClick={handlePrint}
-                    className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
+                    onClick={handleDownloadPDF}
+                    disabled={downloadingPDF}
+                    className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 shadow-sm flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
-                    <Download className="w-4 h-4" />
-                    {t("Download Signed Contract (PDF)")}
+                    {downloadingPDF ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Download className="w-4 h-4" />
+                    )}
+                    {downloadingPDF ? t("Downloading...") : t("Download Signed Contract (PDF)")}
                   </button>
                   <Link
                     to="/"

@@ -14,6 +14,7 @@ import {
   AlertCircle,
   Download,
   RotateCcw,
+  Loader2,
 } from "lucide-react";
 
 export const Route = createFileRoute("/contract")({
@@ -42,6 +43,7 @@ interface SignedContractData {
 function ContractPage() {
   const { t } = useLanguage();
   const [signedData, setSignedData] = useState<SignedContractData | null>(null);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   // Form State
   const [fullName, setFullName] = useState("");
@@ -227,9 +229,64 @@ function ContractPage() {
     }
   };
 
-  // Simulated PDF download (using browser print or simple notification)
-  const handleDownload = () => {
-    window.print();
+  const loadScript = (src: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve();
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = (err) => reject(err);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!signedData) return;
+    setDownloadingPDF(true);
+    const firstName = signedData.fullName.trim().split(" ")[0].toLowerCase();
+    const filename = `lensly_contract_${firstName}.pdf`;
+
+    const element = document.getElementById("printable-contract-document");
+    if (!element) {
+      setDownloadingPDF(false);
+      return;
+    }
+
+    try {
+      await loadScript(
+        "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js",
+      );
+
+      const clone = element.cloneNode(true) as HTMLElement;
+      clone.classList.remove("hidden");
+      clone.style.display = "block";
+      clone.style.background = "#ffffff";
+      clone.style.color = "#000000";
+      clone.style.padding = "24px";
+      clone.style.width = "750px";
+
+      const opt = {
+        margin: 0.25,
+        filename: filename,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2.5, useCORS: true, letterRendering: true },
+        jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+      };
+
+      // @ts-ignore
+      await window.html2pdf().set(opt).from(clone).save();
+      setDownloadingPDF(false);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      const originalTitle = document.title;
+      document.title = `lensly_contract_${firstName}`;
+      window.print();
+      document.title = originalTitle;
+      setDownloadingPDF(false);
+    }
   };
 
   return (
@@ -350,11 +407,16 @@ function ContractPage() {
               {/* Action Buttons */}
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 <button
-                  onClick={handleDownload}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/95 shadow-sm"
+                  onClick={handleDownloadPDF}
+                  disabled={downloadingPDF}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/95 shadow-sm disabled:opacity-50"
                 >
-                  <Download className="w-4 h-4" />
-                  {t("Print or Save Contract")}
+                  {downloadingPDF ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {downloadingPDF ? t("Downloading...") : t("Print or Save Contract")}
                 </button>
                 <button
                   onClick={handleReset}
@@ -363,6 +425,120 @@ function ContractPage() {
                   <RotateCcw className="w-4 h-4" />
                   {t("Revoke & Resign")}
                 </button>
+              </div>
+
+              {/* Printable Document Block wrapper */}
+              <div
+                id="printable-contract-document"
+                className="hidden"
+              >
+                <div className="text-center pb-4 border-b border-border/60">
+                  <h2 className="font-display font-bold text-foreground uppercase tracking-widest text-sm">
+                    {t("LENSLY CARE SUBSCRIPTION AGREEMENT (SIGNED)")}
+                  </h2>
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    {t("Contract Reference ID")}:{" "}
+                    <span className="font-mono font-semibold text-foreground">
+                      {signedData.contractId}
+                    </span>
+                  </p>
+                </div>
+
+                {/* Certified Metadata Grid */}
+                <div className="grid gap-y-3.5 grid-cols-2 gap-x-8 border-b border-border/65 pb-4 mt-4">
+                  <div>
+                    <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                      {t("Contract ID")}
+                    </span>
+                    <span className="font-mono text-foreground font-semibold block mt-0.5">
+                      {signedData.contractId}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                      {t("Executed Timestamp")}
+                    </span>
+                    <span className="text-foreground block mt-0.5">
+                      {new Date(signedData.signedAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                      {t("Subscriber")}
+                    </span>
+                    <span className="text-foreground font-semibold block mt-0.5">
+                      {signedData.fullName}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                      {t("Email Address")}
+                    </span>
+                    <span className="text-foreground block mt-0.5">{signedData.email}</span>
+                  </div>
+                </div>
+
+                {/* GTC Full Agreement Text embedded inside the PDF print block */}
+                <div className="space-y-4 text-[10px] leading-relaxed text-muted-foreground/90 pb-4 border-b border-border/65 mt-4 select-text">
+                  <h3 className="font-bold text-foreground text-[10px] uppercase tracking-wider text-center">
+                    {t("AGREEMENT TERMS & CONDITIONS")}
+                  </h3>
+
+                  <p>
+                    <strong>{t("1. Contracting Parties:")}</strong>{" "}
+                    {t(
+                      "This agreement is entered into between Lensly UG (haftungsbeschränkt), Düsseldorf, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.",
+                    )}
+                  </p>
+                  <p>
+                    <strong>{t("2. Subscription Scope:")}</strong>{" "}
+                    {t(
+                      "The subscription provides 1 complete custom-made pair of prescription glasses per contract year at €29.00/month. The plan includes a safety net of up to 3 free prescription or accident replacements per subscription year.",
+                    )}
+                  </p>
+                  <p>
+                    <strong>{t("3. Term & Cancellation:")}</strong>{" "}
+                    {t(
+                      "This contract features a mandatory 12-month fixed minimum term. Ordinary cancellation prior to the end of the 12th month is excluded. Thereafter, the contract automatically converts into rolling monthly renewals cancelable at any time with 30 days notice.",
+                    )}
+                  </p>
+                  <p>
+                    <strong>{t("4. Medical MDR Device:")}</strong>{" "}
+                    {t(
+                      "Prescription lenses are Class I Medical Devices under European Medical Device Regulation (EU MDR). Lenses and frames carry CE conformity certifications.",
+                    )}
+                  </p>
+                  <p>
+                    <strong>{t("5. Withdrawal Waiver:")}</strong>{" "}
+                    {t(
+                      "Under § 312g Abs. 2 Nr. 1 BGB, the statutory 14-day consumer right of withdrawal does not apply to goods custom-made to customer specifications. Right of withdrawal regarding individual custom glass routing expires prematurely once production begins.",
+                    )}
+                  </p>
+                </div>
+
+                {/* Digital Signature block */}
+                <div className="mt-4">
+                  <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block mb-2">
+                    {t("Authorized Electronic Signature")}
+                  </span>
+                  <div className="border border-dashed border-border/80 bg-card rounded-lg h-20 flex items-center justify-center p-2 relative overflow-hidden">
+                    {signedData.signatureType === "draw" ? (
+                      <img
+                        src={signedData.signatureData}
+                        alt="Signature"
+                        className="max-h-full max-w-full object-contain pointer-events-none select-none"
+                      />
+                    ) : (
+                      <span className="font-serif italic text-2xl text-primary font-medium tracking-wide">
+                        {signedData.signatureData}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex justify-between items-center mt-2 text-[8px] font-mono text-muted-foreground">
+                    <span>{t("E-SIGNATURE COMPLIANT (eIDAS REGULATION)")}</span>
+                    <span>SHA-256: {signedData.contractId.replace("-", "")}FD3A...</span>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-8 text-xs">
