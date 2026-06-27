@@ -148,14 +148,7 @@ function CheckoutPage() {
   const [consentLocked, setConsentLocked] = useState(false);
   const [paymentType, setPaymentType] = useState<"sepa" | "wallet">("sepa");
 
-  // OTP Verification States
-  const [showOtpModal, setShowOtpModal] = useState(false);
-  const [otpEmailInput, setOtpEmailInput] = useState("");
-  const [otpPhoneInput, setOtpPhoneInput] = useState("");
-  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
-  const [otpError, setOtpError] = useState("");
-  const [devCodes, setDevCodes] = useState<{ emailCode: string; phoneCode: string } | null>(null);
-  const [pendingPaymentAction, setPendingPaymentAction] = useState<(() => void) | null>(null);
+
 
   // SEPA Details
   const [accountHolder, setAccountHolder] = useState("");
@@ -207,12 +200,11 @@ function CheckoutPage() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         if (showWalletModal) setShowWalletModal(false);
-        if (showOtpModal) setShowOtpModal(false);
       }
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [showWalletModal, showOtpModal]);
+  }, [showWalletModal]);
 
   // Drawing Event Handlers
   const startDrawing = (
@@ -393,26 +385,7 @@ function CheckoutPage() {
     }
 
     const fullPhone = phoneCountryCode + " " + phone.trim();
-    setIsSubmitting(true);
-
-    sendVerificationCodes({ data: { email: email.trim(), phone: fullPhone } })
-      .then((res) => {
-        setIsSubmitting(false);
-        if (res.success) {
-          if (res.devCodes) {
-            setDevCodes(res.devCodes);
-          }
-          setPendingPaymentAction(() => () => startSepaPayment(signatureVal, fullPhone));
-          setShowOtpModal(true);
-        } else {
-          setValidationError(t("Failed to send verification codes. Please try again."));
-        }
-      })
-      .catch((err) => {
-        setIsSubmitting(false);
-        console.error("Failed to send verification codes:", err);
-        setValidationError(t("Failed to send verification codes. Please try again."));
-      });
+    startSepaPayment(signatureVal, fullPhone);
   };
 
   const startSepaPayment = (signatureVal: string, fullPhone: string) => {
@@ -492,26 +465,7 @@ function CheckoutPage() {
     if (!valid) return;
 
     const fullPhone = phoneCountryCode + " " + phone.trim();
-    setIsSubmitting(true);
-
-    sendVerificationCodes({ data: { email: email.trim(), phone: fullPhone } })
-      .then((res) => {
-        setIsSubmitting(false);
-        if (res.success) {
-          if (res.devCodes) {
-            setDevCodes(res.devCodes);
-          }
-          setPendingPaymentAction(() => () => startWalletPayment(signatureVal, fullPhone));
-          setShowOtpModal(true);
-        } else {
-          setValidationError(t("Failed to send verification codes. Please try again."));
-        }
-      })
-      .catch((err) => {
-        setIsSubmitting(false);
-        console.error("Failed to send verification codes:", err);
-        setValidationError(t("Failed to send verification codes. Please try again."));
-      });
+    startWalletPayment(signatureVal, fullPhone);
   };
 
   const startWalletPayment = (signatureVal: string, fullPhone: string) => {
@@ -637,40 +591,7 @@ function CheckoutPage() {
     }, 1500);
   };
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
-    e.preventDefault();
-    setOtpError("");
-    setIsVerifyingOtp(true);
 
-    const fullPhone = phoneCountryCode + " " + phone.trim();
-    verifyCodes({
-      data: {
-        email: email.trim(),
-        phone: fullPhone,
-        emailCode: otpEmailInput,
-        phoneCode: otpPhoneInput,
-      },
-    })
-      .then((res) => {
-        setIsVerifyingOtp(false);
-        if (res.valid) {
-          setShowOtpModal(false);
-          setOtpEmailInput("");
-          setOtpPhoneInput("");
-          setDevCodes(null);
-          if (pendingPaymentAction) {
-            pendingPaymentAction();
-          }
-        } else {
-          setOtpError(t(res.error || "Invalid verification codes."));
-        }
-      })
-      .catch((err) => {
-        setIsVerifyingOtp(false);
-        console.error("OTP verification error:", err);
-        setOtpError(t("Failed to verify codes. Please try again."));
-      });
-  };
 
   // Print function with dynamic filename
   const handlePrint = () => {
@@ -1606,87 +1527,6 @@ function CheckoutPage() {
                 </p>
               </div>
             )}
-          </div>
-        </div>
-      )}
-      {/* OTP Verification Modal */}
-      {showOtpModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl p-6 relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <button
-              onClick={() => setShowOtpModal(false)}
-              className="absolute top-4 right-4 text-xs text-muted-foreground hover:text-foreground font-semibold cursor-pointer"
-            >
-              ✕
-            </button>
-
-            <div className="text-center py-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto text-primary mb-4">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h4 className="font-display font-semibold text-foreground text-base">
-                {t("Verify Contact Details")}
-              </h4>
-              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                {t("For contract execution and shipping safety, please enter the verification codes sent to your email and phone number.")}
-              </p>
-
-              {otpError && (
-                <div className="mt-4 flex items-center gap-2 rounded-lg bg-destructive/10 p-2.5 text-xs text-destructive text-left">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{otpError}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleVerifyOtp} className="mt-6 space-y-4 text-left">
-                <div>
-                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                    {t("Email OTP Code")}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={6}
-                    value={otpEmailInput}
-                    onChange={(e) => setOtpEmailInput(e.target.value.replace(/\D/g, ""))}
-                    placeholder="123456"
-                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-center text-sm font-mono tracking-widest focus:border-primary focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                    {t("SMS OTP Code")}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={6}
-                    value={otpPhoneInput}
-                    onChange={(e) => setOtpPhoneInput(e.target.value.replace(/\D/g, ""))}
-                    placeholder="123456"
-                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-center text-sm font-mono tracking-widest focus:border-primary focus:outline-none"
-                  />
-                </div>
-
-
-
-                <button
-                  type="submit"
-                  disabled={isVerifyingOtp}
-                  className="w-full rounded-lg bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground hover:bg-primary/95 transition-all cursor-pointer flex items-center justify-center gap-1.5 mt-6"
-                >
-                  {isVerifyingOtp ? (
-                    <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      {t("Verifying...")}
-                    </>
-                  ) : (
-                    t("Confirm & Continue to Payment")
-                  )}
-                </button>
-              </form>
-            </div>
           </div>
         </div>
       )}
