@@ -437,7 +437,7 @@ function AdminPage() {
     let clone: HTMLElement | null = null;
     try {
       const [html2canvasMod, jsPDFMod] = await Promise.all([
-        import("html2canvas"),
+        import("html2canvas-pro"),
         import("jspdf"),
       ]);
       const html2canvas = html2canvasMod.default;
@@ -453,50 +453,7 @@ function AdminPage() {
       clone.style.position = "absolute";
       clone.style.left = "-9999px";
       clone.style.top = "0";
-
-      // Override oklch CSS variables with hex equivalents for html2canvas compatibility
-      const cssVarOverrides: Record<string, string> = {
-        "--background": "#ffffff",
-        "--foreground": "#0a0a0a",
-        "--card": "#ffffff",
-        "--card-foreground": "#0a0a0a",
-        "--popover": "#ffffff",
-        "--popover-foreground": "#0a0a0a",
-        "--primary": "#171717",
-        "--primary-foreground": "#fafafa",
-        "--secondary": "#f5f5f5",
-        "--secondary-foreground": "#171717",
-        "--muted": "#f5f5f5",
-        "--muted-foreground": "#737373",
-        "--accent": "#f5f5f5",
-        "--accent-foreground": "#171717",
-        "--destructive": "#ef4444",
-        "--destructive-foreground": "#fafafa",
-        "--border": "#e5e5e5",
-        "--input": "#e5e5e5",
-        "--ring": "#0a0a0a",
-      };
-      for (const [key, value] of Object.entries(cssVarOverrides)) {
-        clone.style.setProperty(key, value);
-      }
-
       document.body.appendChild(clone);
-
-      // Force-replace oklch computed colors on all child elements
-      const allElements = clone.querySelectorAll("*");
-      allElements.forEach((el) => {
-        const htmlEl = el as HTMLElement;
-        const computed = getComputedStyle(htmlEl);
-        if (computed.color.includes("oklch")) {
-          htmlEl.style.color = "#0a0a0a";
-        }
-        if (computed.backgroundColor.includes("oklch")) {
-          htmlEl.style.backgroundColor = "#ffffff";
-        }
-        if (computed.borderColor.includes("oklch")) {
-          htmlEl.style.borderColor = "#e5e5e5";
-        }
-      });
 
       const canvas = await html2canvas(clone, {
         scale: 2.5,
