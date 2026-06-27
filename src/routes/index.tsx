@@ -194,6 +194,49 @@ function Hero() {
             "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.",
           )}
         </p>
+
+        {/* 3 Arched Value Cards */}
+        <div className="grid grid-cols-3 gap-4.5 max-w-md mx-auto mt-8 mb-8 no-print">
+          {/* Card 1: 1 Free Pair */}
+          <div className="group flex flex-col items-center justify-center p-4 border border-border/70 bg-card/30 backdrop-blur-xs rounded-t-full rounded-b-2xl shadow-xs transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-sm aspect-[3/4.2]">
+            <div className="w-11 h-11 bg-primary/10 text-primary rounded-full flex items-center justify-center font-display font-bold text-xl mb-2.5 border border-primary/15 transition group-hover:scale-105">
+              1
+            </div>
+            <p className="text-[11.5px] font-semibold text-foreground tracking-tight leading-tight">
+              {t("Free Pair")}
+            </p>
+            <p className="text-[9px] text-muted-foreground mt-1 leading-normal">
+              {t("Every single year")}
+            </p>
+          </div>
+
+          {/* Card 2: 3 Free Replacements */}
+          <div className="group flex flex-col items-center justify-center p-4 border border-primary/20 bg-card/50 backdrop-blur-xs rounded-t-full rounded-b-2xl shadow-xs transition duration-300 hover:-translate-y-1 hover:border-primary/45 hover:shadow-sm aspect-[3/4.2] scale-[1.05] relative z-10 ring-1 ring-primary/5">
+            <div className="w-11 h-11 bg-primary/15 text-primary rounded-full flex items-center justify-center font-display font-bold text-xl mb-2.5 border border-primary/25 transition group-hover:scale-105">
+              3
+            </div>
+            <p className="text-[11.5px] font-semibold text-foreground tracking-tight leading-tight text-center">
+              {t("Free Replacements")}
+            </p>
+            <p className="text-[9px] text-muted-foreground mt-1 leading-normal">
+              {t("Free of cost")}
+            </p>
+          </div>
+
+          {/* Card 3: €29 Only */}
+          <div className="group flex flex-col items-center justify-center p-4 border border-border/70 bg-card/30 backdrop-blur-xs rounded-t-full rounded-b-2xl shadow-xs transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-sm aspect-[3/4.2]">
+            <div className="w-11 h-11 bg-primary/10 text-primary rounded-full flex items-center justify-center font-display font-semibold text-sm mb-2.5 border border-primary/15 transition group-hover:scale-105">
+              €29
+            </div>
+            <p className="text-[11.5px] font-semibold text-foreground tracking-tight leading-tight">
+              {t("Only")}
+            </p>
+            <p className="text-[9px] text-muted-foreground mt-1 leading-normal">
+              {t("Flat rate")}
+            </p>
+          </div>
+        </div>
+
         <div className="mt-5 flex items-center justify-center gap-4">
           <a
             href="/#plan"

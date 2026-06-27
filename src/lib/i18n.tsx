@@ -216,6 +216,12 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Wenn Sie Auskunft über Ihre Daten wünschen oder die Löschung beantragen möchten, schreiben Sie uns an:": "Wenn Sie Auskunft über Ihre Daten wünschen oder die Löschung beantragen möchten, schreiben Sie uns an:",
     "Saved when using replacements": "Gespart bei Nutzung von Ersatzleistungen",
     "Lensly subscription (incl. replacements)": "Lensly-Abo (inkl. Ersatzleistungen)",
+    "Free Pair": "Brille gratis",
+    "Every single year": "Jedes einzelne Jahr",
+    "Free Replacements": "Kostenloser Ersatz",
+    "Free of cost": "Völlig kostenfrei",
+    "Only": "Nur",
+    "Flat rate": "Flatrate",
   },
   fr: {
     "Start for €29/mo": "S'abonner pour 29 €/mois",
@@ -347,6 +353,12 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Do I buy the frame or do you?": "Est-ce moi qui achète la monture ou vous ?",
     "We source the frame for you based on your photo or screenshot. It is included in your subscription, nothing extra to pay.":
       "Nous trouvons la monture pour vous à partir de votre photo ou capture d'écran. Elle est incluse dans votre abonnement, aucun frais supplémentaire à prévoir.",
+    "Free Pair": "Paire gratuite",
+    "Every single year": "Chaque année",
+    "Free Replacements": "Remplacements gratuits",
+    "Free of cost": "Sans frais",
+    "Only": "Seulement",
+    "Flat rate": "Forfait",
   },
   es: {
     "Start for €29/mo": "Iniciar por 29 €/mes",
@@ -477,6 +489,12 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Do I buy the frame or do you?": "¿Tengo que comprar la montura yo o la compráis vosotros?",
     "We source the frame for you based on your photo or screenshot. It is included in your subscription, nothing extra to pay.":
       "Nosotros conseguimos la montura basándonos en tu foto o captura. Está incluida en tu suscripción, no tienes que pagar nada extra.",
+    "Free Pair": "Gafas gratis",
+    "Every single year": "Cada año",
+    "Free Replacements": "Reemplazos gratis",
+    "Free of cost": "Sin coste alguno",
+    "Only": "Solo",
+    "Flat rate": "Tarifa plana",
   },
   it: {
     "Start for €29/mo": "Inizia con 29 €/mese",
@@ -609,6 +627,12 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Do I buy the frame or do you?": "La montura la compro io o voi?",
     "We source the frame for you based on your photo or screenshot. It is included in your subscription, nothing extra to pay.":
       "Reperiamo noi la montatura per te in base alla tua foto o screenshot. È inclusa nel tuo abbonamento, non devi pagare nulla in più.",
+    "Free Pair": "Paio gratis",
+    "Every single year": "Ogni singolo anno",
+    "Free Replacements": "Sostituzioni gratis",
+    "Free of cost": "Senza costi aggiuntivi",
+    "Only": "Solo",
+    "Flat rate": "Tariffa fissa",
   },
 };
 
