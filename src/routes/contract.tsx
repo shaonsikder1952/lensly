@@ -229,20 +229,6 @@ function ContractPage() {
     }
   };
 
-  const loadScript = (src: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      if (document.querySelector(`script[src="${src}"]`)) {
-        resolve();
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = src;
-      script.onload = () => resolve();
-      script.onerror = (err) => reject(err);
-      document.body.appendChild(script);
-    });
-  };
-
   const handleDownloadPDF = async () => {
     if (!signedData) return;
     setDownloadingPDF(true);
@@ -256,9 +242,8 @@ function ContractPage() {
     }
 
     try {
-      await loadScript(
-        "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js",
-      );
+      // @ts-ignore
+      const html2pdf = (await import("html2pdf.js")).default;
 
       const clone = element.cloneNode(true) as HTMLElement;
       clone.classList.remove("hidden");
@@ -276,8 +261,7 @@ function ContractPage() {
         jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
       };
 
-      // @ts-ignore
-      await window.html2pdf().set(opt).from(clone).save();
+      await html2pdf().set(opt).from(clone).save();
       setDownloadingPDF(false);
     } catch (err) {
       console.error("PDF generation failed:", err);
