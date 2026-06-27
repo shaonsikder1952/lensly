@@ -243,8 +243,8 @@ function ContractPage() {
 
     let clone: HTMLElement | null = null;
     try {
-      // @ts-ignore
-      const html2pdf = (await import("html2pdf.js")).default;
+      // @ts-ignore - use pre-bundled dist to avoid Vite SSR module resolution issues
+      const html2pdf = (await import("html2pdf.js/dist/html2pdf.bundle.min.js")).default;
 
       clone = element.cloneNode(true) as HTMLElement;
       clone.classList.remove("hidden");
@@ -270,11 +270,8 @@ function ContractPage() {
       setDownloadingPDF(false);
     } catch (err) {
       console.error("PDF generation failed:", err);
-      const originalTitle = document.title;
-      document.title = `lensly_contract_${firstName}`;
-      window.print();
-      document.title = originalTitle;
       setDownloadingPDF(false);
+      alert("PDF download failed. Please try again.");
     } finally {
       if (clone && document.body.contains(clone)) {
         document.body.removeChild(clone);
