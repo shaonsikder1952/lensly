@@ -22,10 +22,101 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <Hero />
+      <Benefits />
       <Plan />
+      <Process />
       <Faq />
       <Footer />
     </div>
+  );
+}
+
+function Process() {
+  const { t } = useLanguage();
+  return (
+    <section className="border-b border-border/60 bg-background relative overflow-hidden">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12 sm:py-16">
+        <div className="text-center max-w-2xl mx-auto mb-10 md:mb-12">
+          <h2 className="font-display text-xl md:text-2xl font-bold tracking-tight text-foreground">
+            {t("How it works")}
+          </h2>
+          <p className="mt-2 text-[11px] md:text-xs text-muted-foreground leading-relaxed">
+            {t("Get your custom prescription glasses in five simple steps.")}
+          </p>
+        </div>
+
+        {/* Process steps horizontal timeline grid */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-5 sm:gap-4.5 relative">
+          {/* Subtle connector line for desktop */}
+          <div className="hidden sm:block absolute top-[16px] left-[5%] right-[5%] h-[1px] bg-border z-0" />
+
+          {/* Step 1 */}
+          <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/60 sm:border-0 shadow-xs sm:shadow-none">
+            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-background sm:ring-8">
+              1
+            </div>
+            <h3 className="font-display font-semibold text-xs.5 text-foreground leading-snug">
+              {t("Subscribe via Stripe")}
+            </h3>
+            <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
+              {t("Select your plan and complete checkout securely.")}
+            </p>
+          </div>
+
+          {/* Step 2 */}
+          <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/60 sm:border-0 shadow-xs sm:shadow-none">
+            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-background sm:ring-8">
+              2
+            </div>
+            <h3 className="font-display font-semibold text-xs.5 text-foreground leading-snug">
+              {t("E-mail contact within 24 hours")}
+            </h3>
+            <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
+              {t("We reach out to gather your custom prescription details.")}
+            </p>
+          </div>
+
+          {/* Step 3 */}
+          <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/60 sm:border-0 shadow-xs sm:shadow-none">
+            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-background sm:ring-8">
+              3
+            </div>
+            <h3 className="font-display font-semibold text-xs.5 text-foreground leading-snug">
+              {t("Send us prescription, pupillary distance & chosen frame")}
+            </h3>
+            <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
+              {t("Simply reply with your values and a photo/screenshot of any frame you want.")}
+            </p>
+          </div>
+
+          {/* Step 4 */}
+          <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/60 sm:border-0 shadow-xs sm:shadow-none">
+            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-background sm:ring-8">
+              4
+            </div>
+            <h3 className="font-display font-semibold text-xs.5 text-foreground leading-snug">
+              {t("Sourcing & production")}
+            </h3>
+            <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
+              {t("We purchase your frame and craft your custom lenses to specification.")}
+            </p>
+          </div>
+
+          {/* Step 5 */}
+          <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/60 sm:border-0 shadow-xs sm:shadow-none">
+            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-background sm:ring-8">
+              5
+            </div>
+            <h3 className="font-display font-semibold text-xs.5 text-foreground leading-snug">
+              {t("Delivered to your door")}
+            </h3>
+            <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
+              {t("Your finished prescription eyewear arrives in approximately 15 days.")}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -189,55 +280,13 @@ function Hero() {
           />
         </div>
 
-        <p className="mx-auto mt-5 max-w-md text-[14px] leading-relaxed text-muted-foreground md:max-w-xl md:text-base">
+        <p className="mx-auto mt-6 max-w-md text-[14px] leading-relaxed text-muted-foreground md:max-w-xl md:text-base">
           {t(
             "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.",
           )}
         </p>
 
-        {/* 3 Arched Value Cards */}
-        <div className="grid grid-cols-3 gap-4.5 max-w-md mx-auto mt-8 mb-8 no-print">
-          {/* Card 1: 1 Free Pair */}
-          <div className="group flex flex-col items-center justify-center p-4 border border-border/70 bg-card/30 backdrop-blur-xs rounded-t-full rounded-b-2xl shadow-xs transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-sm aspect-[3/4.2]">
-            <div className="w-11 h-11 bg-primary/10 text-primary rounded-full flex items-center justify-center font-display font-bold text-xl mb-2.5 border border-primary/15 transition group-hover:scale-105">
-              1
-            </div>
-            <p className="text-[11.5px] font-semibold text-foreground tracking-tight leading-tight">
-              {t("Free Pair")}
-            </p>
-            <p className="text-[9px] text-muted-foreground mt-1 leading-normal">
-              {t("Every single year")}
-            </p>
-          </div>
-
-          {/* Card 2: 3 Free Replacements */}
-          <div className="group flex flex-col items-center justify-center p-4 border border-primary/20 bg-card/50 backdrop-blur-xs rounded-t-full rounded-b-2xl shadow-xs transition duration-300 hover:-translate-y-1 hover:border-primary/45 hover:shadow-sm aspect-[3/4.2] scale-[1.05] relative z-10 ring-1 ring-primary/5">
-            <div className="w-11 h-11 bg-primary/15 text-primary rounded-full flex items-center justify-center font-display font-bold text-xl mb-2.5 border border-primary/25 transition group-hover:scale-105">
-              3
-            </div>
-            <p className="text-[11.5px] font-semibold text-foreground tracking-tight leading-tight text-center">
-              {t("Free Replacements")}
-            </p>
-            <p className="text-[9px] text-muted-foreground mt-1 leading-normal">
-              {t("Free of cost")}
-            </p>
-          </div>
-
-          {/* Card 3: €29 Only */}
-          <div className="group flex flex-col items-center justify-center p-4 border border-border/70 bg-card/30 backdrop-blur-xs rounded-t-full rounded-b-2xl shadow-xs transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-sm aspect-[3/4.2]">
-            <div className="w-11 h-11 bg-primary/10 text-primary rounded-full flex items-center justify-center font-display font-semibold text-sm mb-2.5 border border-primary/15 transition group-hover:scale-105">
-              €29
-            </div>
-            <p className="text-[11.5px] font-semibold text-foreground tracking-tight leading-tight">
-              {t("Only")}
-            </p>
-            <p className="text-[9px] text-muted-foreground mt-1 leading-normal">
-              {t("Flat rate")}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-5 flex items-center justify-center gap-4">
+        <div className="mt-6 flex items-center justify-center gap-4">
           <a
             href="/#plan"
             className="group inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition hover:opacity-90 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)]"
@@ -306,93 +355,154 @@ function Hero() {
   );
 }
 
+function Benefits() {
+  const { t } = useLanguage();
+  return (
+    <section className="border-b border-border/60 bg-background py-16 sm:py-20 relative overflow-hidden">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 max-w-4xl mx-auto text-left">
+          {/* Feature 1 */}
+          <div className="border-t-2 border-primary/25 pt-6 transition duration-300 hover:border-primary">
+            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary/70 uppercase block">
+              01 / {t("Annual Benefit")}
+            </span>
+            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
+              {t("1 Free Pair Every Year")}
+            </h3>
+            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+              {t("Receive a complete new pair of prescription glasses delivered to your door annually.")}
+            </p>
+          </div>
+
+          {/* Feature 2 */}
+          <div className="border-t-2 border-primary pt-6 transition duration-300 relative">
+            <div className="absolute -top-2.5 right-0 bg-primary text-primary-foreground text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-xs">
+              {t("Included")}
+            </div>
+            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary uppercase block">
+              02 / {t("Peace of Mind")}
+            </span>
+            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
+              {t("3 Free Replacements")}
+            </h3>
+            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+              {t("Accident coverage included. We replace broken lenses or update prescription at zero cost.")}
+            </p>
+          </div>
+
+          {/* Feature 3 */}
+          <div className="border-t-2 border-primary/25 pt-6 transition duration-300 hover:border-primary">
+            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary/70 uppercase block">
+              03 / {t("Pricing Model")}
+            </span>
+            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
+              {t("Flat €29 Monthly Only")}
+            </h3>
+            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+              {t("All-inclusive subscription with zero retail markup or surprise medical billings.")}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Plan() {
   const { t } = useLanguage();
   return (
     <section id="plan" className="border-b border-border/60 bg-[var(--mint)]/30">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12 sm:py-20">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-12 sm:py-16">
         {/* Comparison Grid */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Traditional Optician Card */}
-          <div className="rounded-2xl border border-border bg-card p-5 sm:p-8 shadow-sm transition hover:shadow-md">
-            <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              {t("Traditional optician")}
-            </p>
-            <div className="mt-5 font-display text-5xl font-semibold tracking-tight text-foreground/35 line-through decoration-[oklch(0.7_0.17_55)] decoration-[3px]">
-              €400
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-7 shadow-sm transition hover:shadow-md flex flex-col justify-between">
+            <div>
+              <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                {t("Traditional optician")}
+              </p>
+              <div className="mt-5 font-display text-5xl font-semibold tracking-tight text-foreground/35 line-through decoration-[oklch(0.7_0.17_55)] decoration-[3px]">
+                €400
+              </div>
+              <p className="mt-2 text-xs font-medium text-muted-foreground/80 uppercase tracking-wider">
+                {t("Upfront · 1 pair · no free replacements")}
+              </p>
+              <ul className="mt-6 space-y-3.5 border-t border-border/60 pt-6 text-[13px] text-muted-foreground">
+                <li className="flex items-center gap-2.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
+                  {t("Wait 2–3 years to save up money and buy again")}
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
+                  {t("Accidental replacements cost full retail price")}
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
+                  {t("Coatings & high-index lenses billed as extras")}
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
+                  {t("Outdated prescription within 12 months")}
+                </li>
+              </ul>
             </div>
-            <p className="mt-2 text-xs font-medium text-muted-foreground/80 uppercase tracking-wider">
-              {t("Upfront · 1 pair · no free replacements")}
-            </p>
-            <ul className="mt-6 space-y-3.5 border-t border-border/60 pt-6 text-sm text-muted-foreground">
-              <li className="flex items-center gap-2.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                {t("Wait 2–3 years to save up money and buy again")}
-              </li>
-              <li className="flex items-center gap-2.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                {t("Accidental replacements cost full retail price")}
-              </li>
-              <li className="flex items-center gap-2.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                {t("Coatings & high-index lenses billed as extras")}
-              </li>
-              <li className="flex items-center gap-2.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                {t("Outdated prescription within 12 months")}
-              </li>
-            </ul>
           </div>
 
           {/* Lensly Care Card (Featured) */}
-          <div className="relative rounded-2xl border-2 border-primary bg-card p-5 sm:p-8 shadow-md transition hover:shadow-lg">
+          <div className="relative rounded-2xl border-2 border-primary bg-card p-5 sm:p-7 shadow-md transition hover:shadow-lg flex flex-col justify-between">
             <div className="absolute -top-3 right-8 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
               {t("Lensly Care")}
             </div>
-            <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-primary">
-              {t("The subscription")}
-            </p>
-            <div className="mt-5 flex items-baseline gap-2">
-              <span className="font-display text-6xl font-semibold tracking-tight text-primary">
-                €29
-              </span>
-              <span className="text-base font-medium text-muted-foreground">{t("/ month")}</span>
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {t("Continuous vision care")} ·{" "}
-              <span className="font-semibold text-foreground">{t("€0.95 a day")}</span> (
-              {t("less than a daily coffee")}).
-            </p>
-            <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-sm">
-              <Feature>{t("1 new pair of precision lenses every year")}</Feature>
-              <Feature>
-                {t("3 free replacements (broken, power change? We got you covered)")}
-              </Feature>
-              <Feature>{t("Premium lenses, anti-reflective & UV-400 coatings included")}</Feature>
-              <Feature>{t("Free shipping EU-wide · minimum 1 year contract")}</Feature>
-            </ul>
-            <div className="mt-6 border-t border-border/60 pt-6 text-left">
-              <h4 className="text-[11px] font-bold uppercase tracking-[0.15em] text-foreground">
-                {t("What's next?")}
-              </h4>
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                {t(
-                  "To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.",
-                )}
+            <div>
+              <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-primary">
+                {t("The subscription")}
               </p>
+              <div className="mt-5 flex items-baseline gap-2">
+                <span className="font-display text-6xl font-semibold tracking-tight text-primary">
+                  €29
+                </span>
+                <span className="text-base font-medium text-muted-foreground">{t("/ month")}</span>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("Continuous vision care")} ·{" "}
+                <span className="font-semibold text-foreground">{t("€0.95 a day")}</span> (
+                {t("less than a daily coffee")}).
+              </p>
+              <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-[13px]">
+                <Feature>{t("1 new pair of precision lenses every year")}</Feature>
+                <Feature>
+                  {t("3 free replacements (broken, power change? We got you covered)")}
+                </Feature>
+                <Feature>{t("Premium lenses, anti-reflective & UV-400 coatings included")}</Feature>
+                <Feature>{t("Free shipping EU-wide · minimum 1 year contract")}</Feature>
+              </ul>
             </div>
-
-            <Link
-              to="/checkout"
-              className="mt-5 block w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)]"
-            >
-              {t("Subscribe to Lensly Care")}
-            </Link>
-
-            <p className="mt-3 text-center text-[10px] text-muted-foreground/80">
-              {t("Secure checkout via Stripe")}
-            </p>
           </div>
+        </div>
+
+        {/* What's next info box */}
+        <div className="mt-8 rounded-2xl border border-border bg-card/70 p-5 sm:p-6 max-w-xl mx-auto text-left shadow-xs">
+          <h4 className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground">
+            {t("What's next?")}
+          </h4>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            {t(
+              "To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.",
+            )}
+          </p>
+        </div>
+
+        {/* Subscribe CTA Button */}
+        <div className="mt-6 max-w-md mx-auto text-center px-4">
+          <Link
+            to="/checkout"
+            className="block w-full rounded-lg bg-primary py-3.5 text-center text-sm font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition-all hover:bg-primary/95 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)]"
+          >
+            {t("Subscribe to Lensly Care")}
+          </Link>
+          <p className="mt-3 text-center text-[10px] text-muted-foreground/80">
+            {t("Secure checkout via Stripe")}
+          </p>
         </div>
 
         {/* The math */}
@@ -698,70 +808,6 @@ export function Faq() {
             "Yes. You choose any frame you like, from any brand, online shop, or store. Send us a photo or screenshot and we source it for you. No limitations.",
           )}
         </p>
-      ),
-    },
-    {
-      q: t("What is the exact process for my first pair?"),
-      a: (
-        <div className="mt-1 space-y-4">
-          <div className="relative pl-5 border-l-2 border-primary/20 space-y-4.5 py-1">
-            <div className="relative">
-              <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              </div>
-              <h5 className="font-semibold text-xs sm:text-sm text-foreground">
-                {t("1. Subscribe via Stripe")}
-              </h5>
-              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">
-                {t("Select your plan and complete checkout securely.")}
-              </p>
-            </div>
-            <div className="relative">
-              <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              </div>
-              <h5 className="font-semibold text-xs sm:text-sm text-foreground">
-                {t("2. E-mail contact within 24 hours")}
-              </h5>
-              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">
-                {t("We reach out to gather your custom prescription details.")}
-              </p>
-            </div>
-            <div className="relative">
-              <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              </div>
-              <h5 className="font-semibold text-xs sm:text-sm text-foreground">
-                {t("3. Send us prescription, pupillary distance & chosen frame")}
-              </h5>
-              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">
-                {t("Simply reply with your values and a photo/screenshot of any frame you want.")}
-              </p>
-            </div>
-            <div className="relative">
-              <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              </div>
-              <h5 className="font-semibold text-xs sm:text-sm text-foreground">
-                {t("4. Sourcing & production")}
-              </h5>
-              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">
-                {t("We purchase your frame and craft your custom lenses to specification.")}
-              </p>
-            </div>
-            <div className="relative">
-              <div className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border-2 border-primary bg-background flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              </div>
-              <h5 className="font-semibold text-xs sm:text-sm text-foreground">
-                {t("5. Delivered to your door")}
-              </h5>
-              <p className="text-[11px] sm:text-xs text-muted-foreground/90 mt-0.5">
-                {t("Your finished prescription eyewear arrives in approximately 15 days.")}
-              </p>
-            </div>
-          </div>
-        </div>
       ),
     },
     {
