@@ -111,8 +111,6 @@ function AdminPage() {
 
   // Modal State for Deleting Subscriber
   const [deletingSub, setDeletingSub] = useState<SubscriptionItem | null>(null);
-  const [deleteConfirmText, setDeleteConfirmText] = useState("");
-  const [deleteConfirmCheckbox, setDeleteConfirmCheckbox] = useState(false);
 
   // Load unlock state from sessionStorage on mount
   useEffect(() => {
@@ -328,8 +326,6 @@ function AdminPage() {
             prev.filter((sub) => sub.contractId !== deletingSub.contractId),
           );
           setDeletingSub(null);
-          setDeleteConfirmText("");
-          setDeleteConfirmCheckbox(false);
         } else {
           alert(t("Failed to delete subscription. Record not found."));
         }
@@ -1510,13 +1506,13 @@ function AdminPage() {
       {deletingSub && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm no-print">
           <div className="fixed inset-0" onClick={() => setDeletingSub(null)} />
-          <div className="relative w-full max-w-md bg-card border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col">
+          <div className="relative w-full max-w-sm bg-card border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-destructive/20 bg-destructive/5 px-5 py-4">
               <div className="flex items-center gap-2 text-destructive">
                 <ShieldAlert className="w-4 h-4" />
                 <h3 className="font-display font-semibold text-sm">
-                  {t("Confirm Permanent Deletion")}
+                  {t("Delete Subscriber")}
                 </h3>
               </div>
               <button
@@ -1528,46 +1524,16 @@ function AdminPage() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-5">
               <p className="text-xs text-muted-foreground leading-relaxed">
-                {t("Warning: You are about to permanently delete the subscription details for")}{" "}
+                {t("Delete")}{" "}
                 <strong className="text-foreground">{deletingSub.fullName}</strong> (
-                {deletingSub.contractId}).{" "}
-                {t("This action is permanent and cannot be undone.")}
+                {deletingSub.contractId})?{" "}
+                {t("This cannot be undone.")}
               </p>
 
-              {/* Checkbox safety 1 */}
-              <label className="flex items-start gap-2.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={deleteConfirmCheckbox}
-                  onChange={(e) => setDeleteConfirmCheckbox(e.target.checked)}
-                  className="mt-0.5 rounded border-border"
-                />
-                <span className="text-[11px] text-muted-foreground select-none leading-tight">
-                  {t("I understand this will permanently delete all records of this subscriber.")}
-                </span>
-              </label>
-
-              {/* Text validation safety 2 */}
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
-                  {t("Type contract ID to confirm:")}{" "}
-                  <span className="font-mono text-foreground font-semibold">
-                    {deletingSub.contractId}
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  value={deleteConfirmText}
-                  onChange={(e) => setDeleteConfirmText(e.target.value)}
-                  placeholder={deletingSub.contractId}
-                  className="w-full rounded-lg border border-border/80 bg-background/50 px-3 py-2 text-xs focus:border-primary focus:outline-none font-mono"
-                />
-              </div>
-
               {/* Modal Actions */}
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setDeletingSub(null)}
@@ -1578,17 +1544,13 @@ function AdminPage() {
                 <button
                   type="button"
                   onClick={handleDeleteSubscription}
-                  disabled={
-                    !deleteConfirmCheckbox ||
-                    deleteConfirmText !== deletingSub.contractId ||
-                    updatingId === deletingSub.contractId
-                  }
+                  disabled={updatingId === deletingSub.contractId}
                   className="rounded-lg bg-destructive px-3.5 py-1.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer"
                 >
                   {updatingId === deletingSub.contractId && (
                     <Loader2 className="w-3 h-3 animate-spin" />
                   )}
-                  <span>{t("Permanently Delete")}</span>
+                  <span>{t("Delete")}</span>
                 </button>
               </div>
             </div>
