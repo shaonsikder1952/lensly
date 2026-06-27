@@ -22,7 +22,6 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <Hero />
-      <Benefits />
       <Plan />
       <Process />
       <Faq />
@@ -248,7 +247,53 @@ function Hero() {
       <div className="pointer-events-none absolute inset-0 grid-bg opacity-50" />
       <div className="pointer-events-none absolute left-1/2 top-[62%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 radial-glow" />
 
-      <div className="relative mx-auto max-w-3xl px-4 sm:px-6 pt-10 pb-12 text-center md:pt-14 md:pb-16">
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 pt-10 pb-12 text-center md:pt-12 md:pb-16">
+        
+        {/* 3 Premium Value Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 max-w-4xl mx-auto mb-12 text-left border-b border-border/60 pb-8 md:pb-10 no-print">
+          {/* Feature 1 */}
+          <div className="border-t-2 border-primary/25 pt-6 transition duration-300 hover:border-primary">
+            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary/70 uppercase block">
+              01 / {t("Annual Benefit")}
+            </span>
+            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
+              {t("1 Free Pair Every Year")}
+            </h3>
+            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+              {t("Receive a complete new pair of prescription glasses delivered to your door annually.")}
+            </p>
+          </div>
+
+          {/* Feature 2 */}
+          <div className="border-t-2 border-primary pt-6 transition duration-300 relative">
+            <div className="absolute -top-2.5 right-0 bg-primary text-primary-foreground text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-xs">
+              {t("Included")}
+            </div>
+            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary uppercase block">
+              02 / {t("Peace of Mind")}
+            </span>
+            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
+              {t("3 Free Replacements")}
+            </h3>
+            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+              {t("Accident coverage included. We replace broken lenses or update prescription at zero cost.")}
+            </p>
+          </div>
+
+          {/* Feature 3 */}
+          <div className="border-t-2 border-primary/25 pt-6 transition duration-300 hover:border-primary">
+            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary/70 uppercase block">
+              03 / {t("Pricing Model")}
+            </span>
+            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
+              {t("Flat €29 Monthly Only")}
+            </h3>
+            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+              {t("All-inclusive subscription with zero retail markup or surprise medical billings.")}
+            </p>
+          </div>
+        </div>
+
         <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
           {t("One plan · €29 / month")}
         </p>
@@ -355,58 +400,7 @@ function Hero() {
   );
 }
 
-function Benefits() {
-  const { t } = useLanguage();
-  return (
-    <section className="border-b border-border/60 bg-background py-16 sm:py-20 relative overflow-hidden">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 max-w-4xl mx-auto text-left">
-          {/* Feature 1 */}
-          <div className="border-t-2 border-primary/25 pt-6 transition duration-300 hover:border-primary">
-            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary/70 uppercase block">
-              01 / {t("Annual Benefit")}
-            </span>
-            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
-              {t("1 Free Pair Every Year")}
-            </h3>
-            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
-              {t("Receive a complete new pair of prescription glasses delivered to your door annually.")}
-            </p>
-          </div>
 
-          {/* Feature 2 */}
-          <div className="border-t-2 border-primary pt-6 transition duration-300 relative">
-            <div className="absolute -top-2.5 right-0 bg-primary text-primary-foreground text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-xs">
-              {t("Included")}
-            </div>
-            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary uppercase block">
-              02 / {t("Peace of Mind")}
-            </span>
-            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
-              {t("3 Free Replacements")}
-            </h3>
-            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
-              {t("Accident coverage included. We replace broken lenses or update prescription at zero cost.")}
-            </p>
-          </div>
-
-          {/* Feature 3 */}
-          <div className="border-t-2 border-primary/25 pt-6 transition duration-300 hover:border-primary">
-            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary/70 uppercase block">
-              03 / {t("Pricing Model")}
-            </span>
-            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
-              {t("Flat €29 Monthly Only")}
-            </h3>
-            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
-              {t("All-inclusive subscription with zero retail markup or surprise medical billings.")}
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function Plan() {
   const { t } = useLanguage();
