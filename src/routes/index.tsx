@@ -251,8 +251,8 @@ function Hero() {
         <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
           {t("One plan · €29 / month")}
         </p>
-        <h1 className="animate-fade-in mx-auto mt-3 max-w-[18ch] font-display text-[34px] font-semibold leading-[1.05] tracking-tight md:text-[52px]">
-          {t("New glasses every ")}
+        <h1 className="animate-fade-in mx-auto mt-3 max-w-[22ch] font-display text-[34px] font-semibold leading-[1.05] tracking-tight md:text-[52px]">
+          {t("Precision vision care, renewed every ")}
           <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
         </h1>
 

@@ -16,8 +16,8 @@ const initialTranslations: Record<Language, Record<string, string>> = {
   de: {
     "Start for €29/mo": "Starten für 29 €/Monat",
     "One plan · €29 / month": "Ein Tarif · 29 € / Monat",
-    "New glasses every ": "Jedes Jahr neue ",
-    "year.": "Brille.",
+    "Precision vision care, renewed every ": "Erstklassige Sehversorgung, erneuert jedes ",
+    "year.": "Jahr.",
     "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.":
       "Frische Korrekturbrillen jedes Jahr an Ihre Tür geliefert. Beschädigt oder neues Rezept nötig? Drei kostenlose Ersatzgläser inklusive. Keine Optikerbesuche, keine Überraschungskosten.",
     "See the plan": "Tarif ansehen",
@@ -236,7 +236,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
   fr: {
     "Start for €29/mo": "S'abonner pour 29 €/mois",
     "One plan · €29 / month": "Un plan · 29 € / mois",
-    "New glasses every ": "De nouvelles lunettes chaque ",
+    "Precision vision care, renewed every ": "Soins visuels de précision, renouvelés chaque ",
     "year.": "an.",
     "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.":
       "Des lunettes correctrices neuves livrées à votre porte chaque année. Cassées ou besoin d'une nouvelle ordonnance ? Trois remplacements gratuits inclus. Pas de visite chez l'opticien, pas de frais surprises.",
@@ -373,7 +373,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
   es: {
     "Start for €29/mo": "Iniciar por 29 €/mes",
     "One plan · €29 / month": "Un plan · 29 € / mes",
-    "New glasses every ": "Gafas nuevas cada ",
+    "Precision vision care, renewed every ": "Cuidado visual de precisión, renovado cada ",
     "year.": "año.",
     "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.":
       "Gafas graduadas nuevas entregadas en tu puerta cada año. ¿Se te rompen o necesitas una nueva receta? Tres reemplazos gratuitos incluidos. Sin visitas al óptico, sin costes sorpresa.",
@@ -509,7 +509,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
   it: {
     "Start for €29/mo": "Inizia con 29 €/mese",
     "One plan · €29 / month": "Un piano · 29 € / mese",
-    "New glasses every ": "Occhiali nuovi ogni ",
+    "Precision vision care, renewed every ": "Cura della vista di precisione, rinnovata ogni ",
     "year.": "anno.",
     "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.":
       "Occhiali da vista nuovi consegnati a casa tua ogni anno. Si rompono o hai bisogno di una nuova ricetta? Tre sostituzioni gratuite incluse. Nessuna visita dall'ottico, nessun costo a sorpresa.",
