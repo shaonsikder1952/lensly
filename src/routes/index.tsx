@@ -279,48 +279,60 @@ function Hero() {
           />
         </div>
 
-        {/* 3 Premium Value Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 max-w-4xl mx-auto mt-12 mb-12 text-left border-t border-border/60 pt-10 no-print">
-          {/* Feature 1 */}
-          <div className="border-t-2 border-primary/25 pt-6 transition duration-300 hover:border-primary">
-            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary/70 uppercase block">
-              01 / {t("Annual Benefit")}
-            </span>
-            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
-              {t("1 Free Pair Every Year")}
-            </h3>
-            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
-              {t("Receive a complete new pair of prescription glasses delivered to your door annually.")}
-            </p>
+        {/* 3 Premium Value Features - Symmetric Squircle Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-14 mb-14 no-print px-4 text-left">
+          {/* Card 1: 1 Free Pair */}
+          <div className="group relative flex flex-col justify-between p-7 bg-white/70 border border-primary/10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.01)] transition duration-500 hover:-translate-y-1.5 hover:shadow-md hover:border-primary/25">
+            {/* Background glow shadow */}
+            <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 to-teal-500/5 blur-lg -z-10" />
+            <div>
+              <div className="w-12 h-12 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-base transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5">
+                01
+              </div>
+              <h3 className="font-display font-semibold text-[17px] text-foreground mt-6 tracking-tight">
+                {t("1 Free Pair Every Year")}
+              </h3>
+              <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+                {t("Receive a complete new pair of prescription glasses delivered to your door annually.")}
+              </p>
+            </div>
           </div>
 
-          {/* Feature 2 */}
-          <div className="border-t-2 border-primary pt-6 transition duration-300 relative">
-            <div className="absolute -top-2.5 right-0 bg-primary text-primary-foreground text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-xs">
+          {/* Card 2: 3 Free Replacements */}
+          <div className="group relative flex flex-col justify-between p-7 bg-white border-2 border-primary rounded-3xl shadow-xs transition duration-500 hover:-translate-y-1.5 hover:shadow-md">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[8px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full whitespace-nowrap shadow-xs">
               {t("Included")}
             </div>
-            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary uppercase block">
-              02 / {t("Peace of Mind")}
-            </span>
-            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
-              {t("3 Free Replacements")}
-            </h3>
-            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
-              {t("Accident coverage included. We replace broken lenses or update prescription at zero cost.")}
-            </p>
+            {/* Background glow shadow */}
+            <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 to-emerald-500/5 blur-lg -z-10" />
+            <div>
+              <div className="w-12 h-12 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-base transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5">
+                02
+              </div>
+              <h3 className="font-display font-semibold text-[17px] text-foreground mt-6 tracking-tight">
+                {t("3 Free Replacements")}
+              </h3>
+              <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+                {t("Accident coverage included. We replace broken lenses or update prescription at zero cost.")}
+              </p>
+            </div>
           </div>
 
-          {/* Feature 3 */}
-          <div className="border-t-2 border-primary/25 pt-6 transition duration-300 hover:border-primary">
-            <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-primary/70 uppercase block">
-              03 / {t("Pricing Model")}
-            </span>
-            <h3 className="font-display font-semibold text-lg text-foreground mt-2.5 tracking-tight">
-              {t("Flat €29 Monthly Only")}
-            </h3>
-            <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
-              {t("All-inclusive subscription with zero retail markup or surprise medical billings.")}
-            </p>
+          {/* Card 3: €29 Only */}
+          <div className="group relative flex flex-col justify-between p-7 bg-white/70 border border-primary/10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.01)] transition duration-500 hover:-translate-y-1.5 hover:shadow-md hover:border-primary/25">
+            {/* Background glow shadow */}
+            <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 to-amber/5 blur-lg -z-10" />
+            <div>
+              <div className="w-12 h-12 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-base transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5">
+                03
+              </div>
+              <h3 className="font-display font-semibold text-[17px] text-foreground mt-6 tracking-tight">
+                {t("Flat €29 Monthly Only")}
+              </h3>
+              <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+                {t("All-inclusive subscription with zero retail markup or surprise medical billings.")}
+              </p>
+            </div>
           </div>
         </div>
 
