@@ -23,99 +23,9 @@ function Index() {
       <Nav />
       <Hero />
       <Plan />
-      <Process />
       <Faq />
       <Footer />
     </div>
-  );
-}
-
-function Process() {
-  const { t } = useLanguage();
-  return (
-    <section className="border-b border-border/60 bg-background relative overflow-hidden">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12 sm:py-16">
-        <div className="text-center max-w-2xl mx-auto mb-10 md:mb-12">
-          <h2 className="font-display text-xl md:text-2xl font-bold tracking-tight text-foreground">
-            {t("How it works")}
-          </h2>
-          <p className="mt-2 text-[11px] md:text-xs text-muted-foreground leading-relaxed">
-            {t("Get your custom prescription glasses in five simple steps.")}
-          </p>
-        </div>
-
-        {/* Process steps horizontal timeline grid */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-5 sm:gap-4.5 relative">
-          {/* Subtle connector line for desktop */}
-          <div className="hidden sm:block absolute top-[16px] left-[5%] right-[5%] h-[1px] bg-border z-0" />
-
-          {/* Step 1 */}
-          <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/60 sm:border-0 shadow-xs sm:shadow-none">
-            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-background sm:ring-8">
-              1
-            </div>
-            <h3 className="font-display font-semibold text-xs.5 text-foreground leading-snug">
-              {t("Subscribe via Stripe")}
-            </h3>
-            <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
-              {t("Select your plan and complete checkout securely.")}
-            </p>
-          </div>
-
-          {/* Step 2 */}
-          <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/60 sm:border-0 shadow-xs sm:shadow-none">
-            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-background sm:ring-8">
-              2
-            </div>
-            <h3 className="font-display font-semibold text-xs.5 text-foreground leading-snug">
-              {t("E-mail contact within 24 hours")}
-            </h3>
-            <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
-              {t("We reach out to gather your custom prescription details.")}
-            </p>
-          </div>
-
-          {/* Step 3 */}
-          <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/60 sm:border-0 shadow-xs sm:shadow-none">
-            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-background sm:ring-8">
-              3
-            </div>
-            <h3 className="font-display font-semibold text-xs.5 text-foreground leading-snug">
-              {t("Send us prescription, pupillary distance & chosen frame")}
-            </h3>
-            <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
-              {t("Simply reply with your values and a photo/screenshot of any frame you want.")}
-            </p>
-          </div>
-
-          {/* Step 4 */}
-          <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/60 sm:border-0 shadow-xs sm:shadow-none">
-            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-background sm:ring-8">
-              4
-            </div>
-            <h3 className="font-display font-semibold text-xs.5 text-foreground leading-snug">
-              {t("Sourcing & production")}
-            </h3>
-            <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
-              {t("We purchase your frame and craft your custom lenses to specification.")}
-            </p>
-          </div>
-
-          {/* Step 5 */}
-          <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/60 sm:border-0 shadow-xs sm:shadow-none">
-            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-background sm:ring-8">
-              5
-            </div>
-            <h3 className="font-display font-semibold text-xs.5 text-foreground leading-snug">
-              {t("Delivered to your door")}
-            </h3>
-            <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
-              {t("Your finished prescription eyewear arrives in approximately 15 days.")}
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -479,20 +389,90 @@ function Plan() {
           </div>
         </div>
 
-        {/* What's next info box */}
-        <div className="mt-8 rounded-2xl border border-border bg-card/70 p-5 sm:p-6 max-w-xl mx-auto text-left shadow-xs">
-          <h4 className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground">
-            {t("What's next?")}
-          </h4>
-          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-            {t(
-              "To start your plan, subscribe to Lensly Care. Once payment is complete, our team will contact you to select your frames and collect your prescription or doctor's report.",
-            )}
-          </p>
+        {/* How it works timeline */}
+        <div className="mt-12 border-t border-border/40 pt-10">
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <h4 className="font-display text-sm font-semibold tracking-wider text-primary uppercase">
+              {t("How it works")}
+            </h4>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("Get your custom prescription glasses in five simple steps.")}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-5 sm:gap-4.5 relative text-left">
+            {/* Subtle connector line for desktop */}
+            <div className="hidden sm:block absolute top-[16px] left-[5%] right-[5%] h-[1px] bg-border/60 z-0" />
+
+            {/* Step 1 */}
+            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/40 sm:border-0 shadow-xs sm:shadow-none">
+              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-card sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
+                1
+              </div>
+              <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
+                {t("Subscribe via Stripe")}
+              </h5>
+              <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
+                {t("Select your plan and complete checkout securely.")}
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/40 sm:border-0 shadow-xs sm:shadow-none">
+              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-card sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
+                2
+              </div>
+              <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
+                {t("E-mail contact within 24 hours")}
+              </h5>
+              <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
+                {t("We reach out to gather your custom prescription details.")}
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/40 sm:border-0 shadow-xs sm:shadow-none">
+              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-card sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
+                3
+              </div>
+              <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug truncate max-w-full sm:whitespace-normal">
+                {t("Send frame details")}
+              </h5>
+              <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
+                {t("Simply reply with your values and a photo/screenshot of any frame you want.")}
+              </p>
+            </div>
+
+            {/* Step 4 */}
+            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/40 sm:border-0 shadow-xs sm:shadow-none">
+              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-card sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
+                4
+              </div>
+              <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
+                {t("Sourcing & production")}
+              </h5>
+              <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
+                {t("We purchase your frame and craft your custom lenses to specification.")}
+              </p>
+            </div>
+
+            {/* Step 5 */}
+            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-4.5 sm:p-0 rounded-xl border border-border/40 sm:border-0 shadow-xs sm:shadow-none">
+              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-card sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
+                5
+              </div>
+              <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
+                {t("Delivered to your door")}
+              </h5>
+              <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
+                {t("Your finished prescription eyewear arrives in approximately 15 days.")}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Subscribe CTA Button */}
-        <div className="mt-6 max-w-md mx-auto text-center px-4">
+        <div className="mt-10 max-w-md mx-auto text-center px-4">
           <Link
             to="/checkout"
             className="block w-full rounded-lg bg-primary py-3.5 text-center text-sm font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition-all hover:bg-primary/95 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)]"
@@ -507,7 +487,7 @@ function Plan() {
         {/* The math */}
         <div className="mt-8 grid gap-6 rounded-2xl border border-border bg-card p-5 sm:p-8 md:grid-cols-3">
           <Math k="€1,600" l={t("Traditional optician (4 pairs)")} />
-          <Math k="€348/yr" l={t("Lensly subscription (incl. replacements)")} highlight />
+          <Math k="€29/month" l={t("Lensly subscription (incl. replacements)")} highlight />
           <Math k="€1,252" l={t("Saved when using replacements")} />
         </div>
 
