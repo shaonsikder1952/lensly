@@ -313,55 +313,26 @@ function Hero() {
 
 function Plan() {
   const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState<"traditional" | "lensly">("lensly");
   const [insuranceTab, setInsuranceTab] = useState<"insurance" | "lensly">("lensly");
 
   return (
     <section id="plan" className="border-b border-border/60 bg-[var(--mint)]/30">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-12 sm:py-16">
-        {/* Mobile Tab Switcher */}
-        <div className="flex md:hidden bg-muted/70 p-1 rounded-lg border border-border/80 max-w-xs mx-auto mb-6">
-          <button
-            type="button"
-            onClick={() => setActiveTab("lensly")}
-            className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-              activeTab === "lensly"
-                ? "bg-card text-primary shadow-xs font-bold"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {t("Lensly Care")}
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("traditional")}
-            className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-              activeTab === "traditional"
-                ? "bg-card text-foreground/80 shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {t("Traditional optician")}
-          </button>
-        </div>
-
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 sm:py-16">
         {/* Comparison Grid */}
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-4.5 md:grid-cols-2">
           {/* Traditional Optician Card */}
-          <div className={`rounded-2xl border border-border bg-card p-5 sm:p-7 shadow-sm transition hover:shadow-md flex flex-col justify-between ${
-            activeTab === "traditional" ? "flex" : "hidden md:flex"
-          }`}>
+          <div className="rounded-2xl border border-border bg-card p-4.5 sm:p-7 shadow-xs flex flex-col justify-between">
             <div>
-              <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              <p className="label-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 {t("Traditional optician")}
               </p>
-              <div className="mt-5 font-display text-5xl font-semibold tracking-tight text-foreground/35 line-through decoration-[oklch(0.7_0.17_55)] decoration-[3px]">
+              <div className="mt-3.5 font-display text-4xl sm:text-5xl font-semibold tracking-tight text-foreground/35 line-through decoration-[oklch(0.7_0.17_55)] decoration-[3px]">
                 €400
               </div>
-              <p className="mt-2 text-xs font-medium text-muted-foreground/80 uppercase tracking-wider">
+              <p className="mt-1.5 text-[11px] font-medium text-muted-foreground/80 uppercase tracking-wider">
                 {t("Upfront · 1 pair · no free replacements")}
               </p>
-              <ul className="mt-6 space-y-3.5 border-t border-border/60 pt-6 text-[13px] text-muted-foreground">
+              <ul className="mt-4 space-y-2.5 border-t border-border/60 pt-4 text-xs sm:text-[13px] text-muted-foreground">
                 <li className="flex items-center gap-2.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
                   {t("Wait 2–3 years to save up money and buy again")}
@@ -383,28 +354,26 @@ function Plan() {
           </div>
 
           {/* Lensly Care Card (Featured) */}
-          <div className={`relative rounded-2xl border-2 border-primary bg-card p-5 sm:p-7 shadow-md transition hover:shadow-lg flex flex-col justify-between ${
-            activeTab === "lensly" ? "flex" : "hidden md:flex"
-          }`}>
+          <div className="relative rounded-2xl border-2 border-primary bg-card p-4.5 sm:p-7 shadow-xs flex flex-col justify-between">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
               {t("Lensly Care")}
             </div>
             <div>
-              <p className="label-mono text-[11px] uppercase tracking-[0.2em] text-primary">
+              <p className="label-mono text-[10px] uppercase tracking-[0.2em] text-primary">
                 {t("The subscription")}
               </p>
-              <div className="mt-5 flex items-baseline gap-2">
-                <span className="font-display text-6xl font-semibold tracking-tight text-primary">
+              <div className="mt-3.5 flex items-baseline gap-2">
+                <span className="font-display text-5xl sm:text-6xl font-semibold tracking-tight text-primary">
                   €29
                 </span>
-                <span className="text-base font-medium text-muted-foreground">{t("/ month")}</span>
+                <span className="text-sm font-medium text-muted-foreground">{t("/ month")}</span>
               </div>
-              <p className="mt-2 text-xs text-muted-foreground">
+              <p className="mt-1.5 text-xs text-muted-foreground">
                 {t("Continuous vision care")} ·{" "}
                 <span className="font-semibold text-foreground">{t("€0.95 a day")}</span> (
                 {t("less than a daily coffee")}).
               </p>
-              <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-[13px]">
+              <ul className="mt-4 space-y-2.5 border-t border-border pt-4 text-xs sm:text-[13px]">
                 <Feature>{t("1 new pair of precision lenses every year")}</Feature>
                 <Feature>
                   {t("3 free replacements (broken, power change? We got you covered)")}
@@ -413,7 +382,7 @@ function Plan() {
                 <Feature>{t("Free shipping EU-wide · minimum 1 year contract")}</Feature>
               </ul>
             </div>
-            <div className="mt-6 pt-6 border-t border-border/60">
+            <div className="mt-4.5 pt-4 border-t border-border/60">
               <Link
                 to="/checkout"
                 className="block w-full rounded-lg bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground shadow-[0_4px_12px_-4px_oklch(0.46_0.07_210/0.6)] transition-all hover:bg-primary/95 hover:shadow-[0_6px_16px_-4px_oklch(0.46_0.07_210/0.7)] cursor-pointer"
