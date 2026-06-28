@@ -1299,8 +1299,8 @@ function CheckoutPage() {
                     {/* Stripe button with full form validation */}
                     <button
                       type="button"
-                      className="w-full relative overflow-hidden rounded-xl py-4 text-center text-sm font-bold text-white shadow-[0_6px_24px_rgba(0,102,119,0.35)] transition-all hover:shadow-[0_8px_32px_rgba(0,102,119,0.45)] hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2.5 cursor-pointer"
-                      style={{ background: "linear-gradient(135deg, #006677 0%, #00899e 50%, #00b4cc 100%)" }}
+                      className="w-full relative overflow-hidden rounded-xl py-4 text-center text-[15px] font-bold text-white shadow-[0_4px_16px_rgba(0,62,73,0.4)] transition-all hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2.5 cursor-pointer bg-[#003e49]"
+                      style={{ letterSpacing: "0.01em" }}
                       onClick={() => {
                         // --- Full form validation before Stripe redirect ---
                         if (!fullName.trim()) {
@@ -1368,7 +1368,7 @@ function CheckoutPage() {
                       {/* Subtle shimmer effect */}
                       <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
                       <ShieldCheck className="w-5 h-5 relative" />
-                      <span className="relative tracking-wide">{t("Activate Subscription")}</span>
+                      <span className="relative tracking-wide">{t("Pay & Activate Lensly Care")}</span>
                     </button>
 
                     <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground max-w-xs mx-auto">
@@ -1386,7 +1386,7 @@ function CheckoutPage() {
 
       {/* Toast Notification Popup */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300 max-w-sm w-full">
+        <div className="fixed top-6 right-6 z-[9999] animate-in slide-in-from-top-4 fade-in duration-300 max-w-sm w-full">
           <div className={`p-4 rounded-xl border backdrop-blur-md shadow-2xl flex items-start gap-3 justify-between ${toast.type === "error"
               ? "bg-destructive/10 border-destructive/30 text-destructive-foreground dark:text-red-400"
               : "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
