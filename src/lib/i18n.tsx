@@ -682,7 +682,7 @@ function saveCacheToStorage() {
 }
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Language>("en");
+  const [lang, setLangState] = useState<Language>("de");
   // Keep translations in state to trigger updates upon API returns
   const [translationsMap, setTranslationsMap] = useState<Record<string, Record<string, string>>>(
     () => {
@@ -694,6 +694,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem("lensly_lang") as Language;
     if (saved) {
       setLangState(saved);
+    } else {
+      setLangState("de");
     }
   }, []);
 
