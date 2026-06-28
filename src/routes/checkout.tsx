@@ -1374,24 +1374,13 @@ function CheckoutPage() {
                       </p>
 
                       {/* Card Sign/Pay redirect button */}
-                      <button
-                        type="button"
-                        disabled={isSubmitting}
-                        onClick={handleWalletClick}
-                        className="w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      <a
+                        href={`https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01${email.trim() ? `?prefilled_email=${encodeURIComponent(email.trim())}` : ""}`}
+                        className="w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)] flex items-center justify-center gap-2 cursor-pointer"
                       >
-                        {isSubmitting ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            {t("Redirecting to Stripe...")}
-                          </>
-                        ) : (
-                          <>
-                            <CreditCard className="w-4 h-4" />
-                            {t("Pay with Card (Stripe)")}
-                          </>
-                        )}
-                      </button>
+                        <CreditCard className="w-4 h-4" />
+                        {t("Pay with Card (Stripe)")}
+                      </a>
 
                       <div className="text-[10px] text-muted-foreground max-w-xs mx-auto pt-2">
                         {t(
