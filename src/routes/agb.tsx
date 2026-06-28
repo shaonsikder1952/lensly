@@ -57,7 +57,7 @@ function Agb() {
                   <p className="font-bold">Lensly UG (haftungsbeschränkt)</p>
                   <p>Düsseldorf, Germany</p>
                   <p className="font-normal text-xs text-muted-foreground mt-1">
-                    Email: hello@lensly.care
+                    Email: lensly@gmail.com
                   </p>
                   <p className="text-xs text-muted-foreground font-normal">
                     {t('(hereinafter referred to as the "Provider").')}
@@ -263,7 +263,7 @@ function Agb() {
               <div className="space-y-2 text-xs sm:text-sm">
                 <p>
                   {t(
-                    "Independent of the statutory legal exclusion of the right of withdrawal for custom medical items, the Provider grants a voluntary 14-day satisfaction guarantee. If the custom-ground lenses or frame fit do not provide absolute eye comfort within the first 14 days following delivery, the Customer can contact support at hello@lensly.care. The Provider will perform an advanced prescription re-verification and dispatch a corrected replacement pair completely free of charge.",
+                    "Independent of the statutory legal exclusion of the right of withdrawal for custom medical items, the Provider grants a voluntary 14-day satisfaction guarantee. If the custom-ground lenses or frame fit do not provide absolute eye comfort within the first 14 days following delivery, the Customer can contact support at lensly@gmail.com. The Provider will perform an advanced prescription re-verification and dispatch a corrected replacement pair completely free of charge.",
                   )}
                 </p>
               </div>
@@ -324,7 +324,7 @@ function Agb() {
                   </p>
                   <p className="mt-2">
                     {t(
-                      'To exercise your right of withdrawal, you must inform us (Lensly UG, Düsseldorf, Germany, Email: hello@lensly.care) of your decision to withdraw from this contract by means of a clear, unambiguous statement (e.g., a letter sent by post or an email), or by directly executing the electronic withdrawal form via the permanent "Vertrag widerrufen" button link on our platform interface.',
+                      'To exercise your right of withdrawal, you must inform us (Lensly UG, Düsseldorf, Germany, Email: lensly@gmail.com) of your decision to withdraw from this contract by means of a clear, unambiguous statement (e.g., a letter sent by post or an email), or by directly executing the electronic withdrawal form via the permanent "Vertrag widerrufen" button link on our platform interface.',
                     )}
                   </p>
                 </div>

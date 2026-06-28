@@ -40,7 +40,7 @@ function Datenschutz() {
                 <p>Königsallee 14</p>
                 <p>40212 Düsseldorf</p>
                 <p>Germany</p>
-                <p>{t("E-Mail:")} hello@lensly.care</p>
+                <p>{t("E-Mail:")} lensly@gmail.com</p>
               </div>
             </section>
 
@@ -121,10 +121,10 @@ function Datenschutz() {
               <p>
                 {t("Wenn Sie Auskunft über Ihre Daten wünschen oder die Löschung beantragen möchten, schreiben Sie uns an:")}{" "}
                 <a
-                  href="mailto:hello@lensly.care"
+                  href="mailto:lensly@gmail.com"
                   className="text-primary hover:underline font-medium"
                 >
-                  hello@lensly.care
+                  lensly@gmail.com
                 </a>
               </p>
             </section>
