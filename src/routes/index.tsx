@@ -23,10 +23,7 @@ function Index() {
 
   // Contact modal state
   const [isContactOpen, setIsContactOpen] = useState(false);
-  const [contactName, setContactName] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactMessage, setContactMessage] = useState("");
-  const [isSent, setIsSent] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const sections = ["hero", "plan", "faq"];
@@ -72,7 +69,7 @@ function Index() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/40 backdrop-blur-xs no-print">
           <div className="fixed inset-0" onClick={() => setIsContactOpen(false)} />
           
-          <div className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-xs rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-center">
             <button
               onClick={() => setIsContactOpen(false)}
               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground cursor-pointer"
@@ -84,88 +81,43 @@ function Index() {
               </svg>
             </button>
 
-            <h3 className="font-display font-bold text-lg text-foreground mb-1">
-              {t("Ask a Question")}
+            <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </div>
+
+            <h3 className="font-display font-bold text-base text-foreground mb-1">
+              {t("Contact Us")}
             </h3>
             <p className="text-xs text-muted-foreground mb-4">
-              {t("Direct support email")}:{" "}
-              <a href="mailto:hello@lensly.care" className="text-primary hover:underline font-semibold">
-                hello@lensly.care
-              </a>
+              {t("Have questions? Send us an email directly.")}
             </p>
 
-            {isSent ? (
-              <div className="py-6 text-center">
-                <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-3">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <h4 className="font-display font-semibold text-sm text-foreground mb-1">
-                  {t("Message Sent!")}
-                </h4>
-                <p className="text-[11px] text-muted-foreground leading-relaxed max-w-[240px] mx-auto">
-                  {t("Thank you for your question. Our support team will get back to you within 24 hours.")}
-                </p>
-              </div>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setIsSent(true);
-                  setContactName("");
-                  setContactEmail("");
-                  setContactMessage("");
-                }}
-                className="space-y-3.5"
+            <div className="bg-muted/50 rounded-lg p-2.5 mb-4 border border-border/40 font-mono text-[13px] text-foreground font-semibold select-all break-all">
+              hello@lensly.care
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <a
+                href="mailto:hello@lensly.care"
+                className="w-full py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xs hover:bg-primary/95 transition text-center block cursor-pointer"
               >
-                <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">
-                    {t("Name")}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={contactName}
-                    onChange={(e) => setContactName(e.target.value)}
-                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">
-                    {t("Email")}
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={contactEmail}
-                    onChange={(e) => setContactEmail(e.target.value)}
-                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">
-                    {t("Your Question")}
-                  </label>
-                  <textarea
-                    required
-                    rows={3}
-                    value={contactMessage}
-                    onChange={(e) => setContactMessage(e.target.value)}
-                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary resize-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xs hover:bg-primary/95 transition cursor-pointer"
-                >
-                  {t("Send Message")}
-                </button>
-              </form>
-            )}
+                {t("Send Email")}
+              </a>
+              
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText("hello@lensly.care");
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                className="w-full py-2 rounded-lg border border-border bg-background text-foreground text-xs font-semibold hover:bg-muted transition cursor-pointer"
+              >
+                {copied ? t("Copied!") : t("Copy Email Address")}
+              </button>
+            </div>
           </div>
         </div>
       )}
