@@ -189,68 +189,55 @@ function Hero() {
           />
         </div>
 
-        {/* 3 Premium Value Features - Swipeable on mobile, grid on desktop */}
-        <div className="flex md:grid md:grid-cols-3 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory md:snap-none scrollbar-none gap-5 md:gap-6 max-w-4xl mx-auto mt-10 md:mt-14 mb-6 md:mb-14 no-print px-4 text-left">
+        {/* 3 Premium Value Features - Row format on mobile, columns on desktop */}
+        <div className="max-w-md md:max-w-4xl mx-auto mt-10 md:mt-14 mb-8 md:mb-14 px-4 text-left space-y-6 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
           {/* Card 1: 1 Free Pair */}
-          <div className="group relative flex flex-col justify-between p-6 sm:p-7 bg-white/70 border border-primary/10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.01)] transition duration-500 hover:-translate-y-1.5 hover:shadow-md hover:border-primary/25 w-[80vw] xs:w-[290px] md:w-auto shrink-0 snap-center">
-            {/* Background glow shadow */}
-            <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 to-teal-500/5 blur-lg -z-10" />
-            <div>
-              <div className="w-12 h-12 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-base transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5">
-                01
-              </div>
-              <h3 className="font-display font-semibold text-[16px] sm:text-[17px] text-foreground mt-6 tracking-tight">
+          <div className="flex gap-4.5 items-start md:flex-col md:gap-0 group">
+            <div className="w-11 h-11 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
+              01
+            </div>
+            <div className="flex-1 md:mt-5">
+              <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight">
                 {t("1 Free Pair Every Year")}
               </h3>
-              <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+              <p className="text-[11.5px] text-muted-foreground mt-1.5 leading-relaxed">
                 {t("Receive a complete new pair of prescription glasses delivered to your door annually.")}
               </p>
             </div>
           </div>
 
           {/* Card 2: 3 Free Replacements */}
-          <div className="group relative flex flex-col justify-between p-6 sm:p-7 bg-white border-2 border-primary rounded-3xl shadow-xs transition duration-500 hover:-translate-y-1.5 hover:shadow-md w-[80vw] xs:w-[290px] md:w-auto shrink-0 snap-center">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[8px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full whitespace-nowrap shadow-xs">
-              {t("Included")}
+          <div className="flex gap-4.5 items-start md:flex-col md:gap-0 group relative">
+            <div className="w-11 h-11 shrink-0 bg-primary/10 border-2 border-primary text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
+              02
             </div>
-            {/* Background glow shadow */}
-            <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 to-emerald-500/5 blur-lg -z-10" />
-            <div>
-              <div className="w-12 h-12 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-base transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5">
-                02
-              </div>
-              <h3 className="font-display font-semibold text-[16px] sm:text-[17px] text-foreground mt-6 tracking-tight">
+            <div className="flex-1 md:mt-5">
+              <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight flex items-center gap-2">
                 {t("3 Free Replacements")}
+                <span className="bg-primary/10 text-primary text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full md:hidden">
+                  {t("Included")}
+                </span>
               </h3>
-              <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+              <p className="text-[11.5px] text-muted-foreground mt-1.5 leading-relaxed">
                 {t("Accident coverage included. We replace broken lenses or update prescription at zero cost.")}
               </p>
             </div>
           </div>
 
           {/* Card 3: €29 Only */}
-          <div className="group relative flex flex-col justify-between p-6 sm:p-7 bg-white/70 border border-primary/10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.01)] transition duration-500 hover:-translate-y-1.5 hover:shadow-md hover:border-primary/25 w-[80vw] xs:w-[290px] md:w-auto shrink-0 snap-center">
-            {/* Background glow shadow */}
-            <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 to-amber/5 blur-lg -z-10" />
-            <div>
-              <div className="w-12 h-12 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-base transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5">
-                03
-              </div>
-              <h3 className="font-display font-semibold text-[16px] sm:text-[17px] text-foreground mt-6 tracking-tight">
+          <div className="flex gap-4.5 items-start md:flex-col md:gap-0 group">
+            <div className="w-11 h-11 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
+              03
+            </div>
+            <div className="flex-1 md:mt-5">
+              <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight">
                 {t("Flat €29 Monthly Only")}
               </h3>
-              <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed">
+              <p className="text-[11.5px] text-muted-foreground mt-1.5 leading-relaxed">
                 {t("All-inclusive subscription with zero retail markup or surprise medical billings.")}
               </p>
             </div>
           </div>
-        </div>
-
-        {/* Mobile Swipe Indicators */}
-        <div className="flex md:hidden justify-center gap-1.5 mt-1.5 mb-6">
-          <span className="w-1.5 h-1.5 rounded-full bg-primary/80" />
-          <span className="w-1.2 h-1.2 rounded-full bg-muted-foreground/35" />
-          <span className="w-1.2 h-1.2 rounded-full bg-muted-foreground/35" />
         </div>
 
         <div className="mt-6 flex items-center justify-center gap-4">
@@ -399,7 +386,7 @@ function Plan() {
           <div className={`relative rounded-2xl border-2 border-primary bg-card p-5 sm:p-7 shadow-md transition hover:shadow-lg flex flex-col justify-between ${
             activeTab === "lensly" ? "flex" : "hidden md:flex"
           }`}>
-            <div className="absolute -top-3 right-8 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
               {t("Lensly Care")}
             </div>
             <div>
@@ -451,89 +438,92 @@ function Plan() {
             </p>
           </div>
 
-          <div className="flex sm:grid sm:grid-cols-5 overflow-x-auto sm:overflow-x-visible snap-x snap-mandatory sm:snap-none scrollbar-none gap-5 sm:gap-4.5 relative text-left pb-4 sm:pb-0 px-4 sm:px-0">
+          <div className="relative flex flex-col gap-6 sm:grid sm:grid-cols-5 sm:gap-4.5 text-left pl-3 sm:pl-0">
+            {/* Connector line for mobile (runs vertically) */}
+            <div className="absolute left-[26px] top-3 bottom-3 w-[1.5px] bg-border/80 sm:hidden z-0" />
             {/* Subtle connector line for desktop */}
             <div className="hidden sm:block absolute top-[16px] left-[5%] right-[5%] h-[1px] bg-border/60 z-0" />
 
             {/* Step 1 */}
-            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-5 sm:p-0 rounded-xl border border-border/40 sm:border-0 shadow-xs sm:shadow-none w-[75vw] xs:w-[240px] sm:w-auto shrink-0 snap-center">
-              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-card sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
+            <div className="relative z-10 flex gap-4 items-start sm:flex-col sm:items-start sm:gap-0 bg-transparent p-0 border-0 shadow-none">
+              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs shrink-0 ring-4 ring-[oklch(0.97_0.01_180)] sm:w-8 sm:h-8 sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
                 1
               </div>
-              <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
-                {t("Subscribe via Stripe")}
-              </h5>
-              <p className="text-[10.5px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
-                {t("Select your plan and complete checkout securely.")}
-              </p>
+              <div className="flex-1 sm:mt-3">
+                <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
+                  {t("Subscribe via Stripe")}
+                </h5>
+                <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
+                  {t("Select your plan and complete checkout securely.")}
+                </p>
+              </div>
             </div>
 
             {/* Step 2 */}
-            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-5 sm:p-0 rounded-xl border border-border/40 sm:border-0 shadow-xs sm:shadow-none w-[75vw] xs:w-[240px] sm:w-auto shrink-0 snap-center">
-              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-card sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
+            <div className="relative z-10 flex gap-4 items-start sm:flex-col sm:items-start sm:gap-0 bg-transparent p-0 border-0 shadow-none">
+              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs shrink-0 ring-4 ring-[oklch(0.97_0.01_180)] sm:w-8 sm:h-8 sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
                 2
               </div>
-              <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
-                {t("E-mail contact within 24 hours")}
-              </h5>
-              <p className="text-[10.5px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
-                {t("We reach out to gather your custom prescription details.")}
-              </p>
+              <div className="flex-1 sm:mt-3">
+                <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
+                  {t("E-mail contact within 24 hours")}
+                </h5>
+                <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
+                  {t("We reach out to gather your custom prescription details.")}
+                </p>
+              </div>
             </div>
 
             {/* Step 3 */}
-            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-5 sm:p-0 rounded-xl border border-border/40 sm:border-0 shadow-xs sm:shadow-none w-[75vw] xs:w-[240px] sm:w-auto shrink-0 snap-center">
-              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-card sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
+            <div className="relative z-10 flex gap-4 items-start sm:flex-col sm:items-start sm:gap-0 bg-transparent p-0 border-0 shadow-none">
+              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs shrink-0 ring-4 ring-[oklch(0.97_0.01_180)] sm:w-8 sm:h-8 sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
                 3
               </div>
-              <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug truncate max-w-full sm:whitespace-normal">
-                {t("Send frame details")}
-              </h5>
-              <p className="text-[10.5px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
-                {t("Simply reply with your values and a photo/screenshot of any frame you want.")}
-              </p>
+              <div className="flex-1 sm:mt-3">
+                <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug truncate max-w-full sm:whitespace-normal">
+                  {t("Send frame details")}
+                </h5>
+                <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
+                  {t("Simply reply with your values and a photo/screenshot of any frame you want.")}
+                </p>
+              </div>
             </div>
 
             {/* Step 4 */}
-            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-5 sm:p-0 rounded-xl border border-border/40 sm:border-0 shadow-xs sm:shadow-none w-[75vw] xs:w-[240px] sm:w-auto shrink-0 snap-center">
-              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-card sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
+            <div className="relative z-10 flex gap-4 items-start sm:flex-col sm:items-start sm:gap-0 bg-transparent p-0 border-0 shadow-none">
+              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs shrink-0 ring-4 ring-[oklch(0.97_0.01_180)] sm:w-8 sm:h-8 sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
                 4
               </div>
-              <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
-                {t("Sourcing & production")}
-              </h5>
-              <p className="text-[10.5px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
-                {t("We purchase your frame and craft your custom lenses to specification.")}
-              </p>
+              <div className="flex-1 sm:mt-3">
+                <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
+                  {t("Sourcing & production")}
+                </h5>
+                <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
+                  {t("We purchase your frame and craft your custom lenses to specification.")}
+                </p>
+              </div>
             </div>
 
             {/* Step 5 */}
-            <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left bg-card/60 sm:bg-transparent p-5 sm:p-0 rounded-xl border border-border/40 sm:border-0 shadow-xs sm:shadow-none w-[75vw] xs:w-[240px] sm:w-auto shrink-0 snap-center">
-              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs mb-3 ring-4 ring-card sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
+            <div className="relative z-10 flex gap-4 items-start sm:flex-col sm:items-start sm:gap-0 bg-transparent p-0 border-0 shadow-none">
+              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs shrink-0 ring-4 ring-[oklch(0.97_0.01_180)] sm:w-8 sm:h-8 sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
                 5
               </div>
-              <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
-                {t("Delivered to your door")}
-              </h5>
-              <p className="text-[10.5px] text-muted-foreground mt-1.5 leading-relaxed max-w-[220px] sm:max-w-none">
-                {t("Your finished prescription eyewear arrives in approximately 15 days.")}
-              </p>
+              <div className="flex-1 sm:mt-3">
+                <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
+                  {t("Delivered to your door")}
+                </h5>
+                <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
+                  {t("Your finished prescription eyewear arrives in approximately 15 days.")}
+                </p>
+              </div>
             </div>
-          </div>
-
-          {/* Mobile Swipe Indicators */}
-          <div className="flex sm:hidden justify-center gap-1.5 mt-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary/80" />
-            <span className="w-1.2 h-1.2 rounded-full bg-muted-foreground/35" />
-            <span className="w-1.2 h-1.2 rounded-full bg-muted-foreground/35" />
-            <span className="w-1.2 h-1.2 rounded-full bg-muted-foreground/35" />
-            <span className="w-1.2 h-1.2 rounded-full bg-muted-foreground/35" />
           </div>
         </div>
 
 
         {/* The math */}
-        <div className="mt-8 grid grid-cols-3 gap-3 sm:gap-6 rounded-2xl border border-border bg-card p-4 sm:p-8">
+        <div className="mt-8 flex flex-col sm:grid sm:grid-cols-3 gap-5 sm:gap-6 rounded-2xl border border-border bg-card p-5 sm:p-8">
           <Math k="€1,600" l={t("Traditional optician (4 pairs)")} />
           <Math k="€29/month" l={t("Lensly subscription (incl. replacements)")} highlight />
           <Math k="€1,252" l={t("Saved when using replacements")} />
@@ -827,17 +817,19 @@ function Math({
   highlight?: boolean;
 }) {
   return (
-    <div className="flex flex-col justify-center text-center sm:text-left">
+    <div className="flex flex-row items-center justify-start text-left gap-4 sm:flex-col sm:items-start sm:justify-center sm:text-left sm:gap-0">
       <div
         className={
-          "font-display text-base xs:text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight " +
+          "font-display text-[22px] sm:text-3xl md:text-4xl font-semibold tracking-tight shrink-0 " +
           (highlight ? "text-primary" : "text-foreground")
         }
       >
         {k}
       </div>
-      <div className="mt-1 md:mt-2 text-[9px] xs:text-[11px] sm:text-[13px] leading-snug text-muted-foreground">{l}</div>
-      {sub && <div className="mt-1 text-[8px] sm:text-[11px] text-muted-foreground/75 font-medium">{sub}</div>}
+      <div className="flex-1">
+        <div className="text-[11.5px] sm:text-[13px] leading-snug text-muted-foreground">{l}</div>
+        {sub && <div className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground/75 font-medium">{sub}</div>}
+      </div>
     </div>
   );
 }
