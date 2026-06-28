@@ -169,10 +169,10 @@ function Hero() {
         {/* Floating 3D glasses with tight orbital rings */}
         <div className="relative mx-auto mt-5 flex h-[170px] w-full items-center justify-center md:h-[210px]">
           {/* Orbital rings centered on glasses */}
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block">
             <div className="spin-slow h-[300px] w-[300px] rounded-full border border-primary/5 md:h-[380px] md:w-[380px]" />
           </div>
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block">
             <div
               className="spin-slow h-[220px] w-[220px] rounded-full border border-dashed border-primary/10 md:h-[280px] md:w-[280px]"
               style={{ animationDirection: "reverse", animationDuration: "60s" }}
@@ -190,52 +190,54 @@ function Hero() {
         </div>
 
         {/* 3 Premium Value Features - Row format on mobile, columns on desktop */}
-        <div className="max-w-md md:max-w-4xl mx-auto mt-10 md:mt-14 mb-8 md:mb-14 px-4 text-left space-y-6 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
-          {/* Card 1: 1 Free Pair */}
-          <div className="flex gap-4.5 items-start md:flex-col md:gap-0 group">
-            <div className="w-11 h-11 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
-              01
+        <div className="max-w-md md:max-w-4xl mx-auto mt-10 md:mt-14 mb-8 md:mb-14 px-4 text-left">
+          <div className="bg-white/80 border border-primary/10 rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] space-y-5 md:space-y-0 md:p-0 md:bg-transparent md:border-0 md:shadow-none md:grid md:grid-cols-3 md:gap-8">
+            {/* Card 1: 1 Free Pair */}
+            <div className="flex gap-4 items-start md:flex-col md:gap-0 group pb-5 border-b border-border/50 md:pb-0 md:border-b-0">
+              <div className="w-10 h-10 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
+                01
+              </div>
+              <div className="flex-1 md:mt-5">
+                <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight">
+                  {t("1 Free Pair Every Year")}
+                </h3>
+                <p className="text-[11.5px] text-muted-foreground mt-1 leading-relaxed">
+                  {t("Receive a complete new pair of prescription glasses delivered to your door annually.")}
+                </p>
+              </div>
             </div>
-            <div className="flex-1 md:mt-5">
-              <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight">
-                {t("1 Free Pair Every Year")}
-              </h3>
-              <p className="text-[11.5px] text-muted-foreground mt-1.5 leading-relaxed">
-                {t("Receive a complete new pair of prescription glasses delivered to your door annually.")}
-              </p>
-            </div>
-          </div>
 
-          {/* Card 2: 3 Free Replacements */}
-          <div className="flex gap-4.5 items-start md:flex-col md:gap-0 group relative">
-            <div className="w-11 h-11 shrink-0 bg-primary/10 border-2 border-primary text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
-              02
+            {/* Card 2: 3 Free Replacements */}
+            <div className="flex gap-4 items-start md:flex-col md:gap-0 group relative pb-5 border-b border-border/50 md:pb-0 md:border-b-0">
+              <div className="w-10 h-10 shrink-0 bg-primary/10 border-2 border-primary text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
+                02
+              </div>
+              <div className="flex-1 md:mt-5">
+                <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight flex items-center gap-2">
+                  {t("3 Free Replacements")}
+                  <span className="bg-primary/10 text-primary text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full md:hidden">
+                    {t("Included")}
+                  </span>
+                </h3>
+                <p className="text-[11.5px] text-muted-foreground mt-1 leading-relaxed">
+                  {t("Accident coverage included. We replace broken lenses or update prescription at zero cost.")}
+                </p>
+              </div>
             </div>
-            <div className="flex-1 md:mt-5">
-              <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight flex items-center gap-2">
-                {t("3 Free Replacements")}
-                <span className="bg-primary/10 text-primary text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full md:hidden">
-                  {t("Included")}
-                </span>
-              </h3>
-              <p className="text-[11.5px] text-muted-foreground mt-1.5 leading-relaxed">
-                {t("Accident coverage included. We replace broken lenses or update prescription at zero cost.")}
-              </p>
-            </div>
-          </div>
 
-          {/* Card 3: €29 Only */}
-          <div className="flex gap-4.5 items-start md:flex-col md:gap-0 group">
-            <div className="w-11 h-11 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
-              03
-            </div>
-            <div className="flex-1 md:mt-5">
-              <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight">
-                {t("Flat €29 Monthly Only")}
-              </h3>
-              <p className="text-[11.5px] text-muted-foreground mt-1.5 leading-relaxed">
-                {t("All-inclusive subscription with zero retail markup or surprise medical billings.")}
-              </p>
+            {/* Card 3: €29 Only */}
+            <div className="flex gap-4 items-start md:flex-col md:gap-0 group">
+              <div className="w-10 h-10 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
+                03
+              </div>
+              <div className="flex-1 md:mt-5">
+                <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight">
+                  {t("Flat €29 Monthly Only")}
+                </h3>
+                <p className="text-[11.5px] text-muted-foreground mt-1 leading-relaxed">
+                  {t("All-inclusive subscription with zero retail markup or surprise medical billings.")}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -511,58 +513,30 @@ function Plan() {
             </p>
           </div>
 
-          {/* Mobile Insurance Tab Switcher */}
-          <div className="flex md:hidden bg-muted/70 p-1 rounded-lg border border-border/80 max-w-xs mx-auto mb-6">
-            <button
-              type="button"
-              onClick={() => setInsuranceTab("lensly")}
-              className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                insuranceTab === "lensly"
-                  ? "bg-card text-primary shadow-xs font-bold"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {t("Lensly Care")}
-            </button>
-            <button
-              type="button"
-              onClick={() => setInsuranceTab("insurance")}
-              className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                insuranceTab === "insurance"
-                  ? "bg-card text-foreground/80 shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {t("Glasses Insurance")}
-            </button>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4.5 md:grid-cols-2">
             {/* Glasses Insurance */}
-            <div className={`rounded-2xl border border-border bg-card p-5 sm:p-8 shadow-sm flex flex-col justify-between ${
-              insuranceTab === "insurance" ? "flex" : "hidden md:flex"
-            }`}>
+            <div className="rounded-2xl border border-border bg-card p-4.5 sm:p-8 shadow-xs flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between border-b border-border/60 pb-5">
+                <div className="flex items-center justify-between border-b border-border/60 pb-4">
                   <div>
-                    <h4 className="font-display text-lg font-semibold text-foreground">
+                    <h4 className="font-display text-base font-semibold text-foreground">
                       {t("Glasses Insurance")}
                     </h4>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
                       {t("Standard supplemental policy")}
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className="font-display text-2xl font-bold text-foreground">
-                      €7-20<span className="text-sm font-normal text-muted-foreground">/month</span>
+                    <span className="font-display text-xl font-bold text-foreground">
+                      €7-20<span className="text-xs font-normal text-muted-foreground">/month</span>
                     </span>
                   </div>
                 </div>
 
-                <ul className="mt-6 space-y-4 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-3">
+                <ul className="mt-4 space-y-3 text-xs text-muted-foreground">
+                  <li className="flex items-start gap-2.5">
                     <svg
-                      className="w-4 h-4 mt-0.5 shrink-0 text-destructive"
+                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-destructive"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -574,14 +548,14 @@ function Plan() {
                       <span className="font-semibold text-foreground">
                         {t("1 pair every 2 years")}
                       </span>
-                      <p className="text-xs text-muted-foreground/80 mt-0.5">
+                      <p className="text-[11px] text-muted-foreground/80 mt-0.5">
                         {t("pay €240 in premiums, get €150 back, lose €90 minimum")}
                       </p>
                     </div>
                   </li>
-                  <li className="flex items-start gap-3">
+                  <li className="flex items-start gap-2.5">
                     <svg
-                      className="w-4 h-4 mt-0.5 shrink-0 text-destructive"
+                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-destructive"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -591,14 +565,14 @@ function Plan() {
                     </svg>
                     <div>
                       <span className="font-semibold text-foreground">{t("Break them once")}</span>
-                      <p className="text-xs text-muted-foreground/80 mt-0.5">
+                      <p className="text-[11px] text-muted-foreground/80 mt-0.5">
                         {t("€400 out of pocket, not covered")}
                       </p>
                     </div>
                   </li>
-                  <li className="flex items-start gap-3">
+                  <li className="flex items-start gap-2.5">
                     <svg
-                      className="w-4 h-4 mt-0.5 shrink-0 text-destructive"
+                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-destructive"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -610,14 +584,14 @@ function Plan() {
                       <span className="font-semibold text-foreground">
                         {t("Need anti-reflective or thin lenses")}
                       </span>
-                      <p className="text-xs text-muted-foreground/80 mt-0.5">
+                      <p className="text-[11px] text-muted-foreground/80 mt-0.5">
                         {t("€150+ extra, not covered")}
                       </p>
                     </div>
                   </li>
-                  <li className="flex items-start gap-3">
+                  <li className="flex items-start gap-2.5">
                     <svg
-                      className="w-4 h-4 mt-0.5 shrink-0 text-destructive"
+                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-destructive"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -629,7 +603,7 @@ function Plan() {
                       <span className="font-semibold text-foreground">
                         {t("Prescription changes")}
                       </span>
-                      <p className="text-xs text-muted-foreground/80 mt-0.5">
+                      <p className="text-[11px] text-muted-foreground/80 mt-0.5">
                         {t("full retail price, not covered")}
                       </p>
                     </div>
@@ -637,44 +611,42 @@ function Plan() {
                 </ul>
               </div>
 
-              <div className="mt-8 border-t border-border/60 pt-5">
-                <div className="text-[15px] font-bold text-destructive">
+              <div className="mt-6 border-t border-border/60 pt-4">
+                <div className="text-[14px] font-bold text-destructive">
                   {t("Total realistic cost over 2 years: €800-1,200+")}
                 </div>
-                <div className="text-[11px] font-medium text-muted-foreground/75 mt-0.5">
+                <div className="text-[10.5px] font-medium text-muted-foreground/75 mt-0.5">
                   {t("Premiums + gaps + extras + one replacement")}
                 </div>
               </div>
             </div>
 
             {/* Lensly */}
-            <div className={`relative rounded-2xl border-2 border-primary bg-card p-5 sm:p-8 shadow-md flex flex-col justify-between ${
-              insuranceTab === "lensly" ? "flex" : "hidden md:flex"
-            }`}>
-              <div className="absolute -top-3 right-8 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
+            <div className="relative rounded-2xl border-2 border-primary bg-card p-4.5 sm:p-8 shadow-xs flex flex-col justify-between">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
                 {t("Recommended")}
               </div>
               <div>
-                <div className="flex items-center justify-between border-b border-border/60 pb-5">
+                <div className="flex items-center justify-between border-b border-border/60 pb-4">
                   <div>
-                    <h4 className="font-display text-lg font-semibold text-primary">
+                    <h4 className="font-display text-base font-semibold text-primary">
                       {t("Lensly Care")}
                     </h4>
-                    <p className="text-xs text-primary/80 mt-1">
+                    <p className="text-[11px] text-primary/80 mt-0.5">
                       {t("Complete continuous vision plan")}
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className="font-display text-2xl font-bold text-primary">
-                      €29<span className="text-sm font-normal text-muted-foreground">/month</span>
+                    <span className="font-display text-xl font-bold text-primary">
+                      €29<span className="text-xs font-normal text-muted-foreground">/month</span>
                     </span>
                   </div>
                 </div>
 
-                <ul className="mt-6 space-y-4 text-sm text-foreground/95">
-                  <li className="flex items-start gap-3">
+                <ul className="mt-4 space-y-3 text-xs text-foreground/95">
+                  <li className="flex items-start gap-2.5">
                     <svg
-                      className="w-4 h-4 mt-0.5 shrink-0 text-primary"
+                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-primary"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -686,14 +658,14 @@ function Plan() {
                       <span className="font-semibold text-foreground">
                         {t("1 complete pair delivered to you")}
                       </span>
-                      <p className="text-xs text-primary/70 mt-0.5">
+                      <p className="text-[11px] text-primary/70 mt-0.5">
                         {t("Fully covered every single year, zero waiting periods")}
                       </p>
                     </div>
                   </li>
-                  <li className="flex items-start gap-3">
+                  <li className="flex items-start gap-2.5">
                     <svg
-                      className="w-4 h-4 mt-0.5 shrink-0 text-primary"
+                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-primary"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -705,16 +677,16 @@ function Plan() {
                       <span className="font-semibold text-foreground">
                         {t("3 free replacements (broken, power change)")}
                       </span>
-                      <p className="text-xs text-primary/70 mt-0.5">
+                      <p className="text-[11px] text-primary/70 mt-0.5">
                         {t(
                           "€0 out-of-pocket costs for prescription changes or accident replacements",
                         )}
                       </p>
                     </div>
                   </li>
-                  <li className="flex items-start gap-3">
+                  <li className="flex items-start gap-2.5">
                     <svg
-                      className="w-4 h-4 mt-0.5 shrink-0 text-primary"
+                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-primary"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -726,7 +698,7 @@ function Plan() {
                       <span className="font-semibold text-foreground">
                         {t("Nothing extra to pay ever")}
                       </span>
-                      <p className="text-xs text-primary/70 mt-0.5">
+                      <p className="text-[11px] text-primary/70 mt-0.5">
                         {t("Premium lenses, anti-reflective & UV-400 coatings are 100% included")}
                       </p>
                     </div>
@@ -734,11 +706,11 @@ function Plan() {
                 </ul>
               </div>
 
-              <div className="mt-8 border-t border-border/60 pt-5">
-                <div className="text-[15px] font-bold text-primary">
+              <div className="mt-6 border-t border-border/60 pt-4">
+                <div className="text-[14px] font-bold text-primary">
                   {t("Flat €29/month, completely covered")}
                 </div>
-                <div className="text-[11px] font-medium text-muted-foreground/75 mt-0.5">
+                <div className="text-[10.5px] font-medium text-muted-foreground/75 mt-0.5">
                   {t("Zero hidden fees, 1 pair per year and 3 replacements per year")}
                 </div>
               </div>
