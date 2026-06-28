@@ -82,26 +82,34 @@ function ContractPage() {
           return;
         }
 
-        // If not signed, check for URL search parameters (redirect back from Stripe Payment Link)
-        const params = new URLSearchParams(window.location.search);
-        const isSuccess = params.get("success") === "true";
-        const urlContractId = params.get("contractId");
-        const urlEmail = params.get("email");
-
-        if (isSuccess && urlContractId && urlEmail) {
-          // Check if we have the corresponding pending details in localStorage
-          const pendingSaved = localStorage.getItem("lensly_pending_contract");
-          if (pendingSaved) {
-            const parsed = JSON.parse(pendingSaved);
-            if (parsed.contractId === urlContractId && parsed.email === urlEmail) {
-              setFullName(parsed.fullName);
-              setEmail(parsed.email);
-              if (parsed.paymentMethod) setPaymentMethod(parsed.paymentMethod);
-              if (parsed.iban) setIban(parsed.iban);
-              setContractId(parsed.contractId);
-              setPendingDetails(parsed);
-            }
+        // 1. Check for pending details in localStorage first (extremely reliable on same device)
+        const pendingSaved = localStorage.getItem("lensly_pending_contract");
+        let parsedPending = null;
+        if (pendingSaved) {
+          try {
+            parsedPending = JSON.parse(pendingSaved);
+          } catch (e) {
+            console.error("Failed to parse pending details", e);
           }
+        }
+
+        // 2. Parse URL parameters as query fallbacks
+        const params = new URLSearchParams(window.location.search);
+        const urlContractId = params.get("contractId") || parsedPending?.contractId;
+        const urlEmail = params.get("email") || parsedPending?.email;
+
+        // If we found pending details matching the target contract, load them immediately
+        if (parsedPending && parsedPending.contractId === urlContractId) {
+          setFullName(parsedPending.fullName);
+          setEmail(parsedPending.email);
+          if (parsedPending.paymentMethod) setPaymentMethod(parsedPending.paymentMethod);
+          if (parsedPending.iban) setIban(parsedPending.iban);
+          setContractId(parsedPending.contractId);
+          setPendingDetails(parsedPending);
+        } else if (urlContractId) {
+          // Fallback if localStorage was cleared but URL parameters are present
+          setContractId(urlContractId);
+          if (urlEmail) setEmail(urlEmail);
         }
       } catch (e) {
         console.error("Failed to load signed contract", e);
@@ -269,6 +277,7 @@ function ContractPage() {
       });
     }
 
+    localStorage.removeItem("lensly_pending_contract");
     localStorage.setItem("lensly_signed_contract", JSON.stringify(data));
     setSignedData(data);
   };
