@@ -991,11 +991,10 @@ function CheckoutPage() {
                     </div>
 
                     {/* Mandantory Signature Consent Checkbox */}
-                    <label className={`flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer select-none ${
-                      consentLocked 
-                        ? "bg-primary/[0.04] border-primary/45 shadow-xs" 
+                    <label className={`flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer select-none ${consentLocked
+                        ? "bg-primary/[0.04] border-primary/45 shadow-xs"
                         : "bg-card border-border/80 hover:bg-muted/40 hover:border-border"
-                    }`}>
+                      }`}>
                       <input
                         type="checkbox"
                         checked={consentLocked}
@@ -1215,11 +1214,10 @@ function CheckoutPage() {
                         <button
                           type="button"
                           onClick={() => setSignatureType("draw")}
-                          className={`px-2 py-0.5 text-[9px] font-medium rounded transition-all cursor-pointer ${
-                            signatureType === "draw"
+                          className={`px-2 py-0.5 text-[9px] font-medium rounded transition-all cursor-pointer ${signatureType === "draw"
                               ? "bg-card text-foreground font-bold shadow-xs"
                               : "text-muted-foreground hover:text-foreground"
-                          }`}
+                            }`}
                         >
                           <PenTool className="w-2.5 h-2.5 inline mr-1" />
                           {t("Draw")}
@@ -1227,11 +1225,10 @@ function CheckoutPage() {
                         <button
                           type="button"
                           onClick={() => setSignatureType("type")}
-                          className={`px-2 py-0.5 text-[9px] font-medium rounded transition-all cursor-pointer ${
-                            signatureType === "type"
+                          className={`px-2 py-0.5 text-[9px] font-medium rounded transition-all cursor-pointer ${signatureType === "type"
                               ? "bg-card text-foreground font-bold shadow-xs"
                               : "text-muted-foreground hover:text-foreground"
-                          }`}
+                            }`}
                         >
                           <Type className="w-2.5 h-2.5 inline mr-1" />
                           {t("Type")}
@@ -1294,17 +1291,59 @@ function CheckoutPage() {
                     )}
                   </div>
 
-                  {/* Pay with Card (Stripe) — only payment method */}
-                  <div className="space-y-4 pt-4 text-center">
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {t("Pay securely via Credit Card (Visa, Mastercard, Amex, etc.) or Express Checkout on Stripe.")}
+                       <div className="space-y-4 pt-4">
+                    <p className="text-xs text-muted-foreground leading-relaxed text-center">
+                      {t("Pay securely via Credit Card, Debit Card, or Express Checkout on Stripe.")}
                     </p>
 
-                    {/* Stripe button — saves form data to localStorage first, then redirects */}
+                    {/* Stripe button with full form validation */}
                     <button
                       type="button"
-                      className="w-full rounded-lg bg-primary py-3.5 text-center text-sm font-bold text-primary-foreground shadow-[0_4px_20px_rgba(0,102,119,0.3)] transition-all hover:bg-primary/95 hover:shadow-[0_6px_28px_rgba(0,102,119,0.4)] hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full relative overflow-hidden rounded-xl py-4 text-center text-sm font-bold text-white shadow-[0_6px_24px_rgba(0,102,119,0.35)] transition-all hover:shadow-[0_8px_32px_rgba(0,102,119,0.45)] hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2.5 cursor-pointer"
+                      style={{ background: "linear-gradient(135deg, #006677 0%, #00899e 50%, #00b4cc 100%)" }}
                       onClick={() => {
+                        // --- Full form validation before Stripe redirect ---
+                        if (!fullName.trim()) {
+                          setValidationError(t("Please enter your full name."));
+                          return;
+                        }
+                        if (!email.trim() || !email.includes("@")) {
+                          setValidationError(t("Please enter a valid email address."));
+                          return;
+                        }
+                        if (!phone.trim() || phone.trim().length < 6) {
+                          setValidationError(t("Please enter a valid phone number."));
+                          return;
+                        }
+                        if (!birthDate) {
+                          setValidationError(t("Please enter your date of birth."));
+                          return;
+                        }
+                        if (!birthPlace.trim()) {
+                          setValidationError(t("Please enter your place of birth."));
+                          return;
+                        }
+                        if (!profession.trim()) {
+                          setValidationError(t("Please enter your profession."));
+                          return;
+                        }
+                        if (!streetAddress.trim()) {
+                          setValidationError(t("Please enter your street address."));
+                          return;
+                        }
+                        if (!postalCode.trim()) {
+                          setValidationError(t("Please enter your postal code."));
+                          return;
+                        }
+                        if (!city.trim()) {
+                          setValidationError(t("Please enter your city."));
+                          return;
+                        }
+                        if (!consentLocked) {
+                          setValidationError(t("Please tick the agreement checkbox to continue."));
+                          return;
+                        }
+                        // All good — save to localStorage and redirect
                         const pendingData = {
                           contractId,
                           fullName: fullName.trim(),
@@ -1322,17 +1361,19 @@ function CheckoutPage() {
                           savedAt: new Date().toISOString(),
                         };
                         localStorage.setItem("lensly_pending_contract", JSON.stringify(pendingData));
-                        const stripeUrl = `https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01${email.trim() ? `?prefilled_email=${encodeURIComponent(email.trim())}` : ""}`;
+                        const stripeUrl = `https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01?prefilled_email=${encodeURIComponent(email.trim())}`;
                         window.location.href = stripeUrl;
                       }}
                     >
-                      <CreditCard className="w-4 h-4" />
-                      {t("Complete Secure Payment")}
+                      {/* Subtle shimmer effect */}
+                      <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
+                      <ShieldCheck className="w-5 h-5 relative" />
+                      <span className="relative tracking-wide">{t("Activate Subscription")}</span>
                     </button>
 
-                    <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground max-w-xs mx-auto pt-1">
-                      <Lock className="w-3 h-3 text-emerald-600" />
-                      {t("After payment, you'll land directly on your ready-to-download contract.")}
+                    <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground max-w-xs mx-auto">
+                      <Lock className="w-3 h-3 text-emerald-600 shrink-0" />
+                      {t("256-bit encrypted. After payment, your contract is ready to download instantly.")}
                     </div>
                   </div>
                 </div>
@@ -1346,11 +1387,10 @@ function CheckoutPage() {
       {/* Toast Notification Popup */}
       {toast && (
         <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300 max-w-sm w-full">
-          <div className={`p-4 rounded-xl border backdrop-blur-md shadow-2xl flex items-start gap-3 justify-between ${
-            toast.type === "error" 
-              ? "bg-destructive/10 border-destructive/30 text-destructive-foreground dark:text-red-400" 
+          <div className={`p-4 rounded-xl border backdrop-blur-md shadow-2xl flex items-start gap-3 justify-between ${toast.type === "error"
+              ? "bg-destructive/10 border-destructive/30 text-destructive-foreground dark:text-red-400"
               : "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
-          }`}>
+            }`}>
             <div className="flex gap-2.5 items-start">
               {toast.type === "error" ? (
                 <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-destructive" />
