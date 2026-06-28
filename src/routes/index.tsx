@@ -377,6 +377,17 @@ function Plan() {
                 <span className="font-semibold text-foreground">{t("€0.95 a day")}</span> (
                 {t("less than a daily coffee")}).
               </p>
+              <div className="mt-4.5">
+                <Link
+                  to="/checkout"
+                  className="block w-full rounded-lg bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground shadow-[0_4px_12px_-4px_oklch(0.46_0.07_210/0.6)] transition-all hover:bg-primary/95 hover:shadow-[0_6px_16px_-4px_oklch(0.46_0.07_210/0.7)] cursor-pointer"
+                >
+                  {t("Subscribe to Lensly Care")}
+                </Link>
+                <p className="mt-1.5 text-center text-[9px] text-muted-foreground/80">
+                  {t("Secure checkout via Stripe")}
+                </p>
+              </div>
               <ul className="mt-6 space-y-3.5 border-t border-border pt-6 text-[13px]">
                 <Feature>{t("1 new pair of precision lenses every year")}</Feature>
                 <Feature>
@@ -471,18 +482,6 @@ function Plan() {
           </div>
         </div>
 
-        {/* Subscribe CTA Button */}
-        <div className="mt-10 max-w-md mx-auto text-center px-4">
-          <Link
-            to="/checkout"
-            className="block w-full rounded-lg bg-primary py-3.5 text-center text-sm font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition-all hover:bg-primary/95 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)]"
-          >
-            {t("Subscribe to Lensly Care")}
-          </Link>
-          <p className="mt-3 text-center text-[10px] text-muted-foreground/80">
-            {t("Secure checkout via Stripe")}
-          </p>
-        </div>
 
         {/* The math */}
         <div className="mt-8 grid gap-6 rounded-2xl border border-border bg-card p-5 sm:p-8 md:grid-cols-3">
