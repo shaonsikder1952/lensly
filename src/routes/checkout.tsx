@@ -1392,19 +1392,41 @@ function CheckoutPage() {
                         {t("Pay securely via Credit Card (Visa, Mastercard, Amex, etc.) or Express Checkout on Stripe.")}
                       </p>
 
-                      {/* Card Sign/Pay redirect button */}
-                      <a
-                        href={`https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01${email.trim() ? `?prefilled_email=${encodeURIComponent(email.trim())}` : ""}`}
-                        className="w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)] flex items-center justify-center gap-2 cursor-pointer"
+                      {/* Card Sign/Pay redirect button — saves form data first, then redirects */}
+                      <button
+                        type="button"
+                        className="w-full rounded-lg bg-primary py-3.5 text-center text-sm font-bold text-primary-foreground shadow-[0_4px_20px_rgba(0,102,119,0.3)] transition-all hover:bg-primary/95 hover:shadow-[0_6px_28px_rgba(0,102,119,0.4)] hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+                        onClick={() => {
+                          // Save all form data to localStorage so contract page can pre-fill after Stripe returns
+                          const pendingData = {
+                            contractId,
+                            fullName: fullName.trim(),
+                            email: email.trim(),
+                            phone: `${phoneCountryCode}${phone.trim()}`,
+                            birthDate,
+                            birthPlace: birthPlace.trim(),
+                            profession: profession.trim(),
+                            streetAddress: streetAddress.trim(),
+                            postalCode: postalCode.trim(),
+                            city: city.trim(),
+                            state: stateInput.trim(),
+                            country: countryInput,
+                            paymentMethod: "card",
+                            savedAt: new Date().toISOString(),
+                          };
+                          localStorage.setItem("lensly_pending_contract", JSON.stringify(pendingData));
+                          // Redirect to Stripe Payment Link
+                          const stripeUrl = `https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01${email.trim() ? `?prefilled_email=${encodeURIComponent(email.trim())}` : ""}`;
+                          window.location.href = stripeUrl;
+                        }}
                       >
                         <CreditCard className="w-4 h-4" />
                         {t("Pay with Card (Stripe)")}
-                      </a>
+                      </button>
 
-                      <div className="text-[10px] text-muted-foreground max-w-xs mx-auto pt-2">
-                        {t(
-                          "After successful payment, you will be redirected to sign your contract.",
-                        )}
+                      <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground max-w-xs mx-auto pt-1">
+                        <Lock className="w-3 h-3 text-emerald-600" />
+                        {t("After payment, you'll land directly on your ready-to-download contract.")}
                       </div>
                     </div>
                   )}

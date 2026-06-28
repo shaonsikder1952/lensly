@@ -54,7 +54,7 @@ function ContractPage() {
   const [agreeTerm, setAgreeTerm] = useState(false);
   const [agreeBilling, setAgreeBilling] = useState(false);
   const [agreeAgb, setAgreeAgb] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"sepa" | "wallet">("sepa");
+  const [paymentMethod, setPaymentMethod] = useState<"sepa" | "wallet" | "card">("sepa");
   const [iban, setIban] = useState("");
   const [signatureType, setSignatureType] = useState<"draw" | "type">("draw");
   const [typedSignature, setTypedSignature] = useState("");
@@ -72,44 +72,56 @@ function ContractPage() {
     return `LNS-2026-${rand}`;
   });
 
-  // Load signed state from localStorage
+  // Load signed state from localStorage — auto-complete contract if returning from Stripe
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
+        // If already signed, restore the signed view
         const saved = localStorage.getItem("lensly_signed_contract");
         if (saved) {
           setSignedData(JSON.parse(saved));
           return;
         }
 
-        // 1. Check for pending details in localStorage first (extremely reliable on same device)
+        // Check for pending details saved before Stripe redirect
         const pendingSaved = localStorage.getItem("lensly_pending_contract");
-        let parsedPending = null;
-        if (pendingSaved) {
-          try {
-            parsedPending = JSON.parse(pendingSaved);
-          } catch (e) {
-            console.error("Failed to parse pending details", e);
-          }
+        if (!pendingSaved) return;
+
+        let parsedPending: Record<string, string> | null = null;
+        try {
+          parsedPending = JSON.parse(pendingSaved);
+        } catch (e) {
+          console.error("Failed to parse pending details", e);
+          return;
         }
 
-        // 2. Parse URL parameters as query fallbacks
-        const params = new URLSearchParams(window.location.search);
-        const urlContractId = params.get("contractId") || parsedPending?.contractId;
-        const urlEmail = params.get("email") || parsedPending?.email;
+        if (!parsedPending) return;
 
-        // If we found pending details matching the target contract, load them immediately
-        if (parsedPending && parsedPending.contractId === urlContractId) {
-          setFullName(parsedPending.fullName);
-          setEmail(parsedPending.email);
-          if (parsedPending.paymentMethod) setPaymentMethod(parsedPending.paymentMethod);
-          if (parsedPending.iban) setIban(parsedPending.iban);
-          setContractId(parsedPending.contractId);
-          setPendingDetails(parsedPending);
-        } else if (urlContractId) {
-          // Fallback if localStorage was cleared but URL parameters are present
-          setContractId(urlContractId);
-          if (urlEmail) setEmail(urlEmail);
+        // Pre-fill form fields from saved data
+        setFullName(parsedPending.fullName || "");
+        setEmail(parsedPending.email || "");
+        if (parsedPending.paymentMethod) setPaymentMethod(parsedPending.paymentMethod as "sepa" | "card");
+        if (parsedPending.iban) setIban(parsedPending.iban);
+        setContractId(parsedPending.contractId);
+        setPendingDetails(parsedPending as any);
+
+        // If the customer paid via Stripe card, auto-generate the signed contract
+        // so they land directly on the ready-to-download screen
+        if (parsedPending.paymentMethod === "card" && parsedPending.fullName && parsedPending.email) {
+          const autoSignedData = {
+            signed: true,
+            fullName: parsedPending.fullName,
+            email: parsedPending.email,
+            signedAt: new Date().toISOString(),
+            contractId: parsedPending.contractId,
+            signatureType: "type" as const,
+            signatureData: parsedPending.fullName, // typed name as electronic signature
+            paymentMethod: "card" as const,
+            maskedIban: "Stripe Card Payment",
+          };
+          localStorage.removeItem("lensly_pending_contract");
+          localStorage.setItem("lensly_signed_contract", JSON.stringify(autoSignedData));
+          setSignedData(autoSignedData);
         }
       } catch (e) {
         console.error("Failed to load signed contract", e);
