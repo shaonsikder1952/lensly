@@ -459,7 +459,11 @@ export async function confirmSubscriptionPaymentServer(
         UPDATE subscriptions
         SET status = 'active',
             payment_method = ${paymentMethod},
-            masked_iban = ${maskedIban},
+            masked_iban = COALESCE(
+              NULLIF(NULLIF(${maskedIban}, 'Stripe Secured'), ''),
+              subscriptions.masked_iban,
+              'Stripe Secured'
+            ),
             updated_at = CURRENT_TIMESTAMP
         WHERE TRIM(UPPER(contract_id)) = ${normalizedContract} AND TRIM(LOWER(email)) = ${normalizedEmail}
         RETURNING id
@@ -481,11 +485,14 @@ export async function confirmSubscriptionPaymentServer(
       item.email.trim().toLowerCase() === normalizedEmail
     ) {
       updated = true;
+      const finalIban = (maskedIban === "Stripe Secured" && item.masked_iban && item.masked_iban !== "placeholder")
+        ? item.masked_iban
+        : maskedIban;
       return {
         ...item,
         status: "active" as const,
         payment_method: paymentMethod,
-        masked_iban: maskedIban,
+        masked_iban: finalIban,
         updated_at: new Date().toISOString(),
       };
     }
