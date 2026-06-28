@@ -164,8 +164,23 @@ function CheckoutPage() {
 
   // UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [validationError, setValidationError] = useState("");
+  const [validationError, _setValidationError] = useState("");
   const [downloadingPDF, setDownloadingPDF] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "error" | "success" } | null>(null);
+
+  const setValidationError = (msg: string) => {
+    _setValidationError(msg);
+    if (msg) {
+      setToast({ message: msg, type: "error" });
+    }
+  };
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 4500);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
 
 
@@ -976,18 +991,22 @@ function CheckoutPage() {
                     </div>
 
                     {/* Mandantory Signature Consent Checkbox */}
-                    <label className="flex items-start gap-3 cursor-pointer group">
+                    <label className={`flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer select-none ${
+                      consentLocked 
+                        ? "bg-primary/[0.04] border-primary/45 shadow-xs" 
+                        : "bg-card border-border/80 hover:bg-muted/40 hover:border-border"
+                    }`}>
                       <input
                         type="checkbox"
                         checked={consentLocked}
                         onChange={(e) => setConsentLocked(e.target.checked)}
-                        className="mt-0.5 rounded border-border text-primary focus:ring-primary focus:ring-offset-0 focus:outline-none accent-primary w-4.5 h-4.5 cursor-pointer shrink-0"
+                        className="mt-0.5 rounded border-border/80 text-primary focus:ring-primary focus:ring-offset-0 focus:outline-none accent-primary w-5.5 h-5.5 cursor-pointer shrink-0"
                       />
-                      <span className="text-[11px] text-muted-foreground/95 select-none leading-relaxed transition-colors group-hover:text-foreground">
+                      <span className="text-xs text-foreground/90 font-medium leading-relaxed transition-colors">
                         {t("I agree to the")}{" "}
-                        <a href="/agb" target="_blank" className="text-primary hover:underline font-medium">{t("Terms of Service (AGB)")}</a>
+                        <a href="/agb" target="_blank" className="text-primary hover:underline font-bold underline-offset-2">{t("Terms of Service (AGB)")}</a>
                         {t(", the 12-month contract lock-in, and the custom-lens refund rules.")}{" "}
-                        <span className="text-destructive font-bold">*</span>
+                        <span className="text-destructive font-extrabold">*</span>
                       </span>
                     </label>
                   </div>
@@ -1397,6 +1416,38 @@ function CheckoutPage() {
       </div>
       <Footer />
 
+      {/* Toast Notification Popup */}
+      {toast && (
+        <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300 max-w-sm w-full">
+          <div className={`p-4 rounded-xl border backdrop-blur-md shadow-2xl flex items-start gap-3 justify-between ${
+            toast.type === "error" 
+              ? "bg-destructive/10 border-destructive/30 text-destructive-foreground dark:text-red-400" 
+              : "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+          }`}>
+            <div className="flex gap-2.5 items-start">
+              {toast.type === "error" ? (
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-destructive" />
+              ) : (
+                <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-emerald-500" />
+              )}
+              <div>
+                <h5 className="font-bold text-[9px] uppercase tracking-wider mb-0.5 opacity-80">
+                  {toast.type === "error" ? t("Notification") : t("Success")}
+                </h5>
+                <p className="text-xs text-foreground/90 leading-relaxed font-semibold">
+                  {toast.message}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setToast(null)}
+              className="text-xs font-semibold hover:opacity-80 px-1 cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
