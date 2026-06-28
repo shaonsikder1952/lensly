@@ -54,7 +54,7 @@ function ContractPage() {
   const [agreeTerm, setAgreeTerm] = useState(false);
   const [agreeBilling, setAgreeBilling] = useState(false);
   const [agreeAgb, setAgreeAgb] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"sepa" | "wallet" | "card">("sepa");
+  const [paymentMethod, setPaymentMethod] = useState<"card">("card");
   const [iban, setIban] = useState("");
   const [signatureType, setSignatureType] = useState<"draw" | "type">("draw");
   const [typedSignature, setTypedSignature] = useState("");
@@ -100,7 +100,7 @@ function ContractPage() {
         // Pre-fill form fields from saved data
         setFullName(parsedPending.fullName || "");
         setEmail(parsedPending.email || "");
-        if (parsedPending.paymentMethod) setPaymentMethod(parsedPending.paymentMethod as "sepa" | "card");
+        // paymentMethod is always "card" now (SEPA removed)
         if (parsedPending.iban) setIban(parsedPending.iban);
         setContractId(parsedPending.contractId);
         setPendingDetails(parsedPending as any);
@@ -227,16 +227,7 @@ function ContractPage() {
       return;
     }
 
-    let maskedIban = "";
-    if (paymentMethod === "sepa") {
-      const cleanedIban = iban.replace(/\s+/g, "");
-      const ibanRegex = /^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/;
-      if (!ibanRegex.test(cleanedIban)) {
-        setErrorMsg(t("Please enter a valid IBAN (e.g. DE89 3704 0044 0532 0130 00)."));
-        return;
-      }
-      maskedIban = cleanedIban.slice(0, 4) + " **** **** **** " + cleanedIban.slice(-4);
-    }
+    const maskedIban = "Stripe Card Payment";
 
     let signatureVal = "";
     if (signatureType === "draw") {
@@ -261,7 +252,7 @@ function ContractPage() {
       signatureType,
       signatureData: signatureVal,
       paymentMethod,
-      maskedIban: paymentMethod === "sepa" ? maskedIban : "Apple/Google Pay",
+      maskedIban: "Stripe Card Payment",
     };
 
     if (pendingDetails) {
@@ -482,9 +473,7 @@ function ContractPage() {
                         {t("Payment Method")}
                       </span>
                       <span className="text-foreground block mt-0.5 font-medium">
-                        {signedData.paymentMethod === "sepa"
-                          ? `${t("SEPA Lastschrift")} (${signedData.maskedIban})`
-                          : signedData.maskedIban || t("Apple Pay / Google Pay")}
+                        {signedData.maskedIban || t("Stripe Card Payment")}
                       </span>
                     </div>
                   )}
@@ -594,9 +583,7 @@ function ContractPage() {
                         {t("Payment Method")}
                       </span>
                       <span className="text-foreground block mt-0.5 font-semibold">
-                        {signedData.paymentMethod === "sepa"
-                          ? `${t("SEPA Lastschrift")} (${signedData.maskedIban})`
-                          : signedData.maskedIban || t("Apple Pay / Google Pay")}
+                        {signedData.maskedIban || t("Stripe Card Payment")}
                       </span>
                     </div>
                   )}
@@ -813,58 +800,7 @@ function ContractPage() {
                     />
                   </div>
 
-                  {/* Payment Method Selector */}
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                      {t("Payment Method")} <span className="text-destructive">*</span>
-                    </label>
-                    <div className="grid grid-cols-2 gap-2 bg-muted/60 p-1 rounded-lg border border-border/80">
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod("sepa")}
-                        className={`py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer ${
-                          paymentMethod === "sepa"
-                            ? "bg-card text-foreground shadow-sm font-semibold"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {t("SEPA Lastschrift")}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod("wallet")}
-                        className={`py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer ${
-                          paymentMethod === "wallet"
-                            ? "bg-card text-foreground shadow-sm font-semibold"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {t("Apple/Google Pay")}
-                      </button>
-                    </div>
-                  </div>
 
-                  {/* IBAN Input (Only visible if SEPA selected) */}
-                  {paymentMethod === "sepa" && (
-                    <div className="animate-in fade-in slide-in-from-top-1 duration-200">
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                        {t("IBAN")} <span className="text-destructive">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={iban}
-                        onChange={(e) => {
-                          const val = e.target.value.toUpperCase();
-                          const cleaned = val.replace(/[^A-Z0-9]/g, "");
-                          const matches = cleaned.match(/.{1,4}/g);
-                          setIban(matches ? matches.join(" ") : cleaned);
-                        }}
-                        placeholder="DE89 3704 0044 0532 0130 00"
-                        className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm font-mono text-foreground focus:border-primary focus:outline-none transition-colors"
-                      />
-                    </div>
-                  )}
 
                   {/* Agreement Checkboxes */}
                   <div className="space-y-2.5 border-t border-b border-border/60 py-3.5 my-4">

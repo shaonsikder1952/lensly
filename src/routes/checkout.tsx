@@ -147,7 +147,7 @@ function CheckoutPage() {
   const [stateInput, setStateInput] = useState("");
   const [countryInput, setCountryInput] = useState("DE");
   const [consentLocked, setConsentLocked] = useState(false);
-  const [paymentType, setPaymentType] = useState<"sepa" | "card">("sepa");
+  const [paymentType, setPaymentType] = useState<"card">("card");
 
 
 
@@ -1050,9 +1050,6 @@ function CheckoutPage() {
                         value={fullName}
                         onChange={(e) => {
                           setFullName(e.target.value);
-                          if (paymentType === "sepa" && !accountHolder) {
-                            setAccountHolder(e.target.value);
-                          }
                           if (!typedSignature) {
                             setTypedSignature(e.target.value);
                           }
@@ -1297,139 +1294,47 @@ function CheckoutPage() {
                     )}
                   </div>
 
-                  {/* Payment Tab Picker */}
-                  <div>
-                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                      {t("Select Payment Type")}
-                    </label>
-                    <div className="grid grid-cols-2 gap-2 bg-muted/60 p-1 rounded-lg border border-border/80">
-                      <button
-                        type="button"
-                        onClick={() => setPaymentType("sepa")}
-                        className={`flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                          paymentType === "sepa"
-                            ? "bg-card text-foreground shadow-sm font-bold"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <Building2 className="w-3.5 h-3.5 text-primary" />
-                        {t("Bank Transfer (SEPA)")}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPaymentType("card")}
-                        className={`flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                          paymentType === "card"
-                            ? "bg-card text-foreground shadow-sm font-bold"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <CreditCard className="w-3.5 h-3.5 text-primary" />
-                        {t("Credit Card")}
-                      </button>
+                  {/* Pay with Card (Stripe) — only payment method */}
+                  <div className="space-y-4 pt-4 text-center">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {t("Pay securely via Credit Card (Visa, Mastercard, Amex, etc.) or Express Checkout on Stripe.")}
+                    </p>
+
+                    {/* Stripe button — saves form data to localStorage first, then redirects */}
+                    <button
+                      type="button"
+                      className="w-full rounded-lg bg-primary py-3.5 text-center text-sm font-bold text-primary-foreground shadow-[0_4px_20px_rgba(0,102,119,0.3)] transition-all hover:bg-primary/95 hover:shadow-[0_6px_28px_rgba(0,102,119,0.4)] hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+                      onClick={() => {
+                        const pendingData = {
+                          contractId,
+                          fullName: fullName.trim(),
+                          email: email.trim(),
+                          phone: `${phoneCountryCode}${phone.trim()}`,
+                          birthDate,
+                          birthPlace: birthPlace.trim(),
+                          profession: profession.trim(),
+                          streetAddress: streetAddress.trim(),
+                          postalCode: postalCode.trim(),
+                          city: city.trim(),
+                          state: stateInput.trim(),
+                          country: countryInput,
+                          paymentMethod: "card",
+                          savedAt: new Date().toISOString(),
+                        };
+                        localStorage.setItem("lensly_pending_contract", JSON.stringify(pendingData));
+                        const stripeUrl = `https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01${email.trim() ? `?prefilled_email=${encodeURIComponent(email.trim())}` : ""}`;
+                        window.location.href = stripeUrl;
+                      }}
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      {t("Pay with Card (Stripe)")}
+                    </button>
+
+                    <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground max-w-xs mx-auto pt-1">
+                      <Lock className="w-3 h-3 text-emerald-600" />
+                      {t("After payment, you'll land directly on your ready-to-download contract.")}
                     </div>
                   </div>
-
-                  {/* Tab Render: SEPA form */}
-                  {paymentType === "sepa" ? (
-                    <form onSubmit={handleSubmitSepa} className="space-y-3 pt-2">
-                      <div>
-                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                          {t("Account Holder Name")}
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={accountHolder}
-                          onChange={(e) => setAccountHolder(e.target.value)}
-                          placeholder="John Doe"
-                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs focus:border-primary focus:outline-none transition-colors"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                          {t("IBAN")}
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={iban}
-                          onChange={(e) => handleIbanChange(e.target.value)}
-                          placeholder="DE89 3704 0044 0532 0130 00"
-                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs font-mono focus:border-primary focus:outline-none transition-colors"
-                        />
-                      </div>
-
-                      <div className="bg-muted/30 border border-border/80 rounded-lg p-3 text-[10px] text-muted-foreground leading-relaxed">
-                        {t(
-                          "SEPA Direct Debit Mandate: By signing this form, you authorize Lensly Care to pull recurring monthly payments of €29 from your bank account.",
-                        )}
-                      </div>
-
-                      {/* Primary Sign/Pay checkout button */}
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)] flex items-center justify-center gap-2 mt-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            {t("Authorizing Mandate...")}
-                          </>
-                        ) : (
-                          <>
-                            <ShieldCheck className="w-4 h-4" />
-                            {t("Pay & Subscribe")}
-                          </>
-                        )}
-                      </button>
-                    </form>
-                  ) : (
-                    /* Tab Render: Credit Card */
-                    <div className="space-y-4 pt-4 text-center">
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {t("Pay securely via Credit Card (Visa, Mastercard, Amex, etc.) or Express Checkout on Stripe.")}
-                      </p>
-
-                      {/* Card Sign/Pay redirect button — saves form data first, then redirects */}
-                      <button
-                        type="button"
-                        className="w-full rounded-lg bg-primary py-3.5 text-center text-sm font-bold text-primary-foreground shadow-[0_4px_20px_rgba(0,102,119,0.3)] transition-all hover:bg-primary/95 hover:shadow-[0_6px_28px_rgba(0,102,119,0.4)] hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
-                        onClick={() => {
-                          // Save all form data to localStorage so contract page can pre-fill after Stripe returns
-                          const pendingData = {
-                            contractId,
-                            fullName: fullName.trim(),
-                            email: email.trim(),
-                            phone: `${phoneCountryCode}${phone.trim()}`,
-                            birthDate,
-                            birthPlace: birthPlace.trim(),
-                            profession: profession.trim(),
-                            streetAddress: streetAddress.trim(),
-                            postalCode: postalCode.trim(),
-                            city: city.trim(),
-                            state: stateInput.trim(),
-                            country: countryInput,
-                            paymentMethod: "card",
-                            savedAt: new Date().toISOString(),
-                          };
-                          localStorage.setItem("lensly_pending_contract", JSON.stringify(pendingData));
-                          // Redirect to Stripe Payment Link
-                          const stripeUrl = `https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01${email.trim() ? `?prefilled_email=${encodeURIComponent(email.trim())}` : ""}`;
-                          window.location.href = stripeUrl;
-                        }}
-                      >
-                        <CreditCard className="w-4 h-4" />
-                        {t("Pay with Card (Stripe)")}
-                      </button>
-
-                      <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground max-w-xs mx-auto pt-1">
-                        <Lock className="w-3 h-3 text-emerald-600" />
-                        {t("After payment, you'll land directly on your ready-to-download contract.")}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
