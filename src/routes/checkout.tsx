@@ -1327,7 +1327,7 @@ function CheckoutPage() {
                       }}
                     >
                       <CreditCard className="w-4 h-4" />
-                      {t("Pay with Card (Stripe)")}
+                      {t("Complete Secure Payment")}
                     </button>
 
                     <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground max-w-xs mx-auto pt-1">
