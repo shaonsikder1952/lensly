@@ -261,6 +261,23 @@ export function Nav({ onContactClick }: { onContactClick?: () => void }) {
             )}
           </div>
 
+          {/* Subscribe CTA Button (Laptop & Mobile) */}
+          <Link
+            to="/"
+            hash="plan"
+            onClick={(e) => {
+              if (window.location.pathname === "/") {
+                e.preventDefault();
+                const el = document.getElementById("plan");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+            className="rounded-md bg-primary px-3 py-1.5 text-[10.5px] sm:text-xs font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+          >
+            <span className="hidden xs:inline">{t("Subscribe to Lensly Care")}</span>
+            <span className="xs:hidden">{t("Subscribe")}</span>
+          </Link>
+
           {/* Hamburger Menu Button (Laptop & Mobile) */}
           <div className="relative">
             <button
