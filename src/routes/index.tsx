@@ -61,7 +61,7 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
-      <Nav />
+      <Nav onContactClick={() => setIsContactOpen(true)} />
       <Hero />
       <Plan />
       <Faq />
@@ -236,10 +236,21 @@ const languages = [
   { code: "it", name: "Italiano", flag: "🇮🇹" },
 ];
 
-export function Nav() {
+export function Nav({ onContactClick }: { onContactClick?: () => void }) {
   const { lang, setLang, t } = useLanguage();
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const currentLang = languages.find((l) => l.code === lang) || languages[0];
+
+  const handleScrollTo = (id: string) => {
+    setMenuOpen(false);
+    if (window.location.pathname === "/") {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.location.href = `/#${id}`;
+    }
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
@@ -248,7 +259,42 @@ export function Nav() {
           <LensMark />
           <span className="font-display text-[15px] font-semibold tracking-tight">Lensly</span>
         </Link>
-        <div className="flex items-center gap-3">
+
+        {/* Desktop Nav Links */}
+        <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-muted-foreground">
+          <button
+            onClick={() => handleScrollTo("hero")}
+            className="hover:text-foreground cursor-pointer transition-colors"
+          >
+            {t("Home")}
+          </button>
+          <button
+            onClick={() => handleScrollTo("plan")}
+            className="hover:text-foreground cursor-pointer transition-colors"
+          >
+            {t("Pricing")}
+          </button>
+          <button
+            onClick={() => handleScrollTo("faq")}
+            className="hover:text-foreground cursor-pointer transition-colors"
+          >
+            {t("FAQ")}
+          </button>
+          <button
+            onClick={() => {
+              if (onContactClick) {
+                onContactClick();
+              } else {
+                window.location.href = "mailto:hello@lensly.care";
+              }
+            }}
+            className="hover:text-foreground cursor-pointer transition-colors"
+          >
+            {t("Contact")}
+          </button>
+        </nav>
+
+        <div className="flex items-center gap-2.5">
           {/* Language Dropdown Selector */}
           <div className="relative">
             <button
@@ -304,6 +350,7 @@ export function Nav() {
             )}
           </div>
 
+          {/* Start CTA (Desktop Only) */}
           <Link
             to="/"
             hash="plan"
@@ -314,10 +361,74 @@ export function Nav() {
                 if (el) el.scrollIntoView({ behavior: "smooth" });
               }
             }}
-            className="rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:opacity-90 cursor-pointer"
+            className="hidden md:inline-block rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:opacity-90 cursor-pointer"
           >
             {t("Start for €29/mo")}
           </Link>
+
+          {/* Hamburger Menu Button (Mobile Only) */}
+          <div className="relative md:hidden">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle navigation menu"
+              className="flex flex-col justify-center items-center gap-1.5 w-8.5 h-8.5 rounded-md border border-border/80 bg-background/50 hover:bg-muted transition cursor-pointer"
+            >
+              <span
+                className={`h-0.5 w-4 bg-foreground transition-transform duration-200 ${
+                  menuOpen ? "rotate-45 translate-y-[5px]" : ""
+                }`}
+              />
+              <span
+                className={`h-0.5 w-4 bg-foreground transition-opacity duration-200 ${
+                  menuOpen ? "opacity-0" : ""
+                }`}
+              />
+              <span
+                className={`h-0.5 w-4 bg-foreground transition-transform duration-200 ${
+                  menuOpen ? "-rotate-45 -translate-y-[5px]" : ""
+                }`}
+              />
+            </button>
+
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                <div className="absolute right-0 mt-1.5 z-50 w-44 rounded-lg border border-border bg-card/95 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in-50 slide-in-from-top-1 duration-150 flex flex-col gap-0.5">
+                  <button
+                    onClick={() => handleScrollTo("hero")}
+                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
+                  >
+                    {t("Home")}
+                  </button>
+                  <button
+                    onClick={() => handleScrollTo("plan")}
+                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
+                  >
+                    {t("Pricing")}
+                  </button>
+                  <button
+                    onClick={() => handleScrollTo("faq")}
+                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
+                  >
+                    {t("FAQ")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      if (onContactClick) {
+                        onContactClick();
+                      } else {
+                        window.location.href = "mailto:hello@lensly.care";
+                      }
+                    }}
+                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-primary hover:bg-muted cursor-pointer transition-colors"
+                  >
+                    {t("Contact Us")}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>
