@@ -371,23 +371,38 @@ export function Nav({ onContactClick }: { onContactClick?: () => void }) {
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle navigation menu"
-              className="flex flex-col justify-center items-center gap-1.5 w-8.5 h-8.5 rounded-md border border-border/80 bg-background/50 hover:bg-muted transition cursor-pointer"
+              className="flex justify-center items-center w-8.5 h-8.5 rounded-md border border-border/80 bg-background/50 hover:bg-muted transition cursor-pointer text-foreground"
             >
-              <span
-                className={`h-0.5 w-4 bg-foreground transition-transform duration-200 ${
-                  menuOpen ? "rotate-45 translate-y-[5px]" : ""
-                }`}
-              />
-              <span
-                className={`h-0.5 w-4 bg-foreground transition-opacity duration-200 ${
-                  menuOpen ? "opacity-0" : ""
-                }`}
-              />
-              <span
-                className={`h-0.5 w-4 bg-foreground transition-transform duration-200 ${
-                  menuOpen ? "-rotate-45 -translate-y-[5px]" : ""
-                }`}
-              />
+              {menuOpen ? (
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              ) : (
+                <svg
+                  width="18"
+                  height="14"
+                  viewBox="0 0 18 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1.5 1.5h15M1.5 7h15M1.5 12.5h15"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              )}
             </button>
 
             {menuOpen && (
