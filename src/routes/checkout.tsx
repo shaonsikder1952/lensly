@@ -21,6 +21,7 @@ import {
   FileCheck,
   FileText,
   Download,
+  X,
 } from "lucide-react";
 
 export const Route = createFileRoute("/checkout")({
@@ -1384,33 +1385,29 @@ function CheckoutPage() {
       </div>
       <Footer />
 
-      {/* Toast Notification Popup */}
+      {/* Toast Notification */}
       {toast && (
-        <div className="fixed top-6 right-6 z-[9999] animate-in slide-in-from-top-4 fade-in duration-300 max-w-sm w-full">
-          <div className={`p-4 rounded-xl border backdrop-blur-md shadow-2xl flex items-start gap-3 justify-between ${toast.type === "error"
-              ? "bg-destructive/10 border-destructive/30 text-destructive-foreground dark:text-red-400"
-              : "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
-            }`}>
-            <div className="flex gap-2.5 items-start">
-              {toast.type === "error" ? (
-                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-destructive" />
-              ) : (
-                <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-emerald-500" />
-              )}
-              <div>
-                <h5 className="font-bold text-[9px] uppercase tracking-wider mb-0.5 opacity-80">
-                  {toast.type === "error" ? t("Notification") : t("Success")}
-                </h5>
-                <p className="text-xs text-foreground/90 leading-relaxed font-semibold">
-                  {toast.message}
-                </p>
-              </div>
+        <div className="fixed top-5 right-5 z-[9999] animate-in slide-in-from-top-3 fade-in duration-250 w-[320px]">
+          <div className={`flex items-center gap-3 bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.18)] overflow-hidden border border-zinc-100 dark:border-zinc-800`}>
+            {/* Colored left bar */}
+            <div className={`w-1.5 self-stretch shrink-0 ${toast.type === "error" ? "bg-red-500" : "bg-emerald-500"}`} />
+            {/* Icon */}
+            <div className={`shrink-0 rounded-full p-1.5 ${toast.type === "error" ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
+              {toast.type === "error"
+                ? <AlertCircle className="w-4 h-4 text-red-500" />
+                : <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
             </div>
+            {/* Message */}
+            <p className="flex-1 py-3.5 pr-1 text-[13px] font-medium text-zinc-800 dark:text-zinc-100 leading-snug">
+              {toast.message}
+            </p>
+            {/* Close */}
             <button
               onClick={() => setToast(null)}
-              className="text-xs font-semibold hover:opacity-80 px-1 cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
+              className="mr-3 shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              aria-label="Dismiss"
             >
-              ✕
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
