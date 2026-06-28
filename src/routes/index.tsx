@@ -67,61 +67,6 @@ function Index() {
       <Faq />
       <Footer />
 
-      {/* Sidebar Navigation - 3 Stick Lines */}
-      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3.5 no-print">
-        {[
-          { id: "hero", label: t("Top") },
-          { id: "plan", label: t("Pricing") },
-          { id: "faq", label: t("FAQ") },
-        ].map((item) => {
-          const isActive = activeSection === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => scrollTo(item.id)}
-              aria-label={`Scroll to ${item.label}`}
-              className="group relative flex items-center justify-end cursor-pointer h-4 w-8"
-            >
-              {/* Tooltip Label */}
-              <span className="absolute right-8 opacity-0 group-hover:opacity-100 transition-opacity bg-foreground text-background text-[10px] font-semibold py-1 px-2 rounded shadow-sm whitespace-nowrap pointer-events-none uppercase tracking-wider">
-                {item.label}
-              </span>
-              {/* Horizontal Line segment */}
-              <span
-                className={`h-[3px] rounded-full transition-all duration-300 ${
-                  isActive
-                    ? "w-7 bg-primary"
-                    : "w-4.5 bg-foreground/25 hover:bg-foreground/50"
-                }`}
-              />
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Floating Contact Widget Button */}
-      <button
-        onClick={() => {
-          setIsContactOpen(true);
-          setIsSent(false);
-        }}
-        aria-label="Open contact form"
-        className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer no-print"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      </button>
-
       {/* Contact Modal Panel */}
       {isContactOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/40 backdrop-blur-xs no-print">
@@ -260,40 +205,6 @@ export function Nav({ onContactClick }: { onContactClick?: () => void }) {
           <span className="font-display text-[15px] font-semibold tracking-tight">Lensly</span>
         </Link>
 
-        {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-muted-foreground">
-          <button
-            onClick={() => handleScrollTo("hero")}
-            className="hover:text-foreground cursor-pointer transition-colors"
-          >
-            {t("Home")}
-          </button>
-          <button
-            onClick={() => handleScrollTo("plan")}
-            className="hover:text-foreground cursor-pointer transition-colors"
-          >
-            {t("Pricing")}
-          </button>
-          <button
-            onClick={() => handleScrollTo("faq")}
-            className="hover:text-foreground cursor-pointer transition-colors"
-          >
-            {t("FAQ")}
-          </button>
-          <button
-            onClick={() => {
-              if (onContactClick) {
-                onContactClick();
-              } else {
-                window.location.href = "mailto:hello@lensly.care";
-              }
-            }}
-            className="hover:text-foreground cursor-pointer transition-colors"
-          >
-            {t("Contact")}
-          </button>
-        </nav>
-
         <div className="flex items-center gap-2.5">
           {/* Language Dropdown Selector */}
           <div className="relative">
@@ -350,24 +261,8 @@ export function Nav({ onContactClick }: { onContactClick?: () => void }) {
             )}
           </div>
 
-          {/* Start CTA (Desktop Only) */}
-          <Link
-            to="/"
-            hash="plan"
-            onClick={(e) => {
-              if (window.location.pathname === "/") {
-                e.preventDefault();
-                const el = document.getElementById("plan");
-                if (el) el.scrollIntoView({ behavior: "smooth" });
-              }
-            }}
-            className="hidden md:inline-block rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:opacity-90 cursor-pointer"
-          >
-            {t("Start for €29/mo")}
-          </Link>
-
-          {/* Hamburger Menu Button (Mobile Only) */}
-          <div className="relative md:hidden">
+          {/* Hamburger Menu Button (Laptop & Mobile) */}
+          <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle navigation menu"
