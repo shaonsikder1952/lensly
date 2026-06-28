@@ -1128,15 +1128,9 @@ export function Footer() {
           </Link>
           <Link
             to="/cancel"
-            className="hover:text-background/90 text-emerald-400 font-medium transition-colors"
+            className="hover:text-background transition-colors"
           >
             {t("Vertrag hier kündigen")}
-          </Link>
-          <Link
-            to="/withdraw"
-            className="hover:text-background/90 text-emerald-400 font-medium transition-colors"
-          >
-            {t("Vertrag widerrufen")}
           </Link>
           <span className="text-background/40">© 2026 Lensly</span>
         </div>
