@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../lib/i18n";
+import { saveSubscription } from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
 import {
   PenTool,
@@ -58,6 +59,7 @@ function ContractPage() {
   const [signatureType, setSignatureType] = useState<"draw" | "type">("draw");
   const [typedSignature, setTypedSignature] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [pendingDetails, setPendingDetails] = useState<any>(null);
 
   // Canvas Drawing State
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -65,7 +67,7 @@ function ContractPage() {
   const [hasDrawn, setHasDrawn] = useState(false);
 
   // Generate a persistent simulated contract ID if none exists
-  const [contractId] = useState(() => {
+  const [contractId, setContractId] = useState(() => {
     const rand = Math.floor(100000 + Math.random() * 900000);
     return `LNS-2026-${rand}`;
   });
@@ -77,6 +79,29 @@ function ContractPage() {
         const saved = localStorage.getItem("lensly_signed_contract");
         if (saved) {
           setSignedData(JSON.parse(saved));
+          return;
+        }
+
+        // If not signed, check for URL search parameters (redirect back from Stripe Payment Link)
+        const params = new URLSearchParams(window.location.search);
+        const isSuccess = params.get("success") === "true";
+        const urlContractId = params.get("contractId");
+        const urlEmail = params.get("email");
+
+        if (isSuccess && urlContractId && urlEmail) {
+          // Check if we have the corresponding pending details in localStorage
+          const pendingSaved = localStorage.getItem("lensly_pending_contract");
+          if (pendingSaved) {
+            const parsed = JSON.parse(pendingSaved);
+            if (parsed.contractId === urlContractId && parsed.email === urlEmail) {
+              setFullName(parsed.fullName);
+              setEmail(parsed.email);
+              if (parsed.paymentMethod) setPaymentMethod(parsed.paymentMethod);
+              if (parsed.iban) setIban(parsed.iban);
+              setContractId(parsed.contractId);
+              setPendingDetails(parsed);
+            }
+          }
         }
       } catch (e) {
         console.error("Failed to load signed contract", e);
@@ -216,10 +241,34 @@ function ContractPage() {
       signatureType,
       signatureData: signatureVal,
       paymentMethod,
-      maskedIban: paymentMethod === "sepa" ? maskedIban : "Apple Pay / Google Pay",
+      maskedIban: paymentMethod === "sepa" ? maskedIban : "Apple/Google Pay",
     };
 
-    // TODO: Standalone contract signing uses localStorage. Integrate with backend database in production.
+    if (pendingDetails) {
+      saveSubscription({
+        data: {
+          contractId: pendingDetails.contractId,
+          fullName: fullName.trim(),
+          email: email.trim(),
+          phone: pendingDetails.phone || "placeholder",
+          birthDate: pendingDetails.birthDate || "placeholder",
+          birthPlace: pendingDetails.birthPlace || "placeholder",
+          profession: pendingDetails.profession || "placeholder",
+          streetAddress: pendingDetails.streetAddress || "placeholder",
+          postalCode: pendingDetails.postalCode || "placeholder",
+          city: pendingDetails.city || "placeholder",
+          state: pendingDetails.state || "",
+          country: pendingDetails.country || "DE",
+          paymentMethod: pendingDetails.paymentMethod || "wallet",
+          signatureType,
+          signatureData: signatureVal,
+          status: "active",
+        }
+      }).catch((err) => {
+        console.error("Failed to activate pending subscription in database:", err);
+      });
+    }
+
     localStorage.setItem("lensly_signed_contract", JSON.stringify(data));
     setSignedData(data);
   };

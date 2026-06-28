@@ -6,6 +6,7 @@ import { Nav, Footer } from "./index";
 import {
   ShieldCheck,
   Wallet,
+  CreditCard,
   Building2,
   Lock,
   CheckCircle2,
@@ -146,7 +147,7 @@ function CheckoutPage() {
   const [stateInput, setStateInput] = useState("");
   const [countryInput, setCountryInput] = useState("DE");
   const [consentLocked, setConsentLocked] = useState(false);
-  const [paymentType, setPaymentType] = useState<"sepa" | "wallet">("sepa");
+  const [paymentType, setPaymentType] = useState<"sepa" | "card">("sepa");
 
 
 
@@ -476,50 +477,30 @@ function CheckoutPage() {
 
     setIsSubmitting(true);
 
-    if (stripeEnabled) {
-      saveSubscription({ data: { ...saveData, status: "pending" } })
-        .then(() => {
-          const successUrl = `${window.location.origin}/checkout?success=true`;
-          const cancelUrl = `${window.location.origin}/checkout?cancelled=true`;
-          return createStripeSession({
-            data: {
-              ...saveData,
-              successUrl,
-              cancelUrl,
-            }
-          });
-        })
-        .then((res) => {
-          if (res.sessionUrl) {
-            window.location.href = res.sessionUrl;
-          } else {
-            throw new Error("No Stripe checkout URL returned.");
-          }
-        })
-        .catch((error) => {
-          console.error("Stripe Checkout Session creation error (wallet):", error);
-          setIsSubmitting(false);
-          setValidationError(t("Failed to initiate Stripe Checkout. Please try again."));
-        });
-    } else {
-      saveSubscription({ data: { ...saveData, status: "active" } })
-        .then(async (saved) => {
-          const hashInput = `${saved.contractId}|${saved.fullName}|${saved.email}|${saved.createdAt}`;
-          const contractHash = await generateContractHash(hashInput);
-          setIsSubmitting(false);
-          setCheckoutData({
-            ...saveData,
-            timestamp: saved.createdAt || new Date().toISOString(),
-            contractHash,
-          });
-          setIsSuccess(true);
-        })
-        .catch((error) => {
-          console.error("Wallet save error (simulation):", error);
-          setIsSubmitting(false);
-          setValidationError(t("An error occurred during payment processing."));
-        });
-    }
+    saveSubscription({ data: { ...saveData, status: "pending" } })
+      .then(() => {
+        // Store pending contract details in localStorage to allow pre-loading on /contract page
+        localStorage.setItem("lensly_pending_contract", JSON.stringify({
+          ...saveData,
+          signedAt: new Date().toISOString()
+        }));
+
+        if (stripeEnabled) {
+          // Production Mode: Redirect to Stripe Payment Link
+          const stripeLink = `https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01?prefilled_email=${encodeURIComponent(email.trim())}&client_reference_id=${contractId}`;
+          window.location.href = stripeLink;
+        } else {
+          // Simulation/Local Mode: Redirect directly to /contract page to simulate completed payment
+          setTimeout(() => {
+            window.location.href = `/contract?success=true&contractId=${contractId}&email=${encodeURIComponent(email.trim())}`;
+          }, 1000);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to save subscription:", error);
+        setIsSubmitting(false);
+        setValidationError(t("An error occurred. Please try again."));
+      });
   };
 
 
@@ -1317,15 +1298,15 @@ function CheckoutPage() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setPaymentType("wallet")}
+                        onClick={() => setPaymentType("card")}
                         className={`flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                          paymentType === "wallet"
+                          paymentType === "card"
                             ? "bg-card text-foreground shadow-sm font-bold"
                             : "text-muted-foreground hover:text-foreground"
                         }`}
                       >
-                        <Wallet className="w-3.5 h-3.5 text-primary" />
-                        {t("Apple Pay / Google Pay")}
+                        <CreditCard className="w-3.5 h-3.5 text-primary" />
+                        {t("Credit Card")}
                       </button>
                     </div>
                   </div>
@@ -1386,53 +1367,35 @@ function CheckoutPage() {
                       </button>
                     </form>
                   ) : (
-                    /* Tab Render: Express Wallet */
+                    /* Tab Render: Credit Card */
                     <div className="space-y-4 pt-4 text-center">
-                      <p className="text-xs text-muted-foreground">
-                        {t("Fast, secure checkout using biometric secure enclaves.")}
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {t("Pay securely via Credit Card (Visa, Mastercard, Amex, etc.) or Express Checkout on Stripe.")}
                       </p>
 
-                      {/* Custom Apple Pay Button */}
+                      {/* Card Sign/Pay redirect button */}
                       <button
                         type="button"
                         disabled={isSubmitting}
                         onClick={handleWalletClick}
-                        className="w-full rounded-lg bg-black text-white hover:bg-black/90 py-2.5 text-center text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer border border-black disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground shadow-[0_4px_12px_rgba(0,102,119,0.15)] transition-all hover:bg-primary/95 hover:shadow-[0_4px_20px_rgba(0,102,119,0.25)] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
                           <>
-                            <span className="font-sans text-xs tracking-tight">{t("Pay with")}</span>
-                            <span className="font-bold tracking-tight text-sm">
-                              Apple Pay
-                            </span>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            {t("Redirecting to Stripe...")}
                           </>
-                        )}
-                      </button>
-
-                      {/* Custom Google Pay Button */}
-                      <button
-                        type="button"
-                        disabled={isSubmitting}
-                        onClick={handleWalletClick}
-                        className="w-full rounded-lg bg-white text-black hover:bg-muted/60 border border-border py-2.5 text-center text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {isSubmitting ? (
-                          <Loader2 className="w-4 h-4 animate-spin text-black" />
                         ) : (
                           <>
-                            <span className="font-sans text-xs tracking-tight">{t("Pay with")}</span>
-                            <span className="font-bold tracking-wide text-sm text-foreground/90">
-                              Google Pay
-                            </span>
+                            <CreditCard className="w-4 h-4" />
+                            {t("Pay with Card (Stripe)")}
                           </>
                         )}
                       </button>
 
                       <div className="text-[10px] text-muted-foreground max-w-xs mx-auto pt-2">
                         {t(
-                          "Authorization locks in the 12-month subscription contract automatically.",
+                          "After successful payment, you will be redirected to sign your contract.",
                         )}
                       </div>
                     </div>
