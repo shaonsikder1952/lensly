@@ -1299,7 +1299,7 @@ function CheckoutPage() {
                     {/* Stripe button with full form validation */}
                     <button
                       type="button"
-                      className="w-full relative overflow-hidden rounded-xl py-4 text-center text-[15px] font-bold text-white shadow-[0_4px_16px_rgba(0,62,73,0.4)] transition-all hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2.5 cursor-pointer bg-[#003e49]"
+                      className="w-full relative overflow-hidden rounded-xl py-4 text-center text-[15px] font-bold text-white shadow-[0_4px_20px_rgba(0,151,178,0.45)] transition-all hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2.5 cursor-pointer bg-[#0097b2]"
                       style={{ letterSpacing: "0.01em" }}
                       onClick={() => {
                         // --- Full form validation before Stripe redirect ---
