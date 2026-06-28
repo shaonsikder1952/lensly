@@ -12,9 +12,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportError } from "../lib/error-reporting";
-import { useLanguage } from "../lib/i18n";
+import { useLanguage, LanguageProvider } from "../lib/i18n";
 
-function NotFoundComponent() {
+function NotFoundComponentInner() {
   const { t } = useLanguage();
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -37,7 +37,15 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function NotFoundComponent() {
+  return (
+    <LanguageProvider>
+      <NotFoundComponentInner />
+    </LanguageProvider>
+  );
+}
+
+function ErrorComponentInner({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   const { t } = useLanguage();
@@ -73,6 +81,14 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         </div>
       </div>
     </div>
+  );
+}
+
+function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  return (
+    <LanguageProvider>
+      <ErrorComponentInner error={error} reset={reset} />
+    </LanguageProvider>
   );
 }
 
@@ -143,8 +159,6 @@ function RootShell({ children }: { children: ReactNode }) {
     </html>
   );
 }
-
-import { LanguageProvider } from "../lib/i18n";
 
 function LanguageSync() {
   const { lang } = useLanguage();
