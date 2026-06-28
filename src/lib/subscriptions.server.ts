@@ -403,8 +403,43 @@ export async function updateSubscriptionStatusServer(
 
   if (updated) {
     await writeToJsonFile(updatedList);
+  } else {
+    // If contract is not found in database, insert a placeholder to register the statutory request
+    const newItem: Subscription = {
+      contract_id: normalizedContract,
+      full_name: "Statutory Form Submission",
+      email: normalizedEmail,
+      phone: "placeholder",
+      birth_date: "placeholder",
+      birth_place: "placeholder",
+      profession: "placeholder",
+      street_address: "placeholder",
+      postal_code: "placeholder",
+      city: "placeholder",
+      payment_method: "sepa",
+      signature_type: "type",
+      signature_data: "placeholder",
+      status: status as any,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    list.push(newItem);
+    await writeToJsonFile(list);
+
+    if (isDb && client) {
+      try {
+        await client`
+          INSERT INTO subscriptions (contract_id, full_name, email, phone, birth_date, birth_place, profession, street_address, postal_code, city, payment_method, signature_type, signature_data, status)
+          VALUES (${normalizedContract}, 'Statutory Form Submission', ${normalizedEmail}, 'placeholder', 'placeholder', 'placeholder', 'placeholder', 'placeholder', 'placeholder', 'placeholder', 'sepa', 'type', 'placeholder', ${status})
+          ON CONFLICT (contract_id) DO UPDATE 
+          SET status = ${status}, updated_at = CURRENT_TIMESTAMP
+        `;
+      } catch (dbErr) {
+        console.error("Failed to insert placeholder cancellation in DB:", dbErr);
+      }
+    }
   }
-  return updated;
+  return true;
 }
 
 export async function confirmSubscriptionPaymentServer(
