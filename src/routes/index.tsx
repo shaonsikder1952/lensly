@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage, Language } from "../lib/i18n";
 import glasses3d from "@/assets/glasses-3d.png";
 
@@ -18,13 +18,212 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { t } = useLanguage();
+  const [activeSection, setActiveSection] = useState("hero");
+
+  // Contact modal state
+  const [isContactOpen, setIsContactOpen] = useState(false);
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [isSent, setIsSent] = useState(false);
+
+  useEffect(() => {
+    const sections = ["hero", "plan", "faq"];
+    const observers = sections.map((id) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setActiveSection(id);
+          }
+        },
+        { threshold: 0.3, rootMargin: "-20% 0px -20% 0px" }
+      );
+      observer.observe(el);
+      return { observer, el };
+    });
+
+    return () => {
+      observers.forEach((obs) => {
+        if (obs) obs.observer.unobserve(obs.el);
+      });
+    };
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground relative">
       <Nav />
       <Hero />
       <Plan />
       <Faq />
       <Footer />
+
+      {/* Sidebar Navigation - 3 Stick Lines */}
+      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3.5 no-print">
+        {[
+          { id: "hero", label: t("Top") },
+          { id: "plan", label: t("Pricing") },
+          { id: "faq", label: t("FAQ") },
+        ].map((item) => {
+          const isActive = activeSection === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => scrollTo(item.id)}
+              aria-label={`Scroll to ${item.label}`}
+              className="group relative flex items-center justify-end cursor-pointer h-4 w-8"
+            >
+              {/* Tooltip Label */}
+              <span className="absolute right-8 opacity-0 group-hover:opacity-100 transition-opacity bg-foreground text-background text-[10px] font-semibold py-1 px-2 rounded shadow-sm whitespace-nowrap pointer-events-none uppercase tracking-wider">
+                {item.label}
+              </span>
+              {/* Horizontal Line segment */}
+              <span
+                className={`h-[3px] rounded-full transition-all duration-300 ${
+                  isActive
+                    ? "w-7 bg-primary"
+                    : "w-4.5 bg-foreground/25 hover:bg-foreground/50"
+                }`}
+              />
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Floating Contact Widget Button */}
+      <button
+        onClick={() => {
+          setIsContactOpen(true);
+          setIsSent(false);
+        }}
+        aria-label="Open contact form"
+        className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer no-print"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      </button>
+
+      {/* Contact Modal Panel */}
+      {isContactOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/40 backdrop-blur-xs no-print">
+          <div className="fixed inset-0" onClick={() => setIsContactOpen(false)} />
+          
+          <div className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setIsContactOpen(false)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground cursor-pointer"
+              aria-label="Close modal"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+
+            <h3 className="font-display font-bold text-lg text-foreground mb-1">
+              {t("Ask a Question")}
+            </h3>
+            <p className="text-xs text-muted-foreground mb-4">
+              {t("Direct support email")}:{" "}
+              <a href="mailto:hello@lensly.care" className="text-primary hover:underline font-semibold">
+                hello@lensly.care
+              </a>
+            </p>
+
+            {isSent ? (
+              <div className="py-6 text-center">
+                <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-3">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <h4 className="font-display font-semibold text-sm text-foreground mb-1">
+                  {t("Message Sent!")}
+                </h4>
+                <p className="text-[11px] text-muted-foreground leading-relaxed max-w-[240px] mx-auto">
+                  {t("Thank you for your question. Our support team will get back to you within 24 hours.")}
+                </p>
+              </div>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setIsSent(true);
+                  setContactName("");
+                  setContactEmail("");
+                  setContactMessage("");
+                }}
+                className="space-y-3.5"
+              >
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                    {t("Name")}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                    {t("Email")}
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                    {t("Your Question")}
+                  </label>
+                  <textarea
+                    required
+                    rows={3}
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xs hover:bg-primary/95 transition cursor-pointer"
+                >
+                  {t("Send Message")}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -152,7 +351,7 @@ export function LensMark() {
 function Hero() {
   const { t } = useLanguage();
   return (
-    <section className="relative overflow-hidden border-b border-border/60">
+    <section id="hero" className="relative overflow-hidden border-b border-border/60">
       {/* Decorative background layers */}
       <div className="pointer-events-none absolute inset-0 grid-bg opacity-50" />
       <div className="pointer-events-none absolute left-1/2 top-[62%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 radial-glow" />
@@ -841,7 +1040,7 @@ export function Faq() {
   ];
 
   return (
-    <section className="py-14 sm:py-20 border-t border-border/40 bg-muted/10">
+    <section id="faq" className="py-14 sm:py-20 border-t border-border/40 bg-muted/10">
       <div className="mx-auto max-w-2xl px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
