@@ -166,11 +166,7 @@ function CheckoutPage() {
   const [validationError, setValidationError] = useState("");
   const [downloadingPDF, setDownloadingPDF] = useState(false);
 
-  // Apple Pay / Google Pay Modal Simulation
-  const [showWalletModal, setShowWalletModal] = useState(false);
-  const [walletStep, setWalletStep] = useState<
-    "instructions" | "scanning" | "processing" | "success"
-  >("instructions");
+
 
   // Simulated Contract Reference ID
   const [contractId] = useState(() => {
@@ -196,16 +192,7 @@ function CheckoutPage() {
     }
   }, [signatureType, isSuccess]);
 
-  // Close modals on Escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (showWalletModal) setShowWalletModal(false);
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [showWalletModal]);
+
 
   // Drawing Event Handlers
   const startDrawing = (
@@ -459,7 +446,6 @@ function CheckoutPage() {
     }
   };
 
-  // Trigger Apple / Google Pay Modal
   const handleWalletClick = () => {
     setValidationError("");
     const { valid, signatureVal } = validateForm();
@@ -488,8 +474,9 @@ function CheckoutPage() {
       signatureData: signatureVal,
     };
 
+    setIsSubmitting(true);
+
     if (stripeEnabled) {
-      setIsSubmitting(true);
       saveSubscription({ data: { ...saveData, status: "pending" } })
         .then(() => {
           const successUrl = `${window.location.origin}/checkout?success=true`;
@@ -515,81 +502,24 @@ function CheckoutPage() {
           setValidationError(t("Failed to initiate Stripe Checkout. Please try again."));
         });
     } else {
-      setWalletStep("instructions");
-      setShowWalletModal(true);
+      saveSubscription({ data: { ...saveData, status: "active" } })
+        .then(async (saved) => {
+          const hashInput = `${saved.contractId}|${saved.fullName}|${saved.email}|${saved.createdAt}`;
+          const contractHash = await generateContractHash(hashInput);
+          setIsSubmitting(false);
+          setCheckoutData({
+            ...saveData,
+            timestamp: saved.createdAt || new Date().toISOString(),
+            contractHash,
+          });
+          setIsSuccess(true);
+        })
+        .catch((error) => {
+          console.error("Wallet save error (simulation):", error);
+          setIsSubmitting(false);
+          setValidationError(t("An error occurred during payment processing."));
+        });
     }
-  };
-
-  // Simulate Biometric Bi-pass
-  const handleSimulateBiometric = () => {
-    const { signatureVal } = validateForm();
-    const fullPhone = phoneCountryCode + " " + phone.trim();
-    setWalletStep("scanning");
-
-    // Scan biometric
-    setTimeout(() => {
-      setWalletStep("processing");
-
-      // Process Stripe authorization
-      setTimeout(() => {
-        setWalletStep("success");
-
-        // Finalize transaction and save to database
-        setTimeout(() => {
-          saveSubscription({
-            data: {
-              contractId,
-              fullName: fullName.trim(),
-              email: email.trim(),
-              phone: fullPhone,
-              birthDate: birthDate,
-              birthPlace: birthPlace.trim(),
-              profession: profession.trim(),
-              streetAddress: streetAddress.trim(),
-              postalCode: postalCode.trim(),
-              city: city.trim(),
-              state: stateInput.trim(),
-              country: countryInput,
-              paymentMethod: "wallet",
-              signatureType,
-              signatureData: signatureVal,
-              status: "active",
-            },
-          })
-            .then(async (saved) => {
-              const hashInput = `${saved.contractId}|${saved.fullName}|${saved.email}|${saved.createdAt}`;
-              const contractHash = await generateContractHash(hashInput);
-              setShowWalletModal(false);
-              setCheckoutData({
-                contractId: saved.contractId,
-                fullName: saved.fullName,
-                email: saved.email,
-                phone: saved.phone,
-                birthDate: saved.birthDate,
-                birthPlace: saved.birthPlace,
-                profession: saved.profession,
-                streetAddress: saved.streetAddress || "",
-                postalCode: saved.postalCode || "",
-                city: saved.city || "",
-                state: saved.state || "",
-                country: saved.country || "",
-                paymentMethod: saved.paymentMethod,
-                maskedIban: saved.maskedIban,
-                signatureType: saved.signatureType,
-                signatureData: saved.signatureData,
-                timestamp: saved.createdAt || new Date().toISOString(),
-                contractHash,
-              });
-              setIsSuccess(true);
-            })
-            .catch((error) => {
-              console.error("Wallet save error (simulation):", error);
-              setShowWalletModal(false);
-              setValidationError(t("An error occurred during payment processing."));
-            });
-        }, 1200);
-      }, 1500);
-    }, 1500);
   };
 
 
@@ -1515,87 +1445,6 @@ function CheckoutPage() {
       </div>
       <Footer />
 
-      {/* ================= SIMULATED EXPRESS WALLET MODAL ================= */}
-      {showWalletModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-card border border-border rounded-2xl shadow-2xl p-6 relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            {/* Modal close */}
-            <button
-              onClick={() => setShowWalletModal(false)}
-              className="absolute top-4 right-4 text-xs text-muted-foreground hover:text-foreground font-semibold cursor-pointer"
-            >
-              ✕
-            </button>
-
-            {walletStep === "instructions" && (
-              <div className="text-center py-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto text-primary mb-4">
-                  <Smartphone className="w-6 h-6" />
-                </div>
-                <h4 className="font-display font-semibold text-foreground text-base">
-                  {t("Authorize Payment")}
-                </h4>
-                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                  {t(
-                    "You are about to authorize the Lensly 1-year subscription contract and recurring billing of €29/month via Apple Pay / Google Pay.",
-                  )}
-                </p>
-                <button
-                  onClick={handleSimulateBiometric}
-                  className="w-full mt-6 rounded-lg bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground hover:bg-primary/95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  {t("Confirm & Authorize Payment")}
-                </button>
-              </div>
-            )}
-
-            {walletStep === "scanning" && (
-              <div className="text-center py-6">
-                <div className="relative w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  {/* Pulse visual ring */}
-                  <span className="absolute inset-0 rounded-full bg-primary/10 animate-ping" />
-                  <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                </div>
-                <h4 className="font-display font-semibold text-foreground text-sm">
-                  {t("Verifying Identity...")}
-                </h4>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t("Authenticating via biometric verification...")}
-                </p>
-              </div>
-            )}
-
-            {walletStep === "processing" && (
-              <div className="text-center py-6">
-                <div className="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                </div>
-                <h4 className="font-display font-semibold text-foreground text-sm">
-                  {t("Authorizing with Stripe...")}
-                </h4>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t("Processing secure payment authorization...")}
-                </p>
-              </div>
-            )}
-
-            {walletStep === "success" && (
-              <div className="text-center py-6">
-                <div className="w-12 h-12 bg-emerald-500/10 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-200">
-                  <CheckCircle2 className="w-6 h-6" />
-                </div>
-                <h4 className="font-display font-semibold text-foreground text-sm">
-                  {t("Payment Authorized")}
-                </h4>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t("Payment confirmed. Setting up your subscription...")}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
