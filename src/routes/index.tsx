@@ -436,17 +436,18 @@ function Hero() {
           </div>
 
           {/* Right Column: Optometrist Consultation Image Card */}
-          <div className="md:col-span-5 relative w-full px-4 animate-fade-in mt-6 md:mt-0">
-            {/* Decorative backdrop glow */}
-            <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-primary/5 to-teal-500/5 blur-xl opacity-60 pointer-events-none" />
+          <div className="md:col-span-5 relative w-full px-4 animate-fade-in mt-6 md:mt-0 max-w-[340px] md:max-w-none mx-auto">
+            {/* Solid Teal Offset Backdrop Accent Frame */}
+            <div className="absolute inset-0 bg-primary/10 rounded-2xl translate-x-3.5 translate-y-3.5 pointer-events-none border border-primary/20" />
             
-            <div className="relative overflow-hidden rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.08)] border border-border/50 max-w-[380px] mx-auto md:max-w-none">
+            {/* Image Container Card */}
+            <div className="relative overflow-hidden rounded-2xl bg-white shadow-[0_12px_36px_rgba(0,0,0,0.06)] border border-border/80 aspect-[4/5]">
               <img
                 src="/doctor-consultation.png"
                 alt="Lensly personalized optometrist consultation"
                 width={1024}
                 height={1024}
-                className="w-full aspect-square object-cover transition-transform duration-500 hover:scale-[1.01]"
+                className="w-full h-full object-cover transition-transform duration-500 hover:scale-[1.02]"
               />
             </div>
           </div>
@@ -1115,7 +1116,7 @@ export function Reviews() {
       role: t("Medical Student, LMU Munich"),
       badge: t("Student"),
       badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
-      initials: "SL",
+      image: "/sarah-lindner.png",
       text: t("As a student, paying €400 upfront at traditional opticians was impossible. Lensly's €29 flat monthly rate is insanely cheap and completely hassle-free. Got my second pair last week—super clean lenses and fast shipping!")
     },
     {
@@ -1123,7 +1124,7 @@ export function Reviews() {
       role: t("Senior Consultant, Accenture"),
       badge: t("Office Worker"),
       badgeColor: "bg-indigo-50/50 text-indigo-700 border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
-      initials: "MB",
+      image: "/markus-becker.png",
       text: t("I sit in front of three monitors all day. The blue-light filter lenses Lensly provides are top quality, and the 3 free accident replacements are a lifesaver. Had a frame break last month, and a brand new one arrived in 3 days. No hidden fees, no headache.")
     },
     {
@@ -1131,7 +1132,7 @@ export function Reviews() {
       role: t("Computer Science Student, TU Berlin"),
       badge: t("Student"),
       badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
-      initials: "LW",
+      image: "/lukas-weber.png",
       text: t("Honestly, the best prescription glasses service I've ever used. Getting a new pair every 12 months is perfect for updating my prescription, and the cheap flat rate fits my student budget perfectly. Hassle-free setup, quick delivery, and top quality.")
     }
   ];
@@ -1176,14 +1177,18 @@ export function Reviews() {
               <div className="flex flex-col gap-3 mt-6 pt-5 border-t border-border/40">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-display font-bold text-xs uppercase shrink-0">
-                      {review.initials}
-                    </div>
+                    <img
+                      src={review.image}
+                      alt={review.name}
+                      width={64}
+                      height={64}
+                      className="w-8 h-8 rounded-full border border-primary/10 object-cover shrink-0"
+                    />
                     <div className="text-left">
                       <h4 className="font-semibold text-xs text-foreground leading-none">
                         {review.name}
                       </h4>
-                      <span className="text-[10px] text-muted-foreground font-medium block mt-1 leading-none">
+                      <span className="text-[10px] text-muted-foreground font-medium block mt-1.5 leading-none">
                         {review.role}
                       </span>
                     </div>
