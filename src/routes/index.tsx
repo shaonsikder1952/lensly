@@ -296,6 +296,18 @@ export function Nav({ onContactClick }: { onContactClick?: () => void }) {
                     {t("Pricing")}
                   </button>
                   <button
+                    onClick={() => handleScrollTo("styles")}
+                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
+                  >
+                    {t("Frames")}
+                  </button>
+                  <button
+                    onClick={() => handleScrollTo("reviews")}
+                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
+                  >
+                    {t("Feedbacks")}
+                  </button>
+                  <button
                     onClick={() => handleScrollTo("faq")}
                     className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
                   >
@@ -1070,6 +1082,19 @@ export function ProductGallery() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Explore All Link/Button */}
+        <div className="text-center mt-12">
+          <Link
+            to="/frames"
+            className="inline-flex items-center gap-2 rounded-xl border border-primary/15 bg-white px-6 py-3 text-xs font-bold uppercase tracking-wider text-primary hover:bg-primary/5 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-xs"
+          >
+            <span>{t("Explore All Signature Frames")}</span>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
         </div>
       </div>
     </section>

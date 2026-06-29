@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WithdrawRouteImport } from './routes/withdraw'
 import { Route as ImpressumRouteImport } from './routes/impressum'
+import { Route as FramesRouteImport } from './routes/frames'
 import { Route as DatenschutzRouteImport } from './routes/datenschutz'
 import { Route as ContractRouteImport } from './routes/contract'
 import { Route as CheckoutRouteImport } from './routes/checkout'
@@ -27,6 +28,11 @@ const WithdrawRoute = WithdrawRouteImport.update({
 const ImpressumRoute = ImpressumRouteImport.update({
   id: '/impressum',
   path: '/impressum',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FramesRoute = FramesRouteImport.update({
+  id: '/frames',
+  path: '/frames',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DatenschutzRoute = DatenschutzRouteImport.update({
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/contract': typeof ContractRoute
   '/datenschutz': typeof DatenschutzRoute
+  '/frames': typeof FramesRoute
   '/impressum': typeof ImpressumRoute
   '/withdraw': typeof WithdrawRoute
 }
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/contract': typeof ContractRoute
   '/datenschutz': typeof DatenschutzRoute
+  '/frames': typeof FramesRoute
   '/impressum': typeof ImpressumRoute
   '/withdraw': typeof WithdrawRoute
 }
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/contract': typeof ContractRoute
   '/datenschutz': typeof DatenschutzRoute
+  '/frames': typeof FramesRoute
   '/impressum': typeof ImpressumRoute
   '/withdraw': typeof WithdrawRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contract'
     | '/datenschutz'
+    | '/frames'
     | '/impressum'
     | '/withdraw'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contract'
     | '/datenschutz'
+    | '/frames'
     | '/impressum'
     | '/withdraw'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contract'
     | '/datenschutz'
+    | '/frames'
     | '/impressum'
     | '/withdraw'
   fileRoutesById: FileRoutesById
@@ -143,6 +155,7 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   ContractRoute: typeof ContractRoute
   DatenschutzRoute: typeof DatenschutzRoute
+  FramesRoute: typeof FramesRoute
   ImpressumRoute: typeof ImpressumRoute
   WithdrawRoute: typeof WithdrawRoute
 }
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/impressum'
       fullPath: '/impressum'
       preLoaderRoute: typeof ImpressumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/frames': {
+      id: '/frames'
+      path: '/frames'
+      fullPath: '/frames'
+      preLoaderRoute: typeof FramesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/datenschutz': {
@@ -223,6 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   ContractRoute: ContractRoute,
   DatenschutzRoute: DatenschutzRoute,
+  FramesRoute: FramesRoute,
   ImpressumRoute: ImpressumRoute,
   WithdrawRoute: WithdrawRoute,
 }
