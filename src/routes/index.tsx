@@ -61,6 +61,7 @@ function Index() {
       <Hero />
       <Plan />
       <Faq />
+      <Reviews />
       <Footer />
 
       {/* Contact Modal Panel */}
@@ -345,9 +346,9 @@ function Hero() {
       <div className="pointer-events-none absolute inset-0 grid-bg opacity-50" />
       <div className="pointer-events-none absolute left-1/2 top-[62%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 radial-glow" />
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pt-12 pb-14 md:pt-20 md:pb-24">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pt-16 pb-20 md:pt-24 md:pb-36">
         {/* Two-column grid on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 items-center">
           {/* Left Column: Headline, Description, CTAs, and Trust Badges */}
           <div className="md:col-span-7 flex flex-col items-center text-center md:items-start md:text-left">
             <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
@@ -452,7 +453,7 @@ function Hero() {
         </div>
 
         {/* 3 Premium Value Features - positioned nicely below */}
-        <div className="mt-16 md:mt-24 max-w-5xl mx-auto">
+        <div className="mt-24 md:mt-36 max-w-5xl mx-auto">
           <div className="relative">
             <div className="absolute inset-0 flex items-center" aria-hidden="true">
               <div className="w-full border-t border-border/60"></div>
@@ -524,7 +525,7 @@ function Plan() {
 
   return (
     <section id="plan" className="border-b border-border/60 bg-[var(--mint)]/30">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 sm:py-16">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-20 sm:py-28">
         {/* Comparison Grid */}
         <div className="grid gap-4.5 md:grid-cols-2">
           {/* Traditional Optician Card */}
@@ -1046,7 +1047,7 @@ export function Faq() {
   ];
 
   return (
-    <section id="faq" className="py-14 sm:py-20 border-t border-border/40 bg-muted/10">
+    <section id="faq" className="py-20 sm:py-32 border-t border-border/40 bg-muted/10">
       <div className="mx-auto max-w-2xl px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
@@ -1099,6 +1100,109 @@ export function Faq() {
               </div>
             );
           })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function Reviews() {
+  const { t } = useLanguage();
+
+  const reviews = [
+    {
+      name: "Sarah Lindner",
+      role: t("Medical Student, LMU Munich"),
+      badge: t("Student"),
+      badgeColor: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-500/20",
+      initials: "SL",
+      text: t("As a student, paying €400 upfront at traditional opticians was impossible. Lensly's €29 flat monthly rate is insanely cheap and completely hassle-free. Got my second pair last week—super clean lenses and fast shipping!")
+    },
+    {
+      name: "Markus Becker",
+      role: t("Senior Consultant, Accenture"),
+      badge: t("Office Worker"),
+      badgeColor: "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-500/20",
+      initials: "MB",
+      text: t("I sit in front of three monitors all day. The blue-light filter lenses Lensly provides are top quality, and the 3 free accident replacements are a lifesaver. Had a frame break last month, and a brand new one arrived in 3 days. No hidden fees, no headache.")
+    },
+    {
+      name: "Lukas Weber",
+      role: t("Computer Science Student, TU Berlin"),
+      badge: t("Student"),
+      badgeColor: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-500/20",
+      initials: "LW",
+      text: t("Honestly, the best prescription glasses service I've ever used. Getting a new pair every 12 months is perfect for updating my prescription, and the cheap flat rate fits my student budget perfectly. Hassle-free setup, quick delivery, and top quality.")
+    },
+    {
+      name: "Elena Rossi",
+      role: t("HR Specialist, Zalando"),
+      badge: t("Office Worker"),
+      badgeColor: "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-500/20",
+      initials: "ER",
+      text: t("Super smooth. I don't have to worry about expensive optician bills or insurance paperwork anymore. The subscription is direct, cheap, and having a fresh style every year is incredibly fun. The German lab lenses are crystal clear!")
+    }
+  ];
+
+  return (
+    <section id="reviews" className="py-20 sm:py-32 border-t border-border/40 bg-background relative overflow-hidden">
+      {/* Subtle decorative glow to matches other sections */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
+      
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="text-center mb-12 sm:mb-20">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {t("What our members are saying")}
+          </h2>
+          <p className="mt-2.5 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+            {t("Loved by students, office professionals, and daily screen-users")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
+          {reviews.map((review, idx) => (
+            <div 
+              key={idx}
+              className="bg-card border border-border/80 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 relative group hover:border-primary/20"
+            >
+              <div>
+                {/* 5-star rating layout */}
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+
+                <p className="text-[13px] sm:text-[14px] text-muted-foreground leading-relaxed italic font-medium">
+                  "{review.text}"
+                </p>
+              </div>
+
+              {/* Reviewer Details */}
+              <div className="flex items-center justify-between gap-4 mt-6 pt-5 border-t border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-display font-bold text-xs uppercase shrink-0">
+                    {review.initials}
+                  </div>
+                  <div className="text-left">
+                    <h4 className="font-semibold text-xs sm:text-sm text-foreground leading-none">
+                      {review.name}
+                    </h4>
+                    <span className="text-[10px] sm:text-[11px] text-muted-foreground font-medium block mt-1">
+                      {review.role}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Role Specific color Badge */}
+                <span className={`text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border shrink-0 ${review.badgeColor}`}>
+                  {review.badge}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
