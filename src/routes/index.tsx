@@ -345,168 +345,170 @@ function Hero() {
       <div className="pointer-events-none absolute inset-0 grid-bg opacity-50" />
       <div className="pointer-events-none absolute left-1/2 top-[62%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 radial-glow" />
 
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 pt-10 pb-12 text-center md:pt-14 md:pb-16">
-        <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
-          {t("One plan · €29 / month")}
-        </p>
-        <h1 className="animate-fade-in mx-auto mt-3 max-w-[22ch] font-display text-[34px] font-semibold leading-[1.05] tracking-tight md:text-[52px]">
-          {t("Precision vision care, renewed every ")}
-          <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
-        </h1>
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pt-12 pb-14 md:pt-20 md:pb-24">
+        {/* Two-column grid on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center">
+          {/* Left Column: Headline, Description, CTAs, and Trust Badges */}
+          <div className="md:col-span-7 flex flex-col items-center text-center md:items-start md:text-left">
+            <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
+              {t("One plan · €29 / month")}
+            </p>
+            <h1 className="animate-fade-in mt-3 font-display text-[36px] md:text-[54px] font-semibold leading-[1.05] tracking-tight text-foreground">
+              {t("Precision vision care, renewed every ")}
+              <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
+            </h1>
+            <p className="animate-fade-in mt-5 text-[14px] md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
+              {t("Get a fresh pair of premium prescription glasses delivered to your door every single year, plus up to 3 hassle-free accident replacements. All included in one transparent monthly subscription, with no retail markups.")}
+            </p>
 
-        {/* Eye Doctor Consultation Image Card */}
-        <div className="relative mx-auto mt-8 max-w-lg w-full px-4 animate-fade-in">
-          {/* Decorative backdrop glow */}
-          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary/10 to-teal-500/10 blur-xl opacity-75" />
-          
-          <div className="relative overflow-hidden rounded-2xl border border-primary/10 bg-white p-2.5 shadow-[0_24px_50px_rgba(0,102,119,0.12)]">
-            <img
-              src="/doctor-consultation.png"
-              alt="Lensly personalized optometrist consultation"
-              width={1024}
-              height={1024}
-              className="h-[280px] md:h-[340px] w-full rounded-xl object-cover hover:scale-[1.02] transition-transform duration-500"
-            />
+            {/* Premium CTA Buttons */}
+            <div className="animate-fade-in mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+              <a
+                href="/checkout"
+                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition hover:opacity-95 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)] hover:scale-[1.01] active:scale-[0.99]"
+              >
+                {t("Subscribe Now")}
+                <span className="transition-transform group-hover:translate-x-0.5">→</span>
+              </a>
+              <a
+                href="/#plan"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-primary/10 bg-white/50 backdrop-blur-xs px-7 py-4 text-sm font-semibold text-foreground hover:bg-white hover:border-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+              >
+                {t("Explore the Plan")}
+              </a>
+            </div>
+
+            {/* Trust Indicators directly below CTA */}
+            <div className="animate-fade-in mt-8 flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2.5 pt-6 border-t border-border/40 w-full text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80">
+              <div className="flex items-center gap-2">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  className="text-primary"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.17 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118L2.05 9.43c-.783-.57-.38-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z"
+                  />
+                </svg>
+                <span>{t("Premium Lenses")}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  className="text-primary"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v4m0 0L4 7m8 4v10M4 7v10l8 4"
+                  />
+                </svg>
+                <span>{t("Free EU Shipping")}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  className="text-primary"
+                >
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0110 0v4" />
+                </svg>
+                <span>{t("Stripe Secured")}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Optometrist Consultation Image Card */}
+          <div className="md:col-span-5 relative w-full px-4 animate-fade-in mt-4 md:mt-0">
+            {/* Decorative backdrop glow */}
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary/10 to-teal-500/10 blur-xl opacity-75" />
             
-            {/* Premium Floating Badge */}
-            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between rounded-xl bg-white/95 backdrop-blur-md px-4 py-3 border border-primary/5 shadow-lg">
-              <div className="flex items-center gap-2.5">
-                <div className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                </div>
-                <div className="text-left">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-primary">
-                    {t("Personal Vision Care")}
-                  </p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5 font-medium">
-                    {t("Optometrist consultation included")}
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="text-xs font-bold text-foreground">100%</span>
-                <span className="text-[9px] block text-muted-foreground font-semibold leading-none mt-0.5">{t("Satisfaction")}</span>
-              </div>
+            <div className="relative overflow-hidden rounded-2xl border border-primary/10 bg-white p-2 shadow-[0_24px_50px_rgba(0,102,119,0.12)]">
+              <img
+                src="/doctor-consultation.png"
+                alt="Lensly personalized optometrist consultation"
+                width={1024}
+                height={1024}
+                className="h-[300px] md:h-[380px] w-full rounded-xl object-cover hover:scale-[1.01] transition-transform duration-500"
+              />
             </div>
           </div>
         </div>
 
-        {/* 3 Premium Value Features - Row format on mobile, columns on desktop */}
-        <div className="max-w-md md:max-w-4xl mx-auto mt-10 md:mt-14 mb-8 md:mb-14 px-4 text-left">
-          <div className="bg-white/80 border border-primary/10 rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] space-y-5 md:space-y-0 md:p-0 md:bg-transparent md:border-0 md:shadow-none md:grid md:grid-cols-3 md:gap-8">
+        {/* 3 Premium Value Features - positioned nicely below */}
+        <div className="mt-16 md:mt-24 max-w-5xl mx-auto">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              <div className="w-full border-t border-border/60"></div>
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-background px-4 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/80">
+                {t("What is included in Lensly Care")}
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 text-left px-4">
             {/* Card 1: 1 Free Pair */}
-            <div className="flex gap-4 items-start md:flex-col md:gap-0 group pb-5 border-b border-border/50 md:pb-0 md:border-b-0">
-              <div className="w-10 h-10 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
+            <div className="bg-white/60 border border-primary/5 rounded-2xl p-6 shadow-xs group transition-all duration-300 hover:shadow-md hover:border-primary/10">
+              <div className="w-10 h-10 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-11 md:h-11">
                 01
               </div>
-              <div className="flex-1 md:mt-5">
-                <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight">
+              <div className="mt-4">
+                <h3 className="font-display font-semibold text-[15px] sm:text-[16px] text-foreground tracking-tight">
                   {t("1 Free Pair Every Year")}
                 </h3>
-                <p className="text-[11.5px] text-muted-foreground mt-1 leading-relaxed">
+                <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
                   {t("Receive a complete new pair of prescription glasses delivered to your door annually.")}
                 </p>
               </div>
             </div>
 
             {/* Card 2: 3 Free Replacements */}
-            <div className="flex gap-4 items-start md:flex-col md:gap-0 group relative pb-5 border-b border-border/50 md:pb-0 md:border-b-0">
-              <div className="w-10 h-10 shrink-0 bg-primary/10 border-2 border-primary text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
+            <div className="bg-white/60 border border-primary/5 rounded-2xl p-6 shadow-xs group transition-all duration-300 hover:shadow-md hover:border-primary/10">
+              <div className="w-10 h-10 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-11 md:h-11">
                 02
               </div>
-              <div className="flex-1 md:mt-5">
-                <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight flex items-center gap-2">
+              <div className="mt-4">
+                <h3 className="font-display font-semibold text-[15px] sm:text-[16px] text-foreground tracking-tight flex items-center gap-2">
                   {t("3 Free Replacements")}
-                  <span className="bg-primary/10 text-primary text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full md:hidden">
-                    {t("Included")}
-                  </span>
                 </h3>
-                <p className="text-[11.5px] text-muted-foreground mt-1 leading-relaxed">
+                <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
                   {t("Accident coverage included. We replace broken lenses or update prescription at zero cost.")}
                 </p>
               </div>
             </div>
 
             {/* Card 3: €29 Only */}
-            <div className="flex gap-4 items-start md:flex-col md:gap-0 group">
-              <div className="w-10 h-10 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-12 md:h-12 md:text-base">
+            <div className="bg-white/60 border border-primary/5 rounded-2xl p-6 shadow-xs group transition-all duration-300 hover:shadow-md hover:border-primary/10">
+              <div className="w-10 h-10 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-11 md:h-11">
                 03
               </div>
-              <div className="flex-1 md:mt-5">
-                <h3 className="font-display font-semibold text-[15px] sm:text-[17px] text-foreground tracking-tight">
+              <div className="mt-4">
+                <h3 className="font-display font-semibold text-[15px] sm:text-[16px] text-foreground tracking-tight">
                   {t("Flat €29 Monthly Only")}
                 </h3>
-                <p className="text-[11.5px] text-muted-foreground mt-1 leading-relaxed">
+                <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
                   {t("All-inclusive subscription with zero retail markup or surprise medical billings.")}
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="mt-6 flex items-center justify-center gap-4">
-          <a
-            href="/#plan"
-            className="group inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition hover:opacity-90 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)]"
-          >
-            {t("See the plan")}
-            <span className="transition-transform group-hover:translate-x-0.5">→</span>
-          </a>
-        </div>
-
-        {/* Trust Indicators */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-border/40 pt-6 text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80">
-          <div className="flex items-center gap-2">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              className="text-primary"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.17 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118L2.05 9.43c-.783-.57-.38-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z"
-              />
-            </svg>
-            <span>{t("Premium Optical Lenses")}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              className="text-primary"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v4m0 0L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
-            <span>{t("Free EU-Wide Shipping")}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              className="text-primary"
-            >
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0110 0v4" />
-            </svg>
-            <span>{t("Secure Stripe Checkout")}</span>
           </div>
         </div>
       </div>
