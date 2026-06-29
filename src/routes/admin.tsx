@@ -1334,7 +1334,7 @@ function AdminPage() {
                 onClick={() => setSelectedSub(null)}
                 className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg transition"
               >
-                <X className="w-4.5 h-4.5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -1538,7 +1538,7 @@ function AdminPage() {
                 onClick={() => setEditingSub(null)}
                 className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg transition"
               >
-                <X className="w-4.5 h-4.5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -1748,7 +1748,7 @@ function AdminPage() {
                 onClick={() => setDeletingSub(null)}
                 className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg transition"
               >
-                <X className="w-4.5 h-4.5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 

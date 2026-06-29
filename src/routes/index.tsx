@@ -376,11 +376,11 @@ function Hero() {
             <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
               {t("One plan · €29 / month")}
             </p>
-            <h1 className="animate-fade-in mt-3 font-display text-[36px] md:text-[54px] font-semibold leading-[1.05] tracking-tight text-foreground">
+            <h1 className="animate-fade-in mt-3 font-display text-3xl sm:text-4xl md:text-[54px] font-semibold leading-[1.1] md:leading-[1.05] tracking-tight text-foreground">
               {t("Precision vision care, renewed every ")}
               <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
             </h1>
-            <p className="animate-fade-in mt-5 text-[14px] md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
+            <p className="animate-fade-in mt-5 text-[13px] sm:text-sm md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
               {t("Get a fresh pair of premium prescription glasses delivered to your door every single year, plus up to 3 hassle-free accident replacements. All included in one transparent monthly subscription, with no retail markups.")}
             </p>
 
@@ -388,14 +388,14 @@ function Hero() {
             <div className="animate-fade-in mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
               <a
                 href="/checkout"
-                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition hover:opacity-95 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)] hover:scale-[1.01] active:scale-[0.99]"
+                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-7 py-4 text-xs sm:text-sm font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition hover:opacity-95 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)] hover:scale-[1.01] active:scale-[0.99]"
               >
                 {t("Subscribe Now")}
                 <span className="transition-transform group-hover:translate-x-0.5">→</span>
               </a>
               <a
                 href="/#plan"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-primary/10 bg-white/50 backdrop-blur-xs px-7 py-4 text-sm font-semibold text-foreground hover:bg-white hover:border-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-primary/10 bg-white/50 backdrop-blur-xs px-7 py-4 text-xs sm:text-sm font-semibold text-foreground hover:bg-white hover:border-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
               >
                 {t("Explore the Plan")}
               </a>
@@ -458,7 +458,7 @@ function Hero() {
           </div>
 
           {/* Right Column: Optometrist Consultation Image Card */}
-          <div className="md:col-span-5 relative w-full px-4 animate-fade-in mt-6 md:mt-0 max-w-[340px] md:max-w-none mx-auto">
+          <div className="md:col-span-5 relative w-full px-4 animate-fade-in mt-10 md:mt-0 max-w-[340px] md:max-w-none mx-auto">
             {/* Solid Teal Offset Backdrop Accent Frame */}
             <div className="absolute inset-0 bg-primary/10 rounded-2xl translate-x-3.5 translate-y-3.5 pointer-events-none border border-primary/20" />
             
@@ -540,8 +540,6 @@ function Hero() {
   );
 }
 
-
-
 function Plan() {
   const { t } = useLanguage();
   const [insuranceTab, setInsuranceTab] = useState<"insurance" | "lensly">("lensly");
@@ -549,10 +547,20 @@ function Plan() {
   return (
     <section id="plan" className="border-b border-border/60 bg-[var(--mint)]/30">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 py-16 md:py-28">
+        {/* Section Header */}
+        <div className="text-center mb-10 md:mb-16">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {t("One simple monthly rate")}
+          </h2>
+          <p className="mt-2 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+            {t("Continuous vision care with no upfront costs or retail markup")}
+          </p>
+        </div>
+
         {/* Comparison Grid */}
-        <div className="grid gap-4.5 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {/* Traditional Optician Card */}
-          <div className="rounded-2xl border border-border bg-card p-4.5 sm:p-7 shadow-xs flex flex-col justify-between">
+          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
             <div>
               <p className="label-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 {t("Traditional optician")}
@@ -585,7 +593,7 @@ function Plan() {
           </div>
 
           {/* Lensly Care Card (Featured) */}
-          <div className="relative rounded-2xl border-2 border-primary bg-card p-4.5 sm:p-7 shadow-xs flex flex-col justify-between">
+          <div className="relative rounded-2xl border-2 border-primary bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
               {t("Lensly Care")}
             </div>
@@ -613,7 +621,7 @@ function Plan() {
                 <Feature>{t("Free shipping EU-wide · minimum 1 year contract")}</Feature>
               </ul>
             </div>
-            <div className="mt-4.5 pt-4 border-t border-border/60">
+            <div className="mt-6 pt-4 border-t border-border/60">
               <Link
                 to="/checkout"
                 className="block w-full rounded-lg bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground shadow-[0_4px_12px_-4px_oklch(0.46_0.07_210/0.6)] transition-all hover:bg-primary/95 hover:shadow-[0_6px_16px_-4px_oklch(0.46_0.07_210/0.7)] cursor-pointer"
@@ -638,7 +646,7 @@ function Plan() {
             </p>
           </div>
 
-          <div className="relative flex flex-col gap-6 sm:grid sm:grid-cols-5 sm:gap-4.5 text-left pl-3 sm:pl-0">
+          <div className="relative flex flex-col gap-6 sm:grid sm:grid-cols-5 sm:gap-5 text-left pl-3 sm:pl-0">
             {/* Connector line for mobile (runs vertically) */}
             <div className="absolute left-[26px] top-3 bottom-3 w-[1.5px] bg-border/80 sm:hidden z-0" />
             {/* Subtle connector line for desktop */}
@@ -742,9 +750,9 @@ function Plan() {
             </p>
           </div>
 
-          <div className="grid gap-4.5 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             {/* Glasses Insurance */}
-            <div className="rounded-2xl border border-border bg-card p-4.5 sm:p-8 shadow-xs flex flex-col justify-between">
+            <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between border-b border-border/60 pb-4">
                   <div>
@@ -851,7 +859,7 @@ function Plan() {
             </div>
 
             {/* Lensly */}
-            <div className="relative rounded-2xl border-2 border-primary bg-card p-4.5 sm:p-8 shadow-xs flex flex-col justify-between">
+            <div className="relative rounded-2xl border-2 border-primary bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
                 {t("Recommended")}
               </div>

@@ -192,7 +192,7 @@ function CancelPage() {
                   </p>
                 </div>
 
-                <div className="border border-border/80 rounded-xl bg-muted/40 p-4.5 text-left space-y-2.5 text-xs">
+                <div className="border border-border/80 rounded-xl bg-muted/40 p-5 text-left space-y-2.5 text-xs">
                   <div className="flex justify-between items-center text-[10px] uppercase font-semibold text-muted-foreground border-b border-border/40 pb-2 mb-1">
                     <span>{t("Cancellation summary")}</span>
                     <span className="font-mono text-foreground font-bold">{cancelRef}</span>
