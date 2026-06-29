@@ -1293,9 +1293,16 @@ function CheckoutPage() {
                   </div>
 
                        <div className="space-y-4 pt-4">
-                    <p className="text-xs text-muted-foreground leading-relaxed text-center">
-                      {t("Pay securely via Credit Card, Debit Card, or Express Checkout on Stripe.")}
-                    </p>
+                     {/* Compliance Info Banner */}
+                    <div className="bg-muted/50 rounded-xl p-3.5 border border-border/80 text-[11px] sm:text-xs text-muted-foreground leading-relaxed text-left max-w-sm mx-auto">
+                      <p className="font-semibold text-foreground mb-1 flex items-center gap-1.5">
+                        <AlertCircle className="w-3.5 h-3.5 text-primary shrink-0" />
+                        {t("Important Subscription Information")}
+                      </p>
+                      <p className="text-[10.5px] leading-normal opacity-90">
+                        {t("By proceeding, you agree to a minimum contract duration of 12 months at €29.00/month. Thereafter, the subscription automatically renews on a monthly basis, cancelable at any time with 30 days notice. Cancellation can be requested easily online.")}
+                      </p>
+                    </div>
 
                     {/* Stripe button with full form validation */}
                     <button

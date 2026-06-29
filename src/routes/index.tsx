@@ -60,6 +60,7 @@ function Index() {
       <Nav onContactClick={() => setIsContactOpen(true)} />
       <Hero />
       <Plan />
+      <ProductGallery />
       <Faq />
       <Reviews />
       <Footer />
@@ -150,7 +151,16 @@ export function Nav({ onContactClick }: { onContactClick?: () => void }) {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-md">
+      {/* Sleek Trust & Announcement Bar */}
+      <div className="bg-primary text-primary-foreground text-[8.5px] sm:text-[9.5px] py-1.5 px-4 font-sans tracking-wider text-center uppercase font-bold flex items-center justify-center gap-x-6 gap-y-1 flex-wrap border-b border-white/10 select-none">
+        <span>{t("✓ CE Certified Lenses")}</span>
+        <span className="hidden sm:inline opacity-30">•</span>
+        <span>{t("✓ Free EU Shipping")}</span>
+        <span className="hidden sm:inline opacity-30">•</span>
+        <span>{t("✓ 14-Day Satisfaction Guarantee")}</span>
+      </div>
+
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2">
           <LensMark />
@@ -397,7 +407,7 @@ function Hero() {
                     d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.17 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118L2.05 9.43c-.783-.57-.38-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z"
                   />
                 </svg>
-                <span>{t("Premium Lenses")}</span>
+                <span>{t("CE Certified German Lenses")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg
@@ -979,6 +989,90 @@ function Math({
         {sub && <div className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground/75 font-medium">{sub}</div>}
       </div>
     </div>
+  );
+}
+
+export function ProductGallery() {
+  const { t } = useLanguage();
+
+  const styles = [
+    {
+      name: t("The Classic Acetate"),
+      desc: t("Premium handcrafted tortoiseshell frame with durable metal inner core. Sleek vintage design suitable for any face shape."),
+      tag: t("Premium Acetate"),
+      image: "/classic-acetate.png"
+    },
+    {
+      name: t("The Modern Gold"),
+      desc: t("Ultra-lightweight round stainless steel frame plated with high-polish warm gold. Minimalist styling with adjustable silicone nose pads."),
+      tag: t("Stainless Steel"),
+      image: "/modern-gold.png"
+    },
+    {
+      name: t("The Bold Black"),
+      desc: t("Chic thick-rimmed square frame in deep polished onyx black. Solid construction with high-grade flexible hinges."),
+      tag: t("Polished Resin"),
+      image: "/bold-black.png"
+    },
+    {
+      name: t("The Crystal Clear"),
+      desc: t("Elegant transparent round frame crafting a modern, intellectual look. Soft keyhole bridge for maximum all-day comfort."),
+      tag: t("Transparent TR90"),
+      image: "/crystal-clear.png"
+    }
+  ];
+
+  return (
+    <section id="styles" className="py-16 md:py-28 bg-background border-t border-border/40">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="text-center mb-10 md:mb-16">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {t("Signature Frame Styles")}
+          </h2>
+          <p className="mt-2 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+            {t("CE-certified German prescription lenses fitted to premium frames")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {styles.map((style, idx) => (
+            <div
+              key={idx}
+              className="bg-white/60 border border-primary/5 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between hover:shadow-md hover:border-primary/10 transition-all duration-300 group"
+            >
+              <div className="aspect-[4/5] overflow-hidden bg-muted/40 relative">
+                <img
+                  src={style.image}
+                  alt={style.name}
+                  width={400}
+                  height={500}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <span className="absolute top-3 left-3 bg-primary/95 text-primary-foreground text-[8px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border border-white/10 shadow-sm">
+                  {style.tag}
+                </span>
+              </div>
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <div className="mb-4">
+                  <h3 className="font-display font-semibold text-xs sm:text-[14px] text-foreground tracking-tight">
+                    {style.name}
+                  </h3>
+                  <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1.5 leading-relaxed">
+                    {style.desc}
+                  </p>
+                </div>
+                <div className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1 border-t border-border/40 pt-3">
+                  <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>{t("German Lenses Fitted")}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
