@@ -435,17 +435,17 @@ function Hero() {
           </div>
 
           {/* Right Column: Optometrist Consultation Image Card */}
-          <div className="md:col-span-5 relative w-full px-4 animate-fade-in mt-4 md:mt-0">
+          <div className="md:col-span-5 relative w-full px-4 animate-fade-in mt-6 md:mt-0">
             {/* Decorative backdrop glow */}
-            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary/10 to-teal-500/10 blur-xl opacity-75" />
+            <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-primary/5 to-teal-500/5 blur-xl opacity-60 pointer-events-none" />
             
-            <div className="relative overflow-hidden rounded-2xl border border-primary/10 bg-white p-2 shadow-[0_24px_50px_rgba(0,102,119,0.12)]">
+            <div className="relative overflow-hidden rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.08)] border border-border/50 max-w-[380px] mx-auto md:max-w-none">
               <img
                 src="/doctor-consultation.png"
                 alt="Lensly personalized optometrist consultation"
                 width={1024}
                 height={1024}
-                className="h-[300px] md:h-[380px] w-full rounded-xl object-cover hover:scale-[1.01] transition-transform duration-500"
+                className="w-full aspect-square object-cover transition-transform duration-500 hover:scale-[1.01]"
               />
             </div>
           </div>
