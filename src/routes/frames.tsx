@@ -132,6 +132,24 @@ function FramesPage() {
               </div>
             ))}
           </div>
+
+          {/* Custom Frame Request Banner */}
+          <div className="mt-12 max-w-xl mx-auto bg-gradient-to-br from-primary/5 to-teal-500/5 border border-primary/10 rounded-2xl p-5 sm:p-7 text-center">
+            <h3 className="font-display font-semibold text-xs sm:text-[14px] text-foreground tracking-tight mb-2">
+              {t("Looking for a different style?")}
+            </h3>
+            <p className="text-[11.5px] sm:text-xs text-muted-foreground leading-relaxed">
+              {t("If you want any frame outside our signature collection, just contact us via email. We can source almost any frame style and custom-fit your premium German lenses — free of charge.")}
+            </p>
+            <div className="mt-4">
+              <a
+                href="mailto:lensly@gmail.com?subject=Custom Frame Request"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-[10.5px] sm:text-xs font-bold uppercase tracking-wider text-primary-foreground hover:opacity-95 shadow-sm shadow-primary/10 transition cursor-pointer"
+              >
+                <span>{t("Request Custom Frame")}</span>
+              </a>
+            </div>
+          </div>
         </main>
       </div>
       <Footer />
