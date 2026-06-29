@@ -346,7 +346,7 @@ function Hero() {
       <div className="pointer-events-none absolute inset-0 grid-bg opacity-50" />
       <div className="pointer-events-none absolute left-1/2 top-[62%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 radial-glow" />
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pt-16 pb-20 md:pt-24 md:pb-36">
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 pt-16 pb-16 md:pt-28 md:pb-28">
         {/* Two-column grid on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 items-center">
           {/* Left Column: Headline, Description, CTAs, and Trust Badges */}
@@ -525,7 +525,7 @@ function Plan() {
 
   return (
     <section id="plan" className="border-b border-border/60 bg-[var(--mint)]/30">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-20 sm:py-28">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-16 md:py-28">
         {/* Comparison Grid */}
         <div className="grid gap-4.5 md:grid-cols-2">
           {/* Traditional Optician Card */}
@@ -1047,8 +1047,8 @@ export function Faq() {
   ];
 
   return (
-    <section id="faq" className="py-20 sm:py-32 border-t border-border/40 bg-muted/10">
-      <div className="mx-auto max-w-2xl px-4 sm:px-6">
+    <section id="faq" className="py-16 md:py-28 border-t border-border/40 bg-muted/10">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             {t("Frequently Asked Questions")}
@@ -1114,7 +1114,7 @@ export function Reviews() {
       name: "Sarah Lindner",
       role: t("Medical Student, LMU Munich"),
       badge: t("Student"),
-      badgeColor: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-500/20",
+      badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
       initials: "SL",
       text: t("As a student, paying €400 upfront at traditional opticians was impossible. Lensly's €29 flat monthly rate is insanely cheap and completely hassle-free. Got my second pair last week—super clean lenses and fast shipping!")
     },
@@ -1122,7 +1122,7 @@ export function Reviews() {
       name: "Markus Becker",
       role: t("Senior Consultant, Accenture"),
       badge: t("Office Worker"),
-      badgeColor: "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-500/20",
+      badgeColor: "bg-indigo-50/50 text-indigo-700 border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
       initials: "MB",
       text: t("I sit in front of three monitors all day. The blue-light filter lenses Lensly provides are top quality, and the 3 free accident replacements are a lifesaver. Had a frame break last month, and a brand new one arrived in 3 days. No hidden fees, no headache.")
     },
@@ -1130,76 +1130,78 @@ export function Reviews() {
       name: "Lukas Weber",
       role: t("Computer Science Student, TU Berlin"),
       badge: t("Student"),
-      badgeColor: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-500/20",
+      badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
       initials: "LW",
       text: t("Honestly, the best prescription glasses service I've ever used. Getting a new pair every 12 months is perfect for updating my prescription, and the cheap flat rate fits my student budget perfectly. Hassle-free setup, quick delivery, and top quality.")
-    },
-    {
-      name: "Elena Rossi",
-      role: t("HR Specialist, Zalando"),
-      badge: t("Office Worker"),
-      badgeColor: "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-500/20",
-      initials: "ER",
-      text: t("Super smooth. I don't have to worry about expensive optician bills or insurance paperwork anymore. The subscription is direct, cheap, and having a fresh style every year is incredibly fun. The German lab lenses are crystal clear!")
     }
   ];
 
   return (
-    <section id="reviews" className="py-20 sm:py-32 border-t border-border/40 bg-background relative overflow-hidden">
-      {/* Subtle decorative glow to matches other sections */}
+    <section id="reviews" className="py-16 md:py-28 border-t border-border/40 bg-background relative overflow-hidden">
+      {/* Subtle decorative glow to match other sections */}
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
       
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="text-center mb-12 sm:mb-20">
+        <div className="text-center mb-10 md:mb-16">
           <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             {t("What our members are saying")}
           </h2>
-          <p className="mt-2.5 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+          <p className="mt-2 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">
             {t("Loved by students, office professionals, and daily screen-users")}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {reviews.map((review, idx) => (
             <div 
               key={idx}
-              className="bg-card border border-border/80 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 relative group hover:border-primary/20"
+              className="bg-white/80 border border-primary/10 rounded-2xl p-6 shadow-[0_12px_40px_rgba(0,102,119,0.03)] backdrop-blur-xs flex flex-col justify-between hover:shadow-[0_16px_48px_rgba(0,102,119,0.06)] hover:scale-[1.01] hover:border-primary/20 transition-all duration-300 relative group"
             >
               <div>
-                {/* 5-star rating layout */}
+                {/* 5-star rating layout using clinical-teal color */}
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-3.5 h-3.5 text-amber-400 fill-current" viewBox="0 0 20 20">
+                    <svg key={i} className="w-3.5 h-3.5 text-primary fill-current" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
                 </div>
 
-                <p className="text-[13px] sm:text-[14px] text-muted-foreground leading-relaxed italic font-medium">
+                <p className="text-[13px] text-muted-foreground/90 font-sans leading-relaxed italic">
                   "{review.text}"
                 </p>
               </div>
 
               {/* Reviewer Details */}
-              <div className="flex items-center justify-between gap-4 mt-6 pt-5 border-t border-border/40">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-display font-bold text-xs uppercase shrink-0">
-                    {review.initials}
+              <div className="flex flex-col gap-3 mt-6 pt-5 border-t border-border/40">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-display font-bold text-xs uppercase shrink-0">
+                      {review.initials}
+                    </div>
+                    <div className="text-left">
+                      <h4 className="font-semibold text-xs text-foreground leading-none">
+                        {review.name}
+                      </h4>
+                      <span className="text-[10px] text-muted-foreground font-medium block mt-1 leading-none">
+                        {review.role}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-left">
-                    <h4 className="font-semibold text-xs sm:text-sm text-foreground leading-none">
-                      {review.name}
-                    </h4>
-                    <span className="text-[10px] sm:text-[11px] text-muted-foreground font-medium block mt-1">
-                      {review.role}
-                    </span>
-                  </div>
+
+                  {/* Role Specific color Badge */}
+                  <span className={`text-[8px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border shrink-0 ${review.badgeColor}`}>
+                    {review.badge}
+                  </span>
                 </div>
 
-                {/* Role Specific color Badge */}
-                <span className={`text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border shrink-0 ${review.badgeColor}`}>
-                  {review.badge}
-                </span>
+                {/* Verified Tag */}
+                <div className="flex items-center gap-1 text-[10px] text-emerald-600 font-semibold text-left">
+                  <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>{t("Verified Member")}</span>
+                </div>
               </div>
             </div>
           ))}
