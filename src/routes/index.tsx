@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useLanguage, Language } from "../lib/i18n";
-import glasses3d from "@/assets/glasses-3d.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -355,27 +354,42 @@ function Hero() {
           <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
         </h1>
 
-        {/* Floating 3D glasses with tight orbital rings */}
-        <div className="relative mx-auto mt-5 flex h-[170px] w-full items-center justify-center md:h-[210px]">
-          {/* Orbital rings centered on glasses */}
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block">
-            <div className="spin-slow h-[300px] w-[300px] rounded-full border border-primary/5 md:h-[380px] md:w-[380px]" />
-          </div>
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block">
-            <div
-              className="spin-slow h-[220px] w-[220px] rounded-full border border-dashed border-primary/10 md:h-[280px] md:w-[280px]"
-              style={{ animationDirection: "reverse", animationDuration: "60s" }}
+        {/* Eye Doctor Consultation Image Card */}
+        <div className="relative mx-auto mt-8 max-w-lg w-full px-4 animate-fade-in">
+          {/* Decorative backdrop glow */}
+          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary/10 to-teal-500/10 blur-xl opacity-75" />
+          
+          <div className="relative overflow-hidden rounded-2xl border border-primary/10 bg-white p-2.5 shadow-[0_24px_50px_rgba(0,102,119,0.12)]">
+            <img
+              src="/doctor-consultation.png"
+              alt="Lensly personalized optometrist consultation"
+              width={1024}
+              height={1024}
+              className="h-[280px] md:h-[340px] w-full rounded-xl object-cover hover:scale-[1.02] transition-transform duration-500"
             />
+            
+            {/* Premium Floating Badge */}
+            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between rounded-xl bg-white/95 backdrop-blur-md px-4 py-3 border border-primary/5 shadow-lg">
+              <div className="flex items-center gap-2.5">
+                <div className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-primary">
+                    {t("Personal Vision Care")}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 font-medium">
+                    {t("Optometrist consultation included")}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-xs font-bold text-foreground">100%</span>
+                <span className="text-[9px] block text-muted-foreground font-semibold leading-none mt-0.5">{t("Satisfaction")}</span>
+              </div>
+            </div>
           </div>
-          {/* Shadow */}
-          <div className="absolute bottom-4 left-1/2 h-5 w-44 -translate-x-1/2 rounded-[50%] bg-primary/25 blur-2xl" />
-          <img
-            src={glasses3d}
-            alt="Lensly prescription glasses"
-            width={1024}
-            height={1024}
-            className="float-slow relative h-[150px] w-auto drop-shadow-[0_24px_30px_oklch(0.46_0.07_210/0.3)] md:h-[190px]"
-          />
         </div>
 
         {/* 3 Premium Value Features - Row format on mobile, columns on desktop */}
