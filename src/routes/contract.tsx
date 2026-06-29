@@ -598,7 +598,7 @@ function ContractPage() {
                   <p>
                     <strong>{t("1. Contracting Parties:")}</strong>{" "}
                     {t(
-                      "This agreement is entered into between Lensly UG (haftungsbeschränkt), Düsseldorf, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.",
+                      "This agreement is entered into between Sikder LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.",
                     )}
                   </p>
                   <p>

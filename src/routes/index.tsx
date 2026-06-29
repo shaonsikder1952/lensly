@@ -1120,6 +1120,14 @@ export function Reviews() {
       text: t("As a student, paying €400 upfront at traditional opticians was impossible. Lensly's €29 flat monthly rate is insanely cheap and completely hassle-free. Got my second pair last week—super clean lenses and fast shipping!")
     },
     {
+      name: "Jonas Schmidt",
+      role: t("Business Student, FU Berlin"),
+      badge: t("Student"),
+      badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
+      image: "/jonas-schmidt.png",
+      text: t("So simple. €29/month is the absolute best deal for students. Highly recommend!")
+    },
+    {
       name: "Markus Becker",
       role: t("Senior Consultant, Accenture"),
       badge: t("Office Worker"),
@@ -1128,12 +1136,28 @@ export function Reviews() {
       text: t("I sit in front of three monitors all day. The blue-light filter lenses Lensly provides are top quality, and the 3 free accident replacements are a lifesaver. Had a frame break last month, and a brand new one arrived in 3 days. No hidden fees, no headache.")
     },
     {
+      name: "Emma Fischer",
+      role: t("Administrative Assistant, Siemens"),
+      badge: t("Office Worker"),
+      badgeColor: "bg-indigo-50/50 text-indigo-700 border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
+      image: "/emma-fischer.png",
+      text: t("Absolutely hassle-free. Got my replacement glasses in just 2 days. Brilliant service!")
+    },
+    {
       name: "Lukas Weber",
       role: t("Computer Science Student, TU Berlin"),
       badge: t("Student"),
       badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
       image: "/lukas-weber.png",
       text: t("Honestly, the best prescription glasses service I've ever used. Getting a new pair every 12 months is perfect for updating my prescription, and the cheap flat rate fits my student budget perfectly. Hassle-free setup, quick delivery, and top quality.")
+    },
+    {
+      name: "Laura Weber",
+      role: t("Marketing Manager, Zalando"),
+      badge: t("Office Worker"),
+      badgeColor: "bg-indigo-50/50 text-indigo-700 border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
+      image: "/laura-weber.png",
+      text: t("German lenses are crystal clear. I love my fresh style every year!")
     }
   ];
 
@@ -1152,11 +1176,12 @@ export function Reviews() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Premium Masonry Grid using CSS columns */}
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-8 [column-fill:_balance]">
           {reviews.map((review, idx) => (
             <div 
               key={idx}
-              className="bg-white/80 border border-primary/10 rounded-2xl p-6 shadow-[0_12px_40px_rgba(0,102,119,0.03)] backdrop-blur-xs flex flex-col justify-between hover:shadow-[0_16px_48px_rgba(0,102,119,0.06)] hover:scale-[1.01] hover:border-primary/20 transition-all duration-300 relative group"
+              className="break-inside-avoid bg-white/80 border border-primary/10 rounded-2xl p-6 shadow-[0_12px_40px_rgba(0,102,119,0.03)] backdrop-blur-xs flex flex-col justify-between hover:shadow-[0_16px_48px_rgba(0,102,119,0.06)] hover:scale-[1.01] hover:border-primary/20 transition-all duration-300 relative group mb-8"
             >
               <div>
                 {/* 5-star rating layout using clinical-teal color */}

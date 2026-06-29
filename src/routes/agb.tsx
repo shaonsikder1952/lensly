@@ -32,11 +32,10 @@ function Agb() {
             <h1 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl mt-3">
               {t("General Terms and Conditions (GTC) & Regulatory Customer Information")}
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {t("Effective Date: June 25, 2026. Lensly UG (haftungsbeschränkt)")}
+            <p className="mt-2 text-sm text-muted-foreground">              {t("Effective Date: June 25, 2026. Sikder LLC")}
             </p>
           </div>
-
+ 
           <div className="bg-card rounded-2xl border border-border shadow-md p-6 sm:p-10 space-y-8 text-sm leading-relaxed text-muted-foreground/90 select-text">
             {/* Clause 1 */}
             <section className="space-y-2">
@@ -54,8 +53,8 @@ function Agb() {
                 </p>
                 <div className="bg-muted/40 p-3 rounded-lg border border-border/80 font-medium text-foreground my-2">
                   {/* TODO: Legal review prior to launch. Verify UG registration status. */}
-                  <p className="font-bold">Lensly UG (haftungsbeschränkt)</p>
-                  <p>Düsseldorf, Germany</p>
+                  <p className="font-bold">Sikder LLC</p>
+                  <p>Germany</p>
                   <p className="font-normal text-xs text-muted-foreground mt-1">
                     Email: lensly@gmail.com
                   </p>

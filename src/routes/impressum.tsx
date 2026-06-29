@@ -28,10 +28,7 @@ function Impressum() {
               <h2 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2">
                 {t("Angaben gemäß § 5 TMG")}
               </h2>
-              <p className="font-medium text-foreground">Lensly UG (haftungsbeschränkt) i.Gr.</p>
-              <p>{t("Vertreten durch:")} Md Shaon Sikder</p>
-              <p>Königsallee 14</p>
-              <p>40212 Düsseldorf</p>
+              <p className="font-medium text-foreground">Sikder LLC</p>
               <p>{t("Germany")}</p>
             </section>
 

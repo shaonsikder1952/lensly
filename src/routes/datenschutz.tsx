@@ -36,9 +36,7 @@ function Datenschutz() {
                 {t("Der Verantwortliche im Sinne der Datenschutz-Grundverordnung (DSGVO) und anderer nationaler Datenschutzgesetze ist:")}
               </p>
               <div className="font-medium text-foreground pl-4 border-l-2 border-primary/20">
-                <p>Lensly UG (haftungsbeschränkt) i.Gr.</p>
-                <p>Königsallee 14</p>
-                <p>40212 Düsseldorf</p>
+                <p>Sikder LLC</p>
                 <p>Germany</p>
                 <p>{t("E-Mail:")} lensly@gmail.com</p>
               </div>

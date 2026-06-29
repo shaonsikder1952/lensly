@@ -769,9 +769,8 @@ function AdminPage() {
               AGREEMENT TERMS & CONDITIONS
             </h3>
             <p>
-              <strong>1. Contracting Parties:</strong> This agreement is entered into between Lensly
-              UG (haftungsbeschränkt), Düsseldorf, Germany (the Provider) and the subscriber (the
-              Customer) whose signature is attached hereto.
+              <strong>1. Contracting Parties:</strong> This agreement is entered into between Sikder
+              LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.
             </p>
             <p>
               <strong>2. Subscription Scope:</strong> The subscription provides 1 complete
@@ -1443,7 +1442,7 @@ function AdminPage() {
                 <p>
                   <strong>{t("1. Contracting Parties:")}</strong>{" "}
                   {t(
-                    "This agreement is entered into between Lensly UG (haftungsbeschränkt), Düsseldorf, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.",
+                    "This agreement is entered into between Sikder LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.",
                   )}
                 </p>
                 <p>
