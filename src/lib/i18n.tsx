@@ -696,7 +696,19 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     if (saved) {
       setLangState(saved);
     } else {
-      setLangState("de");
+      // Autonomously detect browser language
+      if (typeof navigator !== "undefined") {
+        const browserLang = navigator.language.slice(0, 2).toLowerCase();
+        const supportedLangs: Language[] = ["en", "de", "fr", "es", "it"];
+        if (supportedLangs.includes(browserLang as Language)) {
+          setLangState(browserLang as Language);
+          localStorage.setItem("lensly_lang", browserLang);
+        } else {
+          setLangState("de");
+        }
+      } else {
+        setLangState("de");
+      }
     }
   }, []);
 
