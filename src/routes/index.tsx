@@ -383,45 +383,9 @@ function Hero() {
             <p className="animate-fade-in mt-5 text-[13px] sm:text-sm md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
               {t("Get a fresh pair of premium prescription glasses delivered to your door every single year, plus up to 3 hassle-free accident replacements. All included in one transparent monthly subscription, with no retail markups.")}
             </p>
-            {/* 3 Core Highlights (Hero Value Proposition) */}
-            <div className="animate-fade-in mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3.5 w-full border-t border-b border-border/40 py-4.5 my-2">
-              <div className="flex items-center gap-2.5 text-left">
-                <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-xs text-foreground leading-none">{t("1 Free Pair")}</h4>
-                  <span className="text-[10px] text-muted-foreground block mt-1 leading-none">{t("Delivered every year")}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2.5 text-left">
-                <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-xs text-foreground leading-none">{t("3 Replacements")}</h4>
-                  <span className="text-[10px] text-muted-foreground block mt-1 leading-none">{t("Accidents covered free")}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2.5 text-left">
-                <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-xs text-foreground leading-none">{t("Flat €29 / mo")}</h4>
-                  <span className="text-[10px] text-muted-foreground block mt-1 leading-none">{t("No retail markups")}</span>
-                </div>
-              </div>
-            </div>
 
             {/* Premium CTA Buttons */}
-            <div className="animate-fade-in mt-6 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <div className="animate-fade-in mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
               <a
                 href="/checkout"
                 className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-7 py-4 text-xs sm:text-sm font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition hover:opacity-95 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)] hover:scale-[1.01] active:scale-[0.99]"
@@ -512,7 +476,7 @@ function Hero() {
         </div>
 
         {/* 3 Premium Value Features - positioned nicely below */}
-        <div className="mt-24 md:mt-36 max-w-5xl mx-auto">
+        <div className="mt-12 md:mt-20 max-w-5xl mx-auto">
           <div className="relative">
             <div className="absolute inset-0 flex items-center" aria-hidden="true">
               <div className="w-full border-t border-border/60"></div>
