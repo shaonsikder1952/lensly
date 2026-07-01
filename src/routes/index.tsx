@@ -368,75 +368,74 @@ function Hero() {
       <div className="pointer-events-none absolute inset-0 grid-bg opacity-50" />
       <div className="pointer-events-none absolute left-1/2 top-[62%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 radial-glow" />
 
-      {/* Mobile-Only Immersive Cover Background (tk.de style) */}
-      <div className="absolute inset-0 block md:hidden z-0 pointer-events-none">
-        <img
-          src="/doctor-consultation.png"
-          alt="Lensly Cover background"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 pt-16 pb-20 md:pt-28 md:pb-28">
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 pt-12 pb-16 md:pt-28 md:pb-28">
         {/* Two-column grid on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 items-center">
           {/* Left Column: Headline, Description, CTAs, and Trust Badges */}
           <div className="md:col-span-7 flex flex-col items-center text-center md:items-start md:text-left">
-            <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-teal-300 md:text-primary">
+            <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
               {t("One plan · €29 / month")}
             </p>
-            <h1 className="animate-fade-in mt-3 font-display text-3xl sm:text-4xl md:text-[54px] font-semibold leading-[1.1] md:leading-[1.05] tracking-tight text-white md:text-foreground">
+            <h1 className="animate-fade-in mt-3 font-display text-3xl sm:text-4xl md:text-[54px] font-semibold leading-[1.1] md:leading-[1.05] tracking-tight text-foreground">
               {t("Precision vision care, renewed every ")}
-              <span className="shimmer-text md:shimmer-text text-teal-300 md:text-inherit whitespace-nowrap">{t("year.")}</span>
+              <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
             </h1>
 
             {/* Mobile-Only Instant ValueProposition Bar */}
-            <div className="flex md:hidden items-center justify-center gap-x-3.5 gap-y-1.5 flex-wrap mt-4 text-[10.5px] font-bold text-white tracking-wide border-t border-b border-white/10 py-3 w-full animate-fade-in">
+            <div className="flex md:hidden items-center justify-center gap-x-3.5 gap-y-1 mt-4 text-[10.5px] font-semibold text-primary tracking-wide py-1 w-full animate-fade-in">
               <span className="flex items-center gap-1">
-                <svg className="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="w-3.5 h-3.5 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 {t("1 Free Pair/Yr")}
               </span>
-              <span className="opacity-35 text-[9px]">•</span>
+              <span className="opacity-30 text-[9px]">•</span>
               <span className="flex items-center gap-1">
-                <svg className="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="w-3.5 h-3.5 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 {t("3 Replacements")}
               </span>
-              <span className="opacity-35 text-[9px]">•</span>
+              <span className="opacity-30 text-[9px]">•</span>
               <span className="flex items-center gap-1">
-                <svg className="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="w-3.5 h-3.5 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 {t("Flat €29/Mo")}
               </span>
             </div>
-            <p className="animate-fade-in mt-5 text-[13px] sm:text-sm md:text-[16px] text-white/85 md:text-muted-foreground leading-relaxed max-w-lg">
+            <p className="animate-fade-in mt-4 text-[13px] sm:text-sm md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
               {t("Get a fresh pair of premium prescription glasses delivered to your door every single year, plus up to 3 hassle-free accident replacements. All included in one transparent monthly subscription, with no retail markups.")}
             </p>
 
+            {/* Mobile-Only Wide Banner Image */}
+            <div className="block md:hidden w-full relative mt-6 aspect-[16/9.5] rounded-xl overflow-hidden shadow-sm border border-border/80">
+              <img
+                src="/doctor-consultation.png"
+                alt="Lensly personalized optometrist consultation"
+                className="w-full h-full object-cover object-[center_28%]"
+              />
+            </div>
+
             {/* Premium CTA Buttons */}
-            <div className="animate-fade-in mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <div className="animate-fade-in mt-6 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
               <a
                 href="/checkout"
-                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-white text-primary md:bg-primary md:text-primary-foreground px-7 py-4 text-xs sm:text-sm font-semibold shadow-lg hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all"
+                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-7 py-4 text-xs sm:text-sm font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition hover:opacity-95 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)] hover:scale-[1.01] active:scale-[0.99]"
               >
                 {t("Subscribe Now")}
                 <span className="transition-transform group-hover:translate-x-0.5">→</span>
               </a>
               <a
                 href="/#plan"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 backdrop-blur-xs px-7 py-4 text-xs sm:text-sm font-semibold text-white md:border-primary/15 md:bg-white/50 md:text-foreground hover:bg-white/20 md:hover:bg-white transition-all hover:scale-[1.01] active:scale-[0.99]"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-primary/10 bg-white/50 backdrop-blur-xs px-7 py-4 text-xs sm:text-sm font-semibold text-foreground hover:bg-white hover:border-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
               >
                 {t("Explore the Plan")}
               </a>
             </div>
 
             {/* Trust Indicators directly below CTA */}
-            <div className="animate-fade-in mt-8 flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2.5 pt-6 border-t border-white/10 md:border-border/40 w-full text-[10px] uppercase tracking-[0.16em] text-white/70 md:text-muted-foreground/80">
+            <div className="animate-fade-in mt-6 flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2.5 pt-5 border-t border-border/40 w-full text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80">
               <div className="flex items-center gap-2">
                 <svg
                   width="14"
@@ -445,7 +444,7 @@ function Hero() {
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2.5"
-                  className="text-teal-300 md:text-primary"
+                  className="text-primary"
                 >
                   <path
                     strokeLinecap="round"
@@ -463,7 +462,7 @@ function Hero() {
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2.5"
-                  className="text-teal-300 md:text-primary"
+                  className="text-primary"
                 >
                   <path
                     strokeLinecap="round"
@@ -481,7 +480,7 @@ function Hero() {
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2.5"
-                  className="text-teal-300 md:text-primary"
+                  className="text-primary"
                 >
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                   <path d="M7 11V7a5 5 0 0110 0v4" />
@@ -491,7 +490,7 @@ function Hero() {
             </div>
           </div>
 
-          {/* Right Column: Optometrist Consultation Image Card (Hidden on Mobile, Locked on PC) */}
+          {/* Right Column: Optometrist Consultation Image Card (Locked on PC, Hidden on Mobile) */}
           <div className="hidden md:block md:col-span-5 relative w-full px-4 animate-fade-in mt-10 md:mt-0 max-w-[340px] md:max-w-none mx-auto">
             {/* Solid Teal Offset Backdrop Accent Frame */}
             <div className="absolute inset-0 bg-primary/10 rounded-2xl translate-x-3.5 translate-y-3.5 pointer-events-none border border-primary/20" />
