@@ -377,8 +377,8 @@ function Hero() {
               {t("One membership. One predictable price.")}
             </p>
             <h1 className="animate-fade-in mt-3 font-display text-3xl sm:text-4xl md:text-[54px] font-semibold leading-[1.1] md:leading-[1.05] tracking-tight text-foreground">
-              {t("Premium prescription glasses delivered every ")}
-              <span className="shimmer-text whitespace-nowrap">{t("year, for one predictable monthly payment.")}</span>
+              {t("Precision vision care, renewed every ")}
+              <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
             </h1>
 
             {/* Mobile-Only Instant ValueProposition Bar */}
