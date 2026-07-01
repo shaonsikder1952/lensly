@@ -404,7 +404,7 @@ function Hero() {
                 {t("Flat €29/Mo")}
               </span>
             </div>
-            <p className="animate-fade-in mt-4 text-[13px] sm:text-sm md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
+            <p className="hidden md:block animate-fade-in mt-4 text-[13px] sm:text-sm md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
               {t("Get a fresh pair of premium prescription glasses delivered to your door every single year, plus up to 3 hassle-free accident replacements. All included in one transparent monthly subscription, with no retail markups.")}
             </p>
 
