@@ -374,11 +374,11 @@ function Hero() {
           {/* Left Column: Headline, Description, CTAs, and Trust Badges */}
           <div className="md:col-span-7 flex flex-col items-center text-center md:items-start md:text-left">
             <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
-              {t("One plan · €29 / month")}
+              {t("One membership. One predictable price.")}
             </p>
             <h1 className="animate-fade-in mt-3 font-display text-3xl sm:text-4xl md:text-[54px] font-semibold leading-[1.1] md:leading-[1.05] tracking-tight text-foreground">
-              {t("Precision vision care, renewed every ")}
-              <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
+              {t("Premium prescription glasses delivered every ")}
+              <span className="shimmer-text whitespace-nowrap">{t("year, for one predictable monthly payment.")}</span>
             </h1>
 
             {/* Mobile-Only Instant ValueProposition Bar */}
@@ -423,7 +423,7 @@ function Hero() {
                 href="/checkout"
                 className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-7 py-4 text-xs sm:text-sm font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition hover:opacity-95 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)] hover:scale-[1.01] active:scale-[0.99]"
               >
-                {t("Subscribe Now")}
+                {t("Get My First Pair")}
                 <span className="transition-transform group-hover:translate-x-0.5">→</span>
               </a>
               <a

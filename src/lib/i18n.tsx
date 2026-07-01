@@ -18,6 +18,10 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "One plan · €29 / month": "Ein Tarif · 29 € / Monat",
     "Precision vision care, renewed every ": "Erstklassige Sehversorgung, erneuert jedes ",
     "year.": "Jahr.",
+    "One membership. One predictable price.": "Eine Mitgliedschaft. Ein planbarer Preis.",
+    "Premium prescription glasses delivered every ": "Premium-Korrekturbrillen geliefert jedes ",
+    "year, for one predictable monthly payment.": "Jahr, zu einer planbaren monatlichen Rate.",
+    "Get My First Pair": "Meine erste Brille sichern",
     "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.":
       "Frische Korrekturbrillen jedes Jahr an Ihre Tür geliefert. Beschädigt oder neues Rezept nötig? Drei kostenlose Ersatzgläser inklusive. Keine Optikerbesuche, keine Überraschungskosten.",
     "See the plan": "Tarif ansehen",
@@ -238,6 +242,10 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "One plan · €29 / month": "Un plan · 29 € / mois",
     "Precision vision care, renewed every ": "Soins visuels de précision, renouvelés chaque ",
     "year.": "an.",
+    "One membership. One predictable price.": "Un abonnement. Un tarif prévisible.",
+    "Premium prescription glasses delivered every ": "Lunettes de prescription premium livrées chaque ",
+    "year, for one predictable monthly payment.": "an, pour un paiement mensuel prévisible.",
+    "Get My First Pair": "Obtenir ma première paire",
     "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.":
       "Des lunettes correctrices neuves livrées à votre porte chaque année. Cassées ou besoin d'une nouvelle ordonnance ? Trois remplacements gratuits inclus. Pas de visite chez l'opticien, pas de frais surprises.",
     "See the plan": "Voir le plan",
@@ -375,6 +383,10 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "One plan · €29 / month": "Un plan · 29 € / mes",
     "Precision vision care, renewed every ": "Cuidado visual de precisión, renovado cada ",
     "year.": "año.",
+    "One membership. One predictable price.": "Una membresía. Un precio predecible.",
+    "Premium prescription glasses delivered every ": "Gafas graduadas premium entregadas cada ",
+    "year, for one predictable monthly payment.": "año, por un pago mensual predecible.",
+    "Get My First Pair": "Conseguir mi primer par",
     "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.":
       "Gafas graduadas nuevas entregadas en tu puerta cada año. ¿Se te rompen o necesitas una nueva receta? Tres reemplazos gratuitos incluidos. Sin visitas al óptico, sin costes sorpresa.",
     "See the plan": "Ver el plan",
@@ -511,6 +523,10 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "One plan · €29 / month": "Un piano · 29 € / mese",
     "Precision vision care, renewed every ": "Cura della vista di precisione, rinnovata ogni ",
     "year.": "anno.",
+    "One membership. One predictable price.": "Un abbonamento. Un prezzo prevedibile.",
+    "Premium prescription glasses delivered every ": "Occhiali da vista premium consegnati ogni ",
+    "year, for one predictable monthly payment.": "anno, per un pagamento mensile prevedibile.",
+    "Get My First Pair": "Ottieni il mio primo paio",
     "Fresh prescription glasses delivered to your door every year. Break them or need a new prescription? Three free replacements included. No optician visits, no surprise costs.":
       "Occhiali da vista nuovi consegnati a casa tua ogni anno. Si rompono o hai bisogno di una nuova ricetta? Tre sostituzioni gratuite incluse. Nessuna visita dall'ottico, nessun costo a sorpresa.",
     "See the plan": "Scopri il piano",
