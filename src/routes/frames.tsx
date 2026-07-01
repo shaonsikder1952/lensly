@@ -95,7 +95,7 @@ function FramesPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {styles.map((style, idx) => (
               <div
                 key={idx}
@@ -109,24 +109,24 @@ function FramesPage() {
                     height={500}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <span className="absolute top-3 left-3 bg-primary/95 text-primary-foreground text-[8px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border border-white/10 shadow-sm">
+                  <span className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-primary/95 text-primary-foreground text-[7.5px] sm:text-[8px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded-full border border-white/10 shadow-sm">
                     {style.tag}
                   </span>
                 </div>
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div className="mb-4">
-                    <h3 className="font-display font-semibold text-xs sm:text-[14px] text-foreground tracking-tight">
+                <div className="p-3.5 sm:p-5 flex-1 flex flex-col justify-between">
+                  <div className="mb-2 sm:mb-4">
+                    <h3 className="font-display font-semibold text-[11.5px] sm:text-[14px] text-foreground tracking-tight leading-tight">
                       {style.name}
                     </h3>
-                    <p className="text-[10.5px] sm:text-[11px] text-muted-foreground mt-1.5 leading-relaxed">
+                    <p className="text-[9.5px] sm:text-[11px] text-muted-foreground mt-1 sm:mt-1.5 leading-relaxed">
                       {style.desc}
                     </p>
                   </div>
-                  <div className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1 border-t border-border/40 pt-3">
+                  <div className="text-[9px] sm:text-[10px] text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1 border-t border-border/40 pt-2.5 sm:pt-3">
                     <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span>{t("German Lenses Fitted")}</span>
+                    <span>{t("German Lenses")}</span>
                   </div>
                 </div>
               </div>

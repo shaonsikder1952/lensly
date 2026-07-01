@@ -662,7 +662,7 @@ function ContractPage() {
             /* ================= ACTIVE CONTRACT SIGNING WORKFLOW ================= */
             <div className="grid gap-8 lg:grid-cols-12 items-start">
               {/* Left Column: Contract Document Viewer */}
-              <div className="lg:col-span-7 bg-card rounded-2xl border border-border shadow-md overflow-hidden flex flex-col h-[620px] max-h-[70vh]">
+              <div className="lg:col-span-7 bg-card rounded-2xl border border-border shadow-md overflow-hidden flex flex-col h-[620px] max-h-[70vh] order-2 lg:order-1">
                 <div className="bg-muted/40 border-b border-border/80 px-5 py-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-primary" />
@@ -764,7 +764,7 @@ function ContractPage() {
               </div>
 
               {/* Right Column: Signing Form */}
-              <div className="lg:col-span-5 bg-card rounded-2xl border border-border shadow-md p-5 sm:p-6">
+              <div className="lg:col-span-5 bg-card rounded-2xl border border-border shadow-md p-5 sm:p-6 order-1 lg:order-2">
                 <h3 className="font-display font-semibold text-lg text-foreground mb-4">
                   {t("Contract Execution Form")}
                 </h3>

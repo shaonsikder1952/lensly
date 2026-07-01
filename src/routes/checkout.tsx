@@ -886,7 +886,7 @@ function CheckoutPage() {
             /* ================= ACTIVE CHECKOUT GRID ================= */
             <div className="grid gap-8 lg:grid-cols-12 items-start">
               {/* Left Column: Order Summary & Scrollable GTC / Contract Document Viewer */}
-              <div className="lg:col-span-6 space-y-6">
+              <div className="lg:col-span-6 space-y-6 order-2 lg:order-1">
                 <div className="bg-card rounded-2xl border border-border shadow-md overflow-hidden flex flex-col">
                   {/* Summary Header */}
                   <div className="bg-muted/40 border-b border-border px-5 py-4 flex items-center justify-between">
@@ -1022,7 +1022,7 @@ function CheckoutPage() {
               </div>
 
               {/* Right Column: Checkout Billing, Signature, & Payment Picker */}
-              <div className="lg:col-span-6 bg-card rounded-2xl border border-border shadow-md p-5 sm:p-6">
+              <div className="lg:col-span-6 bg-card rounded-2xl border border-border shadow-md p-5 sm:p-6 order-1 lg:order-2">
                 <h3 className="font-display font-semibold text-lg text-foreground mb-4">
                   {t("Subscriber & Payment Information")}
                 </h3>

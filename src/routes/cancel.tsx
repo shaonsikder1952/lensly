@@ -55,8 +55,8 @@ function CancelPage() {
     <div className="min-h-screen bg-background text-foreground flex flex-col justify-between">
       <div>
         <Nav />
-        <main className="mx-auto max-w-md px-4 py-16 sm:px-6">
-          <div className="bg-white/85 border border-primary/10 rounded-2xl p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,102,119,0.03)] backdrop-blur-xs animate-in fade-in duration-200">
+        <main className="mx-auto max-w-md px-4 py-10 sm:py-16 sm:px-6">
+          <div className="bg-white/85 border border-primary/10 rounded-2xl p-5 sm:p-8 shadow-[0_12px_40px_rgba(0,102,119,0.03)] backdrop-blur-xs animate-in fade-in duration-200">
             
             {!submitted ? (
               <form onSubmit={handleSubmit} className="space-y-5">

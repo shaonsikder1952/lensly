@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
-@source "../src";
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
 @import "tw-animate-css";
+@source "../src";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -11,9 +12,6 @@
     font-display: swap;
   }
 }
-
-/* Google fonts via CSS @import */
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
