@@ -382,22 +382,22 @@ function Hero() {
             </h1>
 
             {/* Mobile-Only Instant ValueProposition Bar */}
-            <div className="flex md:hidden items-center justify-center gap-x-3.5 gap-y-1 mt-4 text-[10.5px] font-semibold text-primary tracking-wide py-1 w-full animate-fade-in">
-              <span className="flex items-center gap-1">
+            <div className="flex md:hidden items-center justify-center gap-x-3 gap-y-1.5 flex-wrap mt-4 text-[9.5px] font-bold text-primary tracking-wide py-1 w-full animate-fade-in">
+              <span className="flex items-center gap-1 whitespace-nowrap">
                 <svg className="w-3.5 h-3.5 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 {t("1 Free Pair/Yr")}
               </span>
               <span className="opacity-30 text-[9px]">•</span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 whitespace-nowrap">
                 <svg className="w-3.5 h-3.5 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 {t("3 Replacements")}
               </span>
               <span className="opacity-30 text-[9px]">•</span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 whitespace-nowrap">
                 <svg className="w-3.5 h-3.5 text-primary shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
