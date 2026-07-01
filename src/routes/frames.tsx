@@ -95,13 +95,13 @@ function FramesPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 md:gap-6">
             {styles.map((style, idx) => (
               <div
                 key={idx}
                 className="bg-white/60 border border-primary/5 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between hover:shadow-md hover:border-primary/10 transition-all duration-300 group"
               >
-                <div className="aspect-[4/5] overflow-hidden bg-muted/40 relative">
+                <div className="aspect-[1.2/1] md:aspect-[4/5] overflow-hidden bg-muted/40 relative">
                   <img
                     src={style.image}
                     alt={style.name}
@@ -109,24 +109,24 @@ function FramesPage() {
                     height={500}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <span className="absolute top-3 left-3 bg-primary/95 text-primary-foreground text-[8px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border border-white/10 shadow-sm">
+                  <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-primary/95 text-primary-foreground text-[7.5px] md:text-[8px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded-full border border-white/10 shadow-sm">
                     {style.tag}
                   </span>
                 </div>
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div className="mb-4">
-                    <h3 className="font-display font-semibold text-xs sm:text-[14px] text-foreground tracking-tight">
+                <div className="p-3.5 md:p-5 flex-1 flex flex-col justify-between">
+                  <div className="mb-2 md:mb-4">
+                    <h3 className="font-display font-semibold text-[11.5px] md:text-[14px] text-foreground tracking-tight leading-tight">
                       {style.name}
                     </h3>
-                    <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1.5 leading-relaxed">
+                    <p className="text-[9.5px] md:text-[11px] text-muted-foreground mt-1 md:mt-1.5 leading-relaxed line-clamp-2 md:line-clamp-none">
                       {style.desc}
                     </p>
                   </div>
-                  <div className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1 border-t border-border/40 pt-3">
-                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <div className="text-[9px] md:text-[10px] text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1 border-t border-border/40 pt-2.5 md:pt-3">
+                    <svg className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span>{t("German Lenses Fitted")}</span>
+                    <span className="truncate">{t("German Lenses")}</span>
                   </div>
                 </div>
               </div>

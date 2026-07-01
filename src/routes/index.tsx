@@ -380,6 +380,30 @@ function Hero() {
               {t("Precision vision care, renewed every ")}
               <span className="shimmer-text whitespace-nowrap">{t("year.")}</span>
             </h1>
+
+            {/* Mobile-Only Instant ValueProposition Bar */}
+            <div className="flex md:hidden items-center justify-center gap-x-3.5 gap-y-1.5 flex-wrap mt-4 text-[10.5px] font-bold text-primary tracking-wide border-t border-b border-primary/10 py-3 w-full animate-fade-in">
+              <span className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5 text-emerald-600 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                {t("1 Free Pair/Yr")}
+              </span>
+              <span className="opacity-35 text-[9px]">•</span>
+              <span className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5 text-emerald-600 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                {t("3 Replacements")}
+              </span>
+              <span className="opacity-35 text-[9px]">•</span>
+              <span className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5 text-emerald-600 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                {t("Flat €29/Mo")}
+              </span>
+            </div>
             <p className="animate-fade-in mt-5 text-[13px] sm:text-sm md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
               {t("Get a fresh pair of premium prescription glasses delivered to your door every single year, plus up to 3 hassle-free accident replacements. All included in one transparent monthly subscription, with no retail markups.")}
             </p>
@@ -560,7 +584,7 @@ function Plan() {
         {/* Comparison Grid */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Traditional Optician Card */}
-          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
+          <div className="rounded-2xl border border-border bg-card p-4.5 sm:p-8 shadow-xs flex flex-col justify-between">
             <div>
               <p className="label-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 {t("Traditional optician")}
@@ -593,7 +617,7 @@ function Plan() {
           </div>
 
           {/* Lensly Care Card (Featured) */}
-          <div className="relative rounded-2xl border-2 border-primary bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
+          <div className="relative rounded-2xl border-2 border-primary bg-card p-4.5 sm:p-8 shadow-xs flex flex-col justify-between">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
               {t("Lensly Care")}
             </div>
@@ -752,7 +776,7 @@ function Plan() {
 
           <div className="grid gap-6 md:grid-cols-2">
             {/* Glasses Insurance */}
-            <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
+            <div className="rounded-2xl border border-border bg-card p-4.5 sm:p-8 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between border-b border-border/60 pb-4">
                   <div>
@@ -859,7 +883,7 @@ function Plan() {
             </div>
 
             {/* Lensly */}
-            <div className="relative rounded-2xl border-2 border-primary bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
+            <div className="relative rounded-2xl border-2 border-primary bg-card p-4.5 sm:p-8 shadow-xs flex flex-col justify-between">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
                 {t("Recommended")}
               </div>
@@ -1054,7 +1078,8 @@ export function ProductGallery() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        {/* Desktop View: Locked 4-Column Grid */}
+        <div className="hidden md:grid md:grid-cols-4 gap-6">
           {styles.map((style, idx) => (
             <div
               key={idx}
@@ -1086,6 +1111,43 @@ export function ProductGallery() {
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   <span>{t("German Lenses Fitted")}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile View: Premium Swipeable Horizontal Slider */}
+        <div className="flex md:hidden overflow-x-auto gap-4 pb-6 px-1 scroll-smooth snap-x snap-mandatory scroll-pl-4 custom-scrollbar">
+          {styles.map((style, idx) => (
+            <div
+              key={idx}
+              className="w-[260px] shrink-0 snap-align-start bg-white/70 border border-primary/5 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300"
+            >
+              <div className="aspect-[1.25/1] overflow-hidden bg-muted/40 relative">
+                <img
+                  src={style.image}
+                  alt={style.name}
+                  className="w-full h-full object-cover"
+                />
+                <span className="absolute top-2.5 left-2.5 bg-primary/95 text-primary-foreground text-[8.5px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border border-white/10 shadow-sm">
+                  {style.tag}
+                </span>
+              </div>
+              <div className="p-4.5 flex-1 flex flex-col justify-between">
+                <div className="mb-3">
+                  <h3 className="font-display font-semibold text-xs text-foreground tracking-tight">
+                    {style.name}
+                  </h3>
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
+                    {style.desc}
+                  </p>
+                </div>
+                <div className="text-[9.5px] text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1 border-t border-border/40 pt-2.5">
+                  <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>{t("German Lenses")}</span>
                 </div>
               </div>
             </div>
@@ -1307,7 +1369,8 @@ export function Reviews() {
         </div>
 
         {/* 3-column layout grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8">
+        {/* Desktop View: Locked Columns Grid */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8">
           {visibleReviews.map((review, idx) => (
             <div 
               key={idx}
@@ -1358,6 +1421,58 @@ export function Reviews() {
                 {/* Verified Tag */}
                 <div className="flex items-center gap-1 text-[10px] text-emerald-600 font-semibold text-left">
                   <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>{t("Verified Member")}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile View: Premium Swipeable Horizontal Slider */}
+        <div className="flex md:hidden overflow-x-auto gap-4 pb-6 px-1 scroll-smooth snap-x snap-mandatory scroll-pl-4 custom-scrollbar">
+          {visibleReviews.map((review, idx) => (
+            <div
+              key={idx}
+              className="w-[285px] shrink-0 snap-align-start bg-white/80 border border-primary/10 rounded-2xl p-4.5 shadow-[0_10px_32px_rgba(0,102,119,0.03)] backdrop-blur-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 relative"
+            >
+              <div>
+                <div className="flex items-center gap-1 mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-3 h-3 text-primary fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground/95 font-sans leading-relaxed italic">
+                  "{review.text}"
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2.5 mt-5 pt-4.5 border-t border-border/40">
+                <div className="flex items-center justify-between gap-1.5">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={review.image}
+                      alt={review.name}
+                      className="w-7 h-7 rounded-full border border-primary/10 object-cover shrink-0"
+                    />
+                    <div className="text-left">
+                      <h4 className="font-semibold text-[11px] text-foreground leading-none">
+                        {review.name}
+                      </h4>
+                      <span className="text-[9.5px] text-muted-foreground font-medium block mt-1 leading-none truncate max-w-[130px]">
+                        {review.role}
+                      </span>
+                    </div>
+                  </div>
+                  <span className={`text-[7.5px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded-full border shrink-0 ${review.badgeColor}`}>
+                    {review.badge}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-[9.5px] text-emerald-600 font-semibold text-left">
+                  <svg className="w-3 h-3 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   <span>{t("Verified Member")}</span>
