@@ -924,7 +924,7 @@ function CheckoutPage() {
                     {/* §2 Subject Matter */}
                     <section className="space-y-1.5">
                       <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("2. Subject Matter — Lensly Care Subscription")}
+                        {t("2. Subject Matter: Lensly Care Subscription")}
                       </h5>
                       <p>{t("contract.subject.body")}</p>
                       <ul className="list-disc list-inside space-y-0.5 text-[11px] pl-2">
