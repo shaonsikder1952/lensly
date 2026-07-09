@@ -108,17 +108,45 @@ function ContractPage() {
         // If the customer paid via Stripe card, auto-generate the signed contract
         // so they land directly on the ready-to-download screen
         if ((parsedPending.paymentMethod === "card" || parsedPending.paymentMethod === "wallet") && parsedPending.fullName && parsedPending.email) {
+          const signatureTypeVal = (parsedPending.signatureType as "draw" | "type") || "type";
+          const signatureDataVal = parsedPending.signatureData || parsedPending.fullName;
+
           const autoSignedData = {
             signed: true,
             fullName: parsedPending.fullName,
             email: parsedPending.email,
             signedAt: new Date().toISOString(),
             contractId: parsedPending.contractId,
-            signatureType: "type" as const,
-            signatureData: parsedPending.fullName, // typed name as electronic signature
+            signatureType: signatureTypeVal,
+            signatureData: signatureDataVal,
             paymentMethod: "wallet" as const,
             maskedIban: "Stripe Payment",
           };
+
+          // Save/activate subscription in PostgreSQL/JSON database
+          saveSubscription({
+            data: {
+              contractId: parsedPending.contractId,
+              fullName: parsedPending.fullName,
+              email: parsedPending.email,
+              phone: parsedPending.phone || "",
+              birthDate: parsedPending.birthDate || "",
+              birthPlace: parsedPending.birthPlace || "",
+              profession: parsedPending.profession || "",
+              streetAddress: parsedPending.streetAddress || "",
+              postalCode: parsedPending.postalCode || "",
+              city: parsedPending.city || "",
+              state: parsedPending.state || "",
+              country: parsedPending.country || "DE",
+              paymentMethod: "wallet" as const,
+              signatureType: signatureTypeVal,
+              signatureData: signatureDataVal,
+              status: "active",
+            }
+          }).catch((err) => {
+            console.error("Failed to auto-activate subscription in database:", err);
+          });
+
           localStorage.removeItem("lensly_pending_contract");
           localStorage.setItem("lensly_signed_contract", JSON.stringify(autoSignedData));
           setSignedData(autoSignedData);
