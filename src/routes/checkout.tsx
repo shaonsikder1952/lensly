@@ -1505,6 +1505,12 @@ function CheckoutPage() {
                           status: "pending" as const,
                         };
 
+                        // Store pending contract details in localStorage to allow pre-loading on /contract page
+                        localStorage.setItem("lensly_pending_contract", JSON.stringify({
+                          ...pendingData,
+                          signedAt: new Date().toISOString()
+                        }));
+
                         saveSubscription({ data: pendingData })
                           .then(() => {
                             const successUrl = `${window.location.origin}/checkout?success=true`;
@@ -1525,9 +1531,10 @@ function CheckoutPage() {
                             }
                           })
                           .catch((err) => {
-                            console.error("Stripe session error:", err);
-                            setIsSubmitting(false);
-                            setValidationError(t("Failed to initiate payment. Please try again."));
+                            console.warn("Dynamic Stripe checkout session failed (falling back to static Stripe Link):", err);
+                            // Fallback to static Stripe link so checkout never blocks the customer
+                            const stripeLink = `https://buy.stripe.com/test_4gM7sN1k82pL4JX7QO7EQ00?prefilled_email=${encodeURIComponent(email.trim())}&client_reference_id=${contractId}`;
+                            window.location.href = stripeLink;
                           });
                       }}
                     >

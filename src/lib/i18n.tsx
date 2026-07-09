@@ -954,13 +954,17 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const t = (text: string): string => {
-    if (lang === "en" || !text) {
+    if (!text) {
       return text;
     }
 
     const langMap = translationsMap[lang] || {};
     if (langMap[text]) {
       return langMap[text];
+    }
+
+    if (lang === "en") {
+      return text;
     }
 
     // Trigger dynamic Google translation
