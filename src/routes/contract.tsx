@@ -107,7 +107,7 @@ function ContractPage() {
 
         // If the customer paid via Stripe card, auto-generate the signed contract
         // so they land directly on the ready-to-download screen
-        if (parsedPending.paymentMethod === "card" && parsedPending.fullName && parsedPending.email) {
+        if ((parsedPending.paymentMethod === "card" || parsedPending.paymentMethod === "wallet") && parsedPending.fullName && parsedPending.email) {
           const autoSignedData = {
             signed: true,
             fullName: parsedPending.fullName,
@@ -116,8 +116,8 @@ function ContractPage() {
             contractId: parsedPending.contractId,
             signatureType: "type" as const,
             signatureData: parsedPending.fullName, // typed name as electronic signature
-            paymentMethod: "card" as const,
-            maskedIban: "Stripe Card Payment",
+            paymentMethod: "wallet" as const,
+            maskedIban: "Stripe Payment",
           };
           localStorage.removeItem("lensly_pending_contract");
           localStorage.setItem("lensly_signed_contract", JSON.stringify(autoSignedData));
