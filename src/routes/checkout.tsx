@@ -764,97 +764,165 @@ function CheckoutPage() {
                   <div className="space-y-4 text-[10px] leading-relaxed text-muted-foreground/90 max-h-60 overflow-y-auto sm:max-h-none border-b border-border/65 pb-4 select-text">
                     <h3 className="font-bold text-foreground text-[10px] uppercase tracking-wider text-center">
                       {t("AGREEMENT TERMS & CONDITIONS")}
-                    </h3>
-
-                    {/* §1 Contracting Parties */}
+                    </h3>                    {/* §1 Contracting Parties */}
                     <div className="space-y-1">
-                      <strong className="text-foreground block">{t("1. Contracting Parties")}</strong>
+                      <strong className="text-foreground block">{t("contract.parties.title")}</strong>
                       <p>{t("contract.parties.body")}</p>
                       <p className="italic text-[9px]">{t("contract.parties.acceptance")}</p>
                     </div>
 
-                    {/* §2 Subject Matter */}
+                    {/* §2 Lensly Care Subscription */}
                     <div className="space-y-1">
-                      <strong className="text-foreground block">{t("2. Subject Matter: Lensly Care Subscription")}</strong>
-                      <p>{t("contract.subject.body")}</p>
+                      <strong className="text-foreground block">{t("contract.subscription.title")}</strong>
+                      <p>{t("contract.subscription.body")}</p>
                       <ul className="list-disc list-inside space-y-0.5 pl-1 text-[9px]">
-                        <li>{t("contract.subject.item1")}</li>
-                        <li>{t("contract.subject.item2")}</li>
-                        <li>{t("contract.subject.item3")}</li>
-                        <li>{t("contract.subject.item4")}</li>
+                        <li>{t("contract.subscription.item1")}</li>
+                        <li>{t("contract.subscription.item2")}</li>
                       </ul>
                     </div>
 
-                    {/* §3 Subscription Fee & Billing */}
+                    {/* §3 Lensly Delivery Commitment */}
                     <div className="space-y-1">
-                      <strong className="text-foreground block">{t("3. Subscription Fee & Billing")}</strong>
-                      <p>{t("contract.billing.body")}</p>
-                      <p>{t("contract.billing.sepa")}</p>
+                      <strong className="text-foreground block">{t("contract.delivery.title")}</strong>
+                      <p>{t("contract.delivery.body1")}</p>
+                      <p>{t("contract.delivery.body2")}</p>
+                      <p>{t("contract.delivery.body3")}</p>
                     </div>
 
-                    {/* §4 Minimum Term & Renewal */}
+                    {/* §4 Minimum Contract Term and Renewal */}
                     <div className="space-y-1">
-                      <strong className="text-foreground block">{t("4. Minimum Contract Term & Renewal")}</strong>
-                      <p>{t("contract.term.body")}</p>
-                      <p>{t("contract.term.renewal")}</p>
+                      <strong className="text-foreground block">{t("contract.term.title")}</strong>
+                      <p>{t("contract.term.body1")}</p>
+                      <p>{t("contract.term.body2")}</p>
+                      <p>{t("contract.term.body3")}</p>
+                      <p className="font-semibold text-xs">{t("contract.term.commitment")}</p>
                     </div>
 
-                    {/* §5 Annual Eyewear Entitlement */}
+                    {/* §5 Subscription Fee and Payment */}
                     <div className="space-y-1">
-                      <strong className="text-foreground block">{t("5. Annual Eyewear Entitlement")}</strong>
-                      <p>{t("contract.eyewear.body")}</p>
-                      <p>{t("contract.eyewear.note")}</p>
+                      <strong className="text-foreground block">{t("contract.fee.title")}</strong>
+                      <p>{t("contract.fee.body1")}</p>
+                      <p>{t("contract.fee.body2")}</p>
+                      <p>{t("contract.fee.body3")}</p>
+                      <p>{t("contract.fee.failed1")}</p>
+                      <p>{t("contract.fee.failed2")}</p>
+                      <p>{t("contract.fee.failed3")}</p>
                     </div>
 
-                    {/* §6 Replacement Benefits */}
+                    {/* §6 First Glasses Production Process */}
                     <div className="space-y-1">
-                      <strong className="text-foreground block">{t("6. Replacement Benefits")}</strong>
-                      <p>{t("contract.replacements.body")}</p>
-                      <p>{t("contract.replacements.scope")}</p>
+                      <strong className="text-foreground block">{t("contract.first_glasses.title")}</strong>
+                      <p>{t("contract.first_glasses.body1")}</p>
+                      <p>{t("contract.first_glasses.body2")}</p>
+                      <p>{t("contract.first_glasses.body3")}</p>
+                      <p>{t("contract.first_glasses.changes")}</p>
+                      <p className="font-semibold text-xs">{t("contract.first_glasses.final")}</p>
                     </div>
 
-                    {/* §7 Medical Device Classification */}
+                    {/* §7 Customer Responsibilities */}
                     <div className="space-y-1">
-                      <strong className="text-foreground block">{t("7. Medical Device Classification")}</strong>
-                      <p>{t("contract.mdr.body")}</p>
+                      <strong className="text-foreground block">{t("contract.customer_responsibilities.title")}</strong>
+                      <p>{t("contract.customer_responsibilities.body1")}</p>
+                      <p>{t("contract.customer_responsibilities.body2")}</p>
+                      <p>{t("contract.customer_responsibilities.body3")}</p>
                     </div>
 
-                    {/* §8 Right of Withdrawal */}
+                    {/* §8 Replacement Coverage */}
+                    <div className="space-y-1">
+                      <strong className="text-foreground block">{t("contract.replacement.title")}</strong>
+                      <p>{t("contract.replacement.body1")}</p>
+                      <p className="font-semibold text-xs">{t("contract.replacement.body2")}</p>
+                      <ul className="list-disc list-inside space-y-0.5 pl-1 text-[9px]">
+                        <li>{t("contract.replacement.item1")}</li>
+                        <li>{t("contract.replacement.item2")}</li>
+                        <li>{t("contract.replacement.item3")}</li>
+                      </ul>
+                      <p>{t("contract.replacement.proof")}</p>
+                      <strong className="text-foreground block mt-1.5">{t("contract.replacement.excl_title")}</strong>
+                      <ul className="list-disc list-inside space-y-0.5 pl-1 text-[9px]">
+                        <li>{t("contract.replacement.excl1")}</li>
+                        <li>{t("contract.replacement.excl2")}</li>
+                        <li>{t("contract.replacement.excl3")}</li>
+                        <li>{t("contract.replacement.excl4")}</li>
+                        <li>{t("contract.replacement.excl5")}</li>
+                      </ul>
+                      <p>{t("contract.replacement.reserve")}</p>
+                    </div>
+
+                    {/* §9 Frame and Lens Adjustments */}
+                    <div className="space-y-1">
+                      <strong className="text-foreground block">{t("contract.adjustments.title")}</strong>
+                      <p>{t("contract.adjustments.body1")}</p>
+                      <p>{t("contract.adjustments.body2")}</p>
+                    </div>
+
+                    {/* §10 Delivery and Production Time */}
+                    <div className="space-y-1">
+                      <strong className="text-foreground block">{t("contract.delivery_time.title")}</strong>
+                      <p>{t("contract.delivery_time.body1")}</p>
+                      <p>{t("contract.delivery_time.body2")}</p>
+                      <p>{t("contract.delivery_time.body3")}</p>
+                    </div>
+
+                    {/* §11 Laboratory and Supplier Processing */}
+                    <div className="space-y-1">
+                      <strong className="text-foreground block">{t("contract.laboratory.title")}</strong>
+                      <p>{t("contract.laboratory.body1")}</p>
+                      <p>{t("contract.laboratory.body2")}</p>
+                      <p>{t("contract.laboratory.body3")}</p>
+                    </div>
+
+                    {/* §12 Ownership of Eyewear */}
+                    <div className="space-y-1">
+                      <strong className="text-foreground block">{t("contract.ownership.title")}</strong>
+                      <p>{t("contract.ownership.body1")}</p>
+                    </div>
+
+                    {/* §13 Early Cancellation */}
+                    <div className="space-y-1">
+                      <strong className="text-foreground block">{t("contract.early_cancellation.title")}</strong>
+                      <p>{t("contract.early_cancellation.body1")}</p>
+                      <p>{t("contract.early_cancellation.body2")}</p>
+                    </div>
+
+                    {/* §14 Payment Suspension */}
+                    <div className="space-y-1">
+                      <strong className="text-foreground block">{t("contract.suspension.title")}</strong>
+                      <p>{t("contract.suspension.body1")}</p>
+                    </div>
+
+                    {/* §15 Prescription Eyewear Information */}
+                    <div className="space-y-1">
+                      <strong className="text-foreground block">{t("contract.eyewear_info.title")}</strong>
+                      <p>{t("contract.eyewear_info.body1")}</p>
+                      <p>{t("contract.eyewear_info.body2")}</p>
+                    </div>
+
+                    {/* §16 Custom-Made Products and Withdrawal Rights */}
                     <div className="space-y-1 bg-amber-50/30 dark:bg-amber-900/5 p-1 rounded">
-                      <strong className="text-amber-700 dark:text-amber-400 block">{t("8. Exclusion of Right of Withdrawal")}</strong>
-                      <p className="italic">{t("contract.withdrawal.body")}</p>
-                      <p>{t("contract.withdrawal.instruction")}</p>
+                      <strong className="text-amber-700 dark:text-amber-400 block">{t("contract.withdrawal.title")}</strong>
+                      <p className="italic text-xs">{t("contract.withdrawal.body1")}</p>
+                      <p>{t("contract.withdrawal.body2")}</p>
                     </div>
 
-                    {/* §9 Liability */}
+                    {/* §17 Customer Information and Privacy */}
                     <div className="space-y-1">
-                      <strong className="text-foreground block">{t("9. Liability Limitation")}</strong>
-                      <p>{t("contract.liability.body")}</p>
+                      <strong className="text-foreground block">{t("contract.privacy.title")}</strong>
+                      <p>{t("contract.privacy.body1")}</p>
+                      <p>{t("contract.privacy.body2")}</p>
                     </div>
 
-                    {/* §10 Termination */}
+                    {/* §18 Customer Support and Communication */}
                     <div className="space-y-1">
-                      <strong className="text-foreground block">{t("10. Termination")}</strong>
-                      <p>{t("contract.termination.body")}</p>
-                      <p>{t("contract.termination.extraordinary")}</p>
+                      <strong className="text-foreground block">{t("contract.support.title")}</strong>
+                      <p>{t("contract.support.body1")}</p>
                     </div>
 
-                    {/* §11 Data Protection */}
-                    <div className="space-y-1">
-                      <strong className="text-foreground block">{t("11. Data Protection (GDPR)")}</strong>
-                      <p>{t("contract.gdpr.body")}</p>
-                    </div>
-
-                    {/* §12 Governing Law */}
-                    <div className="space-y-1">
-                      <strong className="text-foreground block">{t("12. Governing Law & Jurisdiction")}</strong>
-                      <p>{t("contract.law.body")}</p>
-                    </div>
-
-                    {/* §13 Severability */}
-                    <div className="space-y-1">
-                      <strong className="text-foreground block">{t("13. Severability & Entire Agreement")}</strong>
-                      <p>{t("contract.severability.body")}</p>
+                    {/* Customer Acceptance */}
+                    <div className="space-y-1 border-t border-border/60 pt-2 mt-2">
+                      <strong className="text-foreground block">{t("contract.acceptance.title")}</strong>
+                      <p>{t("contract.acceptance.body1")}</p>
+                      <p className="italic text-[9px]">{t("contract.acceptance.body2")}</p>
                     </div>
                   </div>
 
@@ -974,120 +1042,164 @@ function CheckoutPage() {
                     </div>
 
                     {/* §1 Contracting Parties */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("1. Contracting Parties")}
-                      </h5>
-                      <p>{t("contract.parties.body")}</p>
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.parties.title")}</h5>
+                      <p className="text-xs">{t("contract.parties.body")}</p>
                       <p className="italic text-[10px]">{t("contract.parties.acceptance")}</p>
                     </section>
 
-                    {/* §2 Subject Matter */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("2. Subject Matter: Lensly Care Subscription")}
-                      </h5>
-                      <p>{t("contract.subject.body")}</p>
-                      <ul className="list-disc list-inside space-y-0.5 text-[11px] pl-2">
-                        <li>{t("contract.subject.item1")}</li>
-                        <li>{t("contract.subject.item2")}</li>
-                        <li>{t("contract.subject.item3")}</li>
-                        <li>{t("contract.subject.item4")}</li>
+                    {/* §2 Lensly Care Subscription */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.subscription.title")}</h5>
+                      <p className="text-xs">{t("contract.subscription.body")}</p>
+                      <ul className="list-disc list-inside space-y-0.5 pl-1 text-xs">
+                        <li>{t("contract.subscription.item1")}</li>
+                        <li>{t("contract.subscription.item2")}</li>
                       </ul>
                     </section>
 
-                    {/* §3 Subscription Fee & Billing */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("3. Subscription Fee & Billing")}
-                      </h5>
-                      <p>{t("contract.billing.body")}</p>
-                      <p>{t("contract.billing.sepa")}</p>
+                    {/* §3 Lensly Delivery Commitment */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.delivery.title")}</h5>
+                      <p className="text-xs">{t("contract.delivery.body1")}</p>
+                      <p className="text-xs">{t("contract.delivery.body2")}</p>
+                      <p className="text-xs">{t("contract.delivery.body3")}</p>
                     </section>
 
-                    {/* §4 Minimum Term & Renewal */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("4. Minimum Contract Term & Renewal")}
-                      </h5>
-                      <p>{t("contract.term.body")}</p>
-                      <p>{t("contract.term.renewal")}</p>
+                    {/* §4 Minimum Contract Term and Renewal */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.term.title")}</h5>
+                      <p className="text-xs">{t("contract.term.body1")}</p>
+                      <p className="text-xs">{t("contract.term.body2")}</p>
+                      <p className="text-xs">{t("contract.term.body3")}</p>
+                      <p className="font-semibold text-xs">{t("contract.term.commitment")}</p>
                     </section>
 
-                    {/* §5 Annual Eyewear Entitlement */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("5. Annual Eyewear Entitlement")}
-                      </h5>
-                      <p>{t("contract.eyewear.body")}</p>
-                      <p className="text-[10px]">{t("contract.eyewear.note")}</p>
+                    {/* §5 Subscription Fee and Payment */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.fee.title")}</h5>
+                      <p className="text-xs">{t("contract.fee.body1")}</p>
+                      <p className="text-xs">{t("contract.fee.body2")}</p>
+                      <p className="text-xs">{t("contract.fee.body3")}</p>
+                      <p className="text-xs">{t("contract.fee.failed1")}</p>
+                      <p className="text-xs">{t("contract.fee.failed2")}</p>
+                      <p className="text-xs">{t("contract.fee.failed3")}</p>
                     </section>
 
-                    {/* §6 Replacement Benefits */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("6. Replacement Benefits")}
-                      </h5>
-                      <p>{t("contract.replacements.body")}</p>
-                      <p className="text-[10px]">{t("contract.replacements.scope")}</p>
+                    {/* §6 First Glasses Production Process */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.first_glasses.title")}</h5>
+                      <p className="text-xs">{t("contract.first_glasses.body1")}</p>
+                      <p className="text-xs">{t("contract.first_glasses.body2")}</p>
+                      <p className="text-xs">{t("contract.first_glasses.body3")}</p>
+                      <p className="text-xs">{t("contract.first_glasses.changes")}</p>
+                      <p className="font-semibold text-xs">{t("contract.first_glasses.final")}</p>
                     </section>
 
-                    {/* §7 Medical Device Classification */}
-                    <section className="space-y-1.5 border-t border-border/50 pt-2">
-                      <h5 className="font-bold text-primary text-[10px] uppercase tracking-wider">
-                        {t("7. Medical Device Classification")}
-                      </h5>
-                      <p className="text-[11px]">{t("contract.mdr.body")}</p>
+                    {/* §7 Customer Responsibilities */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.customer_responsibilities.title")}</h5>
+                      <p className="text-xs">{t("contract.customer_responsibilities.body1")}</p>
+                      <p className="text-xs">{t("contract.customer_responsibilities.body2")}</p>
+                      <p className="text-xs">{t("contract.customer_responsibilities.body3")}</p>
                     </section>
 
-                    {/* §8 Right of Withdrawal */}
-                    <section className="space-y-1.5 border-t border-border/50 pt-2 bg-amber-50/30 dark:bg-amber-900/5 p-2 rounded">
-                      <h5 className="font-bold text-amber-700 dark:text-amber-400 text-[10px] uppercase tracking-wider">
-                        {t("8. Exclusion of Right of Withdrawal")}
-                      </h5>
-                      <p className="text-[11px] italic">{t("contract.withdrawal.body")}</p>
-                      <p className="text-[10px]">{t("contract.withdrawal.instruction")}</p>
+                    {/* §8 Replacement Coverage */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.replacement.title")}</h5>
+                      <p className="text-xs">{t("contract.replacement.body1")}</p>
+                      <p className="font-semibold text-xs">{t("contract.replacement.body2")}</p>
+                      <ul className="list-disc list-inside space-y-0.5 pl-1 text-xs">
+                        <li>{t("contract.replacement.item1")}</li>
+                        <li>{t("contract.replacement.item2")}</li>
+                        <li>{t("contract.replacement.item3")}</li>
+                      </ul>
+                      <p className="text-xs">{t("contract.replacement.proof")}</p>
+                      <h6 className="font-bold text-foreground text-[10px] uppercase tracking-wider mt-1.5">{t("contract.replacement.excl_title")}</h6>
+                      <ul className="list-disc list-inside space-y-0.5 pl-1 text-xs">
+                        <li>{t("contract.replacement.excl1")}</li>
+                        <li>{t("contract.replacement.excl2")}</li>
+                        <li>{t("contract.replacement.excl3")}</li>
+                        <li>{t("contract.replacement.excl4")}</li>
+                        <li>{t("contract.replacement.excl5")}</li>
+                      </ul>
+                      <p className="text-xs">{t("contract.replacement.reserve")}</p>
                     </section>
 
-                    {/* §9 Liability */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("9. Liability Limitation")}
-                      </h5>
-                      <p>{t("contract.liability.body")}</p>
+                    {/* §9 Frame and Lens Adjustments */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.adjustments.title")}</h5>
+                      <p className="text-xs">{t("contract.adjustments.body1")}</p>
+                      <p className="text-xs">{t("contract.adjustments.body2")}</p>
                     </section>
 
-                    {/* §10 Termination */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("10. Termination")}
-                      </h5>
-                      <p>{t("contract.termination.body")}</p>
-                      <p>{t("contract.termination.extraordinary")}</p>
+                    {/* §10 Delivery and Production Time */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.delivery_time.title")}</h5>
+                      <p className="text-xs">{t("contract.delivery_time.body1")}</p>
+                      <p className="text-xs">{t("contract.delivery_time.body2")}</p>
+                      <p className="text-xs">{t("contract.delivery_time.body3")}</p>
                     </section>
 
-                    {/* §11 Data Protection */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("11. Data Protection (GDPR)")}
-                      </h5>
-                      <p>{t("contract.gdpr.body")}</p>
+                    {/* §11 Laboratory and Supplier Processing */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.laboratory.title")}</h5>
+                      <p className="text-xs">{t("contract.laboratory.body1")}</p>
+                      <p className="text-xs">{t("contract.laboratory.body2")}</p>
+                      <p className="text-xs">{t("contract.laboratory.body3")}</p>
                     </section>
 
-                    {/* §12 Governing Law */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("12. Governing Law & Jurisdiction")}
-                      </h5>
-                      <p>{t("contract.law.body")}</p>
+                    {/* §12 Ownership of Eyewear */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.ownership.title")}</h5>
+                      <p className="text-xs">{t("contract.ownership.body1")}</p>
                     </section>
 
-                    {/* §13 Severability */}
-                    <section className="space-y-1.5">
-                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("13. Severability & Entire Agreement")}
-                      </h5>
-                      <p>{t("contract.severability.body")}</p>
+                    {/* §13 Early Cancellation */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.early_cancellation.title")}</h5>
+                      <p className="text-xs">{t("contract.early_cancellation.body1")}</p>
+                      <p className="text-xs">{t("contract.early_cancellation.body2")}</p>
+                    </section>
+
+                    {/* §14 Payment Suspension */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.suspension.title")}</h5>
+                      <p className="text-xs">{t("contract.suspension.body1")}</p>
+                    </section>
+
+                    {/* §15 Prescription Eyewear Information */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.eyewear_info.title")}</h5>
+                      <p className="text-xs">{t("contract.eyewear_info.body1")}</p>
+                      <p className="text-xs">{t("contract.eyewear_info.body2")}</p>
+                    </section>
+
+                    {/* §16 Custom-Made Products and Withdrawal Rights */}
+                    <section className="space-y-1 bg-amber-50/30 dark:bg-amber-900/5 p-2 rounded">
+                      <h5 className="font-bold text-amber-700 dark:text-amber-400 text-[10px] uppercase tracking-wider">{t("contract.withdrawal.title")}</h5>
+                      <p className="italic text-xs">{t("contract.withdrawal.body1")}</p>
+                      <p className="text-xs">{t("contract.withdrawal.body2")}</p>
+                    </section>
+
+                    {/* §17 Customer Information and Privacy */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.privacy.title")}</h5>
+                      <p className="text-xs">{t("contract.privacy.body1")}</p>
+                      <p className="text-xs">{t("contract.privacy.body2")}</p>
+                    </section>
+
+                    {/* §18 Customer Support and Communication */}
+                    <section className="space-y-1">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.support.title")}</h5>
+                      <p className="text-xs">{t("contract.support.body1")}</p>
+                    </section>
+
+                    {/* Customer Acceptance */}
+                    <section className="space-y-1 border-t border-border/60 pt-2 mt-2">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("contract.acceptance.title")}</h5>
+                      <p className="text-xs">{t("contract.acceptance.body1")}</p>
+                      <p className="italic text-[10px]">{t("contract.acceptance.body2")}</p>
                     </section>
 
                     <div className="border-t border-border/60 pt-3 text-[10px] text-center text-muted-foreground/60 italic">
