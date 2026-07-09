@@ -885,8 +885,8 @@ function CheckoutPage() {
           ) : (
             /* ================= ACTIVE CHECKOUT GRID ================= */
             <div className="grid gap-8 lg:grid-cols-12 items-start">
-              {/* Left Column: Order Summary & Scrollable GTC / Contract Document Viewer */}
-              <div className="lg:col-span-6 space-y-6 order-2 lg:order-1">
+              {/* Left Column: Agreement Document & Contract Viewer — shown FIRST on mobile */}
+              <div className="lg:col-span-6 space-y-6 order-1 lg:order-1">
                 <div className="bg-card rounded-2xl border border-border shadow-md overflow-hidden flex flex-col">
                   {/* Summary Header */}
                   <div className="bg-muted/40 border-b border-border px-5 py-4 flex items-center justify-between">
@@ -901,8 +901,8 @@ function CheckoutPage() {
                     </span>
                   </div>
 
-                  {/* Scrollable GTC Document Reader */}
-                  <div className="p-5 h-[340px] overflow-y-auto space-y-4 text-xs leading-relaxed text-muted-foreground border-b border-border select-text custom-scrollbar">
+                  {/* Scrollable Full Legal Contract Document */}
+                  <div className="p-5 h-[420px] overflow-y-auto space-y-4 text-xs leading-relaxed text-muted-foreground border-b border-border select-text custom-scrollbar">
                     <div className="text-center pb-3 border-b border-border/60">
                       <h4 className="font-display font-bold text-foreground uppercase tracking-widest text-xs">
                         {t("LENSLY CARE VISION SUBSCRIPTION AGREEMENT")}
@@ -912,71 +912,126 @@ function CheckoutPage() {
                       </p>
                     </div>
 
-                    <section className="space-y-1">
+                    {/* §1 Contracting Parties */}
+                    <section className="space-y-1.5">
                       <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
                         {t("1. Contracting Parties")}
                       </h5>
-                      <p>
-                        {t(
-                          "This legally binding agreement is entered into between Sikder LLC, Germany (hereinafter 'the Provider') and the subscriber (hereinafter 'the Customer') whose credentials and electronic signatures are captured at checkout.",
-                        )}
-                      </p>
+                      <p>{t("contract.parties.body")}</p>
+                      <p className="italic text-[10px]">{t("contract.parties.acceptance")}</p>
                     </section>
 
-                    <section className="space-y-1">
+                    {/* §2 Subject Matter */}
+                    <section className="space-y-1.5">
                       <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("2. Minimum Contract Term & Renewal")}
+                        {t("2. Subject Matter — Lensly Care Subscription")}
                       </h5>
-                      <p>
-                        {t(
-                          "The Lensly subscription has a mandatory minimum contract duration of twelve (12) months (1 year) from the date of activation. Ordinary early termination during this 12-month lock-in window is excluded. Upon completion, the contract renewals on a month-to-month basis at the same rate, cancelable with 30 days notice.",
-                        )}
-                      </p>
+                      <p>{t("contract.subject.body")}</p>
+                      <ul className="list-disc list-inside space-y-0.5 text-[11px] pl-2">
+                        <li>{t("contract.subject.item1")}</li>
+                        <li>{t("contract.subject.item2")}</li>
+                        <li>{t("contract.subject.item3")}</li>
+                        <li>{t("contract.subject.item4")}</li>
+                      </ul>
                     </section>
 
-                    <section className="space-y-1">
+                    {/* §3 Subscription Fee & Billing */}
+                    <section className="space-y-1.5">
                       <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
                         {t("3. Subscription Fee & Billing")}
                       </h5>
-                      <p>
-                        {t(
-                          "The subscription fee is €29/month. Payments are debited monthly in advance via Stripe using bank credentials (SEPA) or Express Wallets. Default in payment suspends lab manufacturing and safety replacement rights.",
-                        )}
-                      </p>
+                      <p>{t("contract.billing.body")}</p>
+                      <p>{t("contract.billing.sepa")}</p>
                     </section>
 
-                    <section className="space-y-1">
+                    {/* §4 Minimum Term & Renewal */}
+                    <section className="space-y-1.5">
                       <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
-                        {t("4. Deliverables & Replacements")}
+                        {t("4. Minimum Contract Term & Renewal")}
                       </h5>
-                      <p>
-                        {t(
-                          "Lensly guarantees the delivery of one (1) new complete pair of custom prescription glasses per contract year. Furthermore, the plan covers up to three (3) free replacement lenses/glasses per year for breakage, scratches, or changes to the Customer's prescription values.",
-                        )}
-                      </p>
+                      <p>{t("contract.term.body")}</p>
+                      <p>{t("contract.term.renewal")}</p>
                     </section>
 
-                    <section className="space-y-1 border-t border-border/50 pt-2 bg-primary/[0.01] p-2 rounded">
-                      <h5 className="font-bold text-primary text-[10px] uppercase tracking-wider">
-                        {t("5. MDR & Medical Classification Shield")}
+                    {/* §5 Annual Eyewear Entitlement */}
+                    <section className="space-y-1.5">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+                        {t("5. Annual Eyewear Entitlement")}
                       </h5>
-                      <p className="text-[11px]">
-                        {t(
-                          "Prescription spectacles are Class I Medical Devices under European Medical Device Regulation (EU MDR). All frames carry verified CE markings and lenses carry original conformity certificates. Finishing lens perimeter routing is done by contracted ophthalmic labs.",
-                        )}
-                      </p>
+                      <p>{t("contract.eyewear.body")}</p>
+                      <p className="text-[10px]">{t("contract.eyewear.note")}</p>
                     </section>
 
-                    <section className="space-y-1 border-t border-border/50 pt-2 bg-primary/[0.01] p-2 rounded">
-                      <h5 className="font-bold text-primary text-[10px] uppercase tracking-wider">
-                        {t("6. Statutory Exclusion of Withdrawal")}
+                    {/* §6 Replacement Benefits */}
+                    <section className="space-y-1.5">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+                        {t("6. Replacement Benefits")}
                       </h5>
-                      <p className="text-[11px] italic">
-                        {t(
-                          "Under § 312g Abs. 2 Nr. 1 BGB, the statutory 14-day consumer right of withdrawal does not apply to goods that are custom-made to customer specifications. The Customer explicitly agrees and instructs that the right of withdrawal regarding individual custom lens products expires prematurely once laboratory lens routing commences.",
-                        )}
-                      </p>
+                      <p>{t("contract.replacements.body")}</p>
+                      <p className="text-[10px]">{t("contract.replacements.scope")}</p>
                     </section>
+
+                    {/* §7 Medical Device Classification */}
+                    <section className="space-y-1.5 border-t border-border/50 pt-2">
+                      <h5 className="font-bold text-primary text-[10px] uppercase tracking-wider">
+                        {t("7. Medical Device Classification")}
+                      </h5>
+                      <p className="text-[11px]">{t("contract.mdr.body")}</p>
+                    </section>
+
+                    {/* §8 Right of Withdrawal */}
+                    <section className="space-y-1.5 border-t border-border/50 pt-2 bg-amber-50/30 dark:bg-amber-900/5 p-2 rounded">
+                      <h5 className="font-bold text-amber-700 dark:text-amber-400 text-[10px] uppercase tracking-wider">
+                        {t("8. Exclusion of Right of Withdrawal")}
+                      </h5>
+                      <p className="text-[11px] italic">{t("contract.withdrawal.body")}</p>
+                      <p className="text-[10px]">{t("contract.withdrawal.instruction")}</p>
+                    </section>
+
+                    {/* §9 Liability */}
+                    <section className="space-y-1.5">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+                        {t("9. Liability Limitation")}
+                      </h5>
+                      <p>{t("contract.liability.body")}</p>
+                    </section>
+
+                    {/* §10 Termination */}
+                    <section className="space-y-1.5">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+                        {t("10. Termination")}
+                      </h5>
+                      <p>{t("contract.termination.body")}</p>
+                      <p>{t("contract.termination.extraordinary")}</p>
+                    </section>
+
+                    {/* §11 Data Protection */}
+                    <section className="space-y-1.5">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+                        {t("11. Data Protection (GDPR)")}
+                      </h5>
+                      <p>{t("contract.gdpr.body")}</p>
+                    </section>
+
+                    {/* §12 Governing Law */}
+                    <section className="space-y-1.5">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+                        {t("12. Governing Law & Jurisdiction")}
+                      </h5>
+                      <p>{t("contract.law.body")}</p>
+                    </section>
+
+                    {/* §13 Severability */}
+                    <section className="space-y-1.5">
+                      <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+                        {t("13. Severability & Entire Agreement")}
+                      </h5>
+                      <p>{t("contract.severability.body")}</p>
+                    </section>
+
+                    <div className="border-t border-border/60 pt-3 text-[10px] text-center text-muted-foreground/60 italic">
+                      {t("contract.footer")}
+                    </div>
                   </div>
 
                   <div className="p-5 bg-muted/20">
@@ -1021,8 +1076,8 @@ function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Right Column: Checkout Billing, Signature, & Payment Picker */}
-              <div className="lg:col-span-6 bg-card rounded-2xl border border-border shadow-md p-5 sm:p-6 order-1 lg:order-2">
+              {/* Right Column: Checkout Billing, Signature, & Payment Picker — shown SECOND on mobile */}
+              <div className="lg:col-span-6 bg-card rounded-2xl border border-border shadow-md p-5 sm:p-6 order-2 lg:order-2">
                 <h3 className="font-display font-semibold text-lg text-foreground mb-4">
                   {t("Subscriber & Payment Information")}
                 </h3>
