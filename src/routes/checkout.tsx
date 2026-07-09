@@ -1513,6 +1513,9 @@ function CheckoutPage() {
 
                         if (stripeEnabled) {
                           saveSubscription({ data: pendingData })
+                            .catch((err) => {
+                              console.warn("Database save failed during checkout initiation (non-blocking):", err);
+                            })
                             .then(() => {
                               const successUrl = `${window.location.origin}/checkout?success=true`;
                               const cancelUrl = `${window.location.origin}/checkout?cancelled=true`;
