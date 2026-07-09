@@ -14,10 +14,10 @@ import {
 import { getServerConfig } from "../config.server";
 import Stripe from "stripe";
 
-// Admin password read from environment variable — never hardcode secrets in source.
+// Admin password read from environment — configured via ADMIN_PASSWORD env var.
 function verifyAdminPassword(password: string): boolean {
-  const expected = process.env.ADMIN_PASSWORD || "lensly2026";
-  return password === expected;
+  const config = getServerConfig();
+  return password === config.adminPassword;
 }
 
 // --- Server-side admin authentication ---
