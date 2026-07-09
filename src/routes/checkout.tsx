@@ -1215,7 +1215,7 @@ function CheckoutPage() {
                         {t("Contract Information (German Compliance)")}
                       </span>
                       {t(
-                        "Minimum term 12 months, billing €29 monthly, automatic renewal with monthly cancellation thereafter.",
+                        "Minimum term 12 months, billing €29 monthly, automatic renewal.",
                       )}
                     </div>
 
