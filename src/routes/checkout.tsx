@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../lib/i18n";
-import { saveSubscription, checkStripeConfig, createStripeSession, confirmStripeSession, sendVerificationCodes, verifyCodes } from "../lib/api/subscriptions.functions";
+import { saveSubscription, checkStripeConfig, createStripeSession, confirmStripeSession } from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
 import {
   ShieldCheck,
@@ -1406,7 +1406,25 @@ function CheckoutPage() {
                           setValidationError(t("Please tick the agreement checkbox to continue."));
                           return;
                         }
-                        // All good — save to localStorage and redirect
+
+                        // Collect signature value
+                        let signatureVal = "";
+                        if (signatureType === "draw") {
+                          if (!hasDrawn || !canvasRef.current) {
+                            setValidationError(t("Please draw your signature in the signature box."));
+                            return;
+                          }
+                          signatureVal = canvasRef.current.toDataURL("image/png");
+                        } else {
+                          if (!typedSignature.trim()) {
+                            setValidationError(t("Please type your name in the signature field."));
+                            return;
+                          }
+                          signatureVal = typedSignature.trim();
+                        }
+
+                        // Save to DB as pending, then redirect to Stripe Checkout Session
+                        setIsSubmitting(true);
                         const pendingData = {
                           contractId,
                           fullName: fullName.trim(),
@@ -1420,12 +1438,36 @@ function CheckoutPage() {
                           city: city.trim(),
                           state: stateInput.trim(),
                           country: countryInput,
-                          paymentMethod: "card",
-                          savedAt: new Date().toISOString(),
+                          paymentMethod: "wallet" as const,
+                          signatureType,
+                          signatureData: signatureVal,
+                          status: "pending" as const,
                         };
-                        localStorage.setItem("lensly_pending_contract", JSON.stringify(pendingData));
-                        const stripeUrl = `https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01?prefilled_email=${encodeURIComponent(email.trim())}`;
-                        window.location.href = stripeUrl;
+
+                        saveSubscription({ data: pendingData })
+                          .then(() => {
+                            const successUrl = `${window.location.origin}/checkout?success=true`;
+                            const cancelUrl = `${window.location.origin}/checkout?cancelled=true`;
+                            return createStripeSession({
+                              data: {
+                                ...pendingData,
+                                successUrl,
+                                cancelUrl,
+                              },
+                            });
+                          })
+                          .then((res) => {
+                            if (res.sessionUrl) {
+                              window.location.href = res.sessionUrl;
+                            } else {
+                              throw new Error("No Stripe checkout URL returned.");
+                            }
+                          })
+                          .catch((err) => {
+                            console.error("Stripe session error:", err);
+                            setIsSubmitting(false);
+                            setValidationError(t("Failed to initiate payment. Please try again."));
+                          });
                       }}
                     >
                       {/* Subtle shimmer effect */}

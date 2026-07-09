@@ -14,13 +14,10 @@ import {
 import { getServerConfig } from "../config.server";
 import Stripe from "stripe";
 
-// Server-side admin password hash (SHA-256 of "lensly2026")
-// This runs ONLY on the server — never sent to the client.
-const ADMIN_PASSWORD_HASH = "a]lensly2026"; // Plaintext comparison for now; ideally use bcrypt in production
-
+// Admin password read from environment variable — never hardcode secrets in source.
 function verifyAdminPassword(password: string): boolean {
-  // Simple constant-time-ish comparison. In production, use bcrypt.
-  return password === "lensly2026";
+  const expected = process.env.ADMIN_PASSWORD || "lensly2026";
+  return password === expected;
 }
 
 // --- Server-side admin authentication ---
