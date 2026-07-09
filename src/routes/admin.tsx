@@ -766,35 +766,99 @@ function AdminPage() {
 
           <div className="space-y-4 text-[10px] leading-relaxed text-gray-700 border-b border-gray-300 pb-4">
             <h3 className="font-bold text-gray-900 text-center uppercase tracking-wider">
-              AGREEMENT TERMS & CONDITIONS
+              {t("AGREEMENT TERMS & CONDITIONS")}
             </h3>
-            <p>
-              <strong>1. Contracting Parties:</strong> This agreement is entered into between Sikder
-              LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.
-            </p>
-            <p>
-              <strong>2. Subscription Scope:</strong> The subscription provides 1 complete
-              custom-made pair of prescription glasses per contract year at €29.00/month. The plan
-              includes a safety net of up to 3 free prescription or accident replacements per
-              subscription year.
-            </p>
-            <p>
-              <strong>3. Term & Cancellation:</strong> This contract features a mandatory 12-month
-              fixed minimum term. Ordinary cancellation prior to the end of the 12th month is
-              excluded. Thereafter, the contract automatically converts into rolling monthly
-              renewals cancelable at any time with 30 days notice.
-            </p>
-            <p>
-              <strong>4. Medical MDR Device:</strong> Prescription lenses are Class I Medical
-              Devices under European Medical Device Regulation (EU MDR). Lenses and frames carry CE
-              conformity certifications.
-            </p>
-            <p>
-              <strong>5. Withdrawal Waiver:</strong> Under § 312g Abs. 2 Nr. 1 BGB, the statutory
-              14-day consumer right of withdrawal does not apply to goods custom-made to customer
-              specifications. Right of withdrawal regarding individual custom glass routing expires
-              prematurely once production begins.
-            </p>
+
+            {/* §1 Contracting Parties */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("1. Contracting Parties")}</strong>
+              <p>{t("contract.parties.body")}</p>
+              <p className="italic text-[9px]">{t("contract.parties.acceptance")}</p>
+            </div>
+
+            {/* §2 Subject Matter */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("2. Subject Matter: Lensly Care Subscription")}</strong>
+              <p>{t("contract.subject.body")}</p>
+              <ul className="list-disc list-inside space-y-0.5 pl-1 text-[9px]">
+                <li>{t("contract.subject.item1")}</li>
+                <li>{t("contract.subject.item2")}</li>
+                <li>{t("contract.subject.item3")}</li>
+                <li>{t("contract.subject.item4")}</li>
+              </ul>
+            </div>
+
+            {/* §3 Subscription Fee & Billing */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("3. Subscription Fee & Billing")}</strong>
+              <p>{t("contract.billing.body")}</p>
+              <p>{t("contract.billing.sepa")}</p>
+            </div>
+
+            {/* §4 Minimum Term & Renewal */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("4. Minimum Contract Term & Renewal")}</strong>
+              <p>{t("contract.term.body")}</p>
+              <p>{t("contract.term.renewal")}</p>
+            </div>
+
+            {/* §5 Annual Eyewear Entitlement */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("5. Annual Eyewear Entitlement")}</strong>
+              <p>{t("contract.eyewear.body")}</p>
+              <p>{t("contract.eyewear.note")}</p>
+            </div>
+
+            {/* §6 Replacement Benefits */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("6. Replacement Benefits")}</strong>
+              <p>{t("contract.replacements.body")}</p>
+              <p>{t("contract.replacements.scope")}</p>
+            </div>
+
+            {/* §7 Medical Device Classification */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("7. Medical Device Classification")}</strong>
+              <p>{t("contract.mdr.body")}</p>
+            </div>
+
+            {/* §8 Right of Withdrawal */}
+            <div className="space-y-1 bg-amber-50/30 p-1 rounded">
+              <strong className="text-amber-700 block">{t("8. Exclusion of Right of Withdrawal")}</strong>
+              <p className="italic">{t("contract.withdrawal.body")}</p>
+              <p>{t("contract.withdrawal.instruction")}</p>
+            </div>
+
+            {/* §9 Liability */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("9. Liability Limitation")}</strong>
+              <p>{t("contract.liability.body")}</p>
+            </div>
+
+            {/* §10 Termination */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("10. Termination")}</strong>
+              <p>{t("contract.termination.body")}</p>
+              <p>{t("contract.termination.extraordinary")}</p>
+            </div>
+
+            {/* §11 Data Protection */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("11. Data Protection (GDPR)")}</strong>
+              <p>{t("contract.gdpr.body")}</p>
+            </div>
+
+            {/* §12 Governing Law */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("12. Governing Law & Jurisdiction")}</strong>
+              <p>{t("contract.law.body")}</p>
+            </div>
+
+            {/* §13 Severability */}
+            <div className="space-y-1">
+              <strong className="text-gray-900 block">{t("13. Severability & Entire Agreement")}</strong>
+              <p>{t("contract.severability.body")}</p>
+            </div>
           </div>
 
           <div>
@@ -1439,36 +1503,97 @@ function AdminPage() {
                 <h4 className="font-bold text-foreground text-center uppercase tracking-wider">
                   {t("AGREEMENT TERMS & CONDITIONS")}
                 </h4>
-                <p>
-                  <strong>{t("1. Contracting Parties:")}</strong>{" "}
-                  {t(
-                    "This agreement is entered into between Sikder LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.",
-                  )}
-                </p>
-                <p>
-                  <strong>{t("2. Subscription Scope:")}</strong>{" "}
-                  {t(
-                    "The subscription provides 1 complete custom-made pair of prescription glasses per contract year at €29.00/month. The plan includes a safety net of up to 3 free prescription or accident replacements per subscription year.",
-                  )}
-                </p>
-                <p>
-                  <strong>{t("3. Term & Cancellation:")}</strong>{" "}
-                  {t(
-                    "This contract features a mandatory 12-month fixed minimum term. Ordinary cancellation prior to the end of the 12th month is excluded. Thereafter, the contract automatically converts into rolling monthly renewals cancelable at any time with 30 days notice.",
-                  )}
-                </p>
-                <p>
-                  <strong>{t("4. Medical MDR Device:")}</strong>{" "}
-                  {t(
-                    "Prescription lenses are Class I Medical Devices under European Medical Device Regulation (EU MDR). Lenses and frames carry CE conformity certifications.",
-                  )}
-                </p>
-                <p>
-                  <strong>{t("5. Withdrawal Waiver:")}</strong>{" "}
-                  {t(
-                    "Under § 312g Abs. 2 Nr. 1 BGB, the statutory 14-day consumer right of withdrawal does not apply to goods custom-made to customer specifications. Right of withdrawal regarding individual custom glass routing expires prematurely once production begins.",
-                  )}
-                </p>
+
+                {/* §1 Contracting Parties */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("1. Contracting Parties")}</strong>
+                  <p>{t("contract.parties.body")}</p>
+                  <p className="italic text-[9px]">{t("contract.parties.acceptance")}</p>
+                </div>
+
+                {/* §2 Subject Matter */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("2. Subject Matter: Lensly Care Subscription")}</strong>
+                  <p>{t("contract.subject.body")}</p>
+                  <ul className="list-disc list-inside space-y-0.5 pl-1 text-[9px]">
+                    <li>{t("contract.subject.item1")}</li>
+                    <li>{t("contract.subject.item2")}</li>
+                    <li>{t("contract.subject.item3")}</li>
+                    <li>{t("contract.subject.item4")}</li>
+                  </ul>
+                </div>
+
+                {/* §3 Subscription Fee & Billing */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("3. Subscription Fee & Billing")}</strong>
+                  <p>{t("contract.billing.body")}</p>
+                  <p>{t("contract.billing.sepa")}</p>
+                </div>
+
+                {/* §4 Minimum Term & Renewal */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("4. Minimum Contract Term & Renewal")}</strong>
+                  <p>{t("contract.term.body")}</p>
+                  <p>{t("contract.term.renewal")}</p>
+                </div>
+
+                {/* §5 Annual Eyewear Entitlement */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("5. Annual Eyewear Entitlement")}</strong>
+                  <p>{t("contract.eyewear.body")}</p>
+                  <p>{t("contract.eyewear.note")}</p>
+                </div>
+
+                {/* §6 Replacement Benefits */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("6. Replacement Benefits")}</strong>
+                  <p>{t("contract.replacements.body")}</p>
+                  <p>{t("contract.replacements.scope")}</p>
+                </div>
+
+                {/* §7 Medical Device Classification */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("7. Medical Device Classification")}</strong>
+                  <p>{t("contract.mdr.body")}</p>
+                </div>
+
+                {/* §8 Right of Withdrawal */}
+                <div className="space-y-1 bg-amber-50/30 dark:bg-amber-900/5 p-1 rounded">
+                  <strong className="text-amber-700 dark:text-amber-400 block">{t("8. Exclusion of Right of Withdrawal")}</strong>
+                  <p className="italic">{t("contract.withdrawal.body")}</p>
+                  <p>{t("contract.withdrawal.instruction")}</p>
+                </div>
+
+                {/* §9 Liability */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("9. Liability Limitation")}</strong>
+                  <p>{t("contract.liability.body")}</p>
+                </div>
+
+                {/* §10 Termination */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("10. Termination")}</strong>
+                  <p>{t("contract.termination.body")}</p>
+                  <p>{t("contract.termination.extraordinary")}</p>
+                </div>
+
+                {/* §11 Data Protection */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("11. Data Protection (GDPR)")}</strong>
+                  <p>{t("contract.gdpr.body")}</p>
+                </div>
+
+                {/* §12 Governing Law */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("12. Governing Law & Jurisdiction")}</strong>
+                  <p>{t("contract.law.body")}</p>
+                </div>
+
+                {/* §13 Severability */}
+                <div className="space-y-1">
+                  <strong className="text-foreground block">{t("13. Severability & Entire Agreement")}</strong>
+                  <p>{t("contract.severability.body")}</p>
+                </div>
               </div>
 
               {/* E-Signature */}
