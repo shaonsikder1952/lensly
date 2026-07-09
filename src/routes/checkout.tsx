@@ -1538,28 +1538,14 @@ function CheckoutPage() {
                               window.location.href = stripeLink;
                             });
                         } else {
-                          // Simulation Mode: save as active and display success screen directly
-                          saveSubscription({ data: { ...pendingData, status: "active" as const } })
-                            .then(async (saved) => {
-                              const hashInput = `${saved.contractId}|${saved.fullName}|${saved.email}|${saved.createdAt}`;
-                              const contractHash = await generateContractHash(hashInput);
-                              setIsSubmitting(false);
-                              setCheckoutData({
-                                ...pendingData,
-                                timestamp: saved.createdAt || new Date().toISOString(),
-                                contractHash,
-                              });
-                              setIsSuccess(true);
+                          // Static Mode: save pending subscription and redirect directly to static Stripe Link
+                          saveSubscription({ data: pendingData })
+                            .catch((err) => {
+                              console.warn("Save subscription failed, redirecting to Stripe anyway:", err);
                             })
-                            .catch((error) => {
-                              console.warn("Simulation save failed, showing success screen anyway:", error);
-                              setIsSubmitting(false);
-                              setCheckoutData({
-                                ...pendingData,
-                                timestamp: new Date().toISOString(),
-                                contractHash: "SIMULATED-HASH-LOCAL-MODE",
-                              });
-                              setIsSuccess(true);
+                            .finally(() => {
+                              const stripeLink = `https://buy.stripe.com/test_4gM7sN1k82pL4JX7QO7EQ00?prefilled_email=${encodeURIComponent(email.trim())}&client_reference_id=${contractId}`;
+                              window.location.href = stripeLink;
                             });
                         }
                       }}
