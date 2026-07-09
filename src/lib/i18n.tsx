@@ -885,6 +885,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
 
 // In-memory cache for translations that dynamically updates
 const translationCache: Record<string, Record<string, string>> = {
+  en: { ...initialTranslations.en },
   de: { ...initialTranslations.de },
   fr: { ...initialTranslations.fr },
   es: { ...initialTranslations.es },

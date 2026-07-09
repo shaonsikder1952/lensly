@@ -549,13 +549,6 @@ function ContractPage() {
                   )}
                   {downloadingPDF ? t("Downloading...") : t("Print or Save Contract")}
                 </button>
-                <button
-                  onClick={handleReset}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-input bg-background px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  {t("Revoke & Resign")}
-                </button>
               </div>
 
               {/* Printable Document Block wrapper */}
@@ -625,36 +618,96 @@ function ContractPage() {
                     {t("AGREEMENT TERMS & CONDITIONS")}
                   </h3>
 
-                  <p>
-                    <strong>{t("1. Contracting Parties:")}</strong>{" "}
-                    {t(
-                      "This agreement is entered into between Sikder LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.",
-                    )}
-                  </p>
-                  <p>
-                    <strong>{t("2. Subscription Scope:")}</strong>{" "}
-                    {t(
-                      "The subscription provides 1 complete custom-made pair of prescription glasses per contract year at €29.00/month. The plan includes a safety net of up to 3 free prescription or accident replacements per subscription year.",
-                    )}
-                  </p>
-                  <p>
-                    <strong>{t("3. Term & Cancellation:")}</strong>{" "}
-                    {t(
-                      "This contract features a mandatory 12-month fixed minimum term. Ordinary cancellation prior to the end of the 12th month is excluded. Thereafter, the contract automatically converts into rolling monthly renewals cancelable at any time with 30 days notice.",
-                    )}
-                  </p>
-                  <p>
-                    <strong>{t("4. Medical MDR Device:")}</strong>{" "}
-                    {t(
-                      "Prescription lenses are Class I Medical Devices under European Medical Device Regulation (EU MDR). Lenses and frames carry CE conformity certifications.",
-                    )}
-                  </p>
-                  <p>
-                    <strong>{t("5. Withdrawal Waiver:")}</strong>{" "}
-                    {t(
-                      "Under § 312g Abs. 2 Nr. 1 BGB, the statutory 14-day consumer right of withdrawal does not apply to goods custom-made to customer specifications. Right of withdrawal regarding individual custom glass routing expires prematurely once production begins.",
-                    )}
-                  </p>
+                  {/* §1 Contracting Parties */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("1. Contracting Parties")}</strong>
+                    <p>{t("contract.parties.body")}</p>
+                    <p className="italic text-[9px]">{t("contract.parties.acceptance")}</p>
+                  </div>
+
+                  {/* §2 Subject Matter */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("2. Subject Matter: Lensly Care Subscription")}</strong>
+                    <p>{t("contract.subject.body")}</p>
+                    <ul className="list-disc list-inside space-y-0.5 pl-1 text-[9px]">
+                      <li>{t("contract.subject.item1")}</li>
+                      <li>{t("contract.subject.item2")}</li>
+                      <li>{t("contract.subject.item3")}</li>
+                      <li>{t("contract.subject.item4")}</li>
+                    </ul>
+                  </div>
+
+                  {/* §3 Subscription Fee & Billing */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("3. Subscription Fee & Billing")}</strong>
+                    <p>{t("contract.billing.body")}</p>
+                    <p>{t("contract.billing.sepa")}</p>
+                  </div>
+
+                  {/* §4 Minimum Term & Renewal */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("4. Minimum Contract Term & Renewal")}</strong>
+                    <p>{t("contract.term.body")}</p>
+                    <p>{t("contract.term.renewal")}</p>
+                  </div>
+
+                  {/* §5 Annual Eyewear Entitlement */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("5. Annual Eyewear Entitlement")}</strong>
+                    <p>{t("contract.eyewear.body")}</p>
+                    <p>{t("contract.eyewear.note")}</p>
+                  </div>
+
+                  {/* §6 Replacement Benefits */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("6. Replacement Benefits")}</strong>
+                    <p>{t("contract.replacements.body")}</p>
+                    <p>{t("contract.replacements.scope")}</p>
+                  </div>
+
+                  {/* §7 Medical Device Classification */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("7. Medical Device Classification")}</strong>
+                    <p>{t("contract.mdr.body")}</p>
+                  </div>
+
+                  {/* §8 Right of Withdrawal */}
+                  <div className="space-y-1 bg-amber-50/30 dark:bg-amber-900/5 p-1 rounded">
+                    <strong className="text-amber-700 dark:text-amber-400 block">{t("8. Exclusion of Right of Withdrawal")}</strong>
+                    <p className="italic">{t("contract.withdrawal.body")}</p>
+                    <p>{t("contract.withdrawal.instruction")}</p>
+                  </div>
+
+                  {/* §9 Liability */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("9. Liability Limitation")}</strong>
+                    <p>{t("contract.liability.body")}</p>
+                  </div>
+
+                  {/* §10 Termination */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("10. Termination")}</strong>
+                    <p>{t("contract.termination.body")}</p>
+                    <p>{t("contract.termination.extraordinary")}</p>
+                  </div>
+
+                  {/* §11 Data Protection */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("11. Data Protection (GDPR)")}</strong>
+                    <p>{t("contract.gdpr.body")}</p>
+                  </div>
+
+                  {/* §12 Governing Law */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("12. Governing Law & Jurisdiction")}</strong>
+                    <p>{t("contract.law.body")}</p>
+                  </div>
+
+                  {/* §13 Severability */}
+                  <div className="space-y-1">
+                    <strong className="text-foreground block">{t("13. Severability & Entire Agreement")}</strong>
+                    <p>{t("contract.severability.body")}</p>
+                  </div>
                 </div>
 
                 {/* Digital Signature block */}
@@ -717,70 +770,95 @@ function ContractPage() {
                     </p>
                   </div>
 
-                  <section>
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("1. Contracting Parties")}
-                    </h3>
-                    <p className="text-xs">
-                      {t(
-                        "This legally binding agreement is entered into between Lensly (hereinafter 'Lensly') and the subscriber (hereinafter 'the Customer') whose custom information and digital signatures are attached hereto.",
-                      )}
-                    </p>
+                  {/* §1 Contracting Parties */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("1. Contracting Parties")}</h3>
+                    <p className="text-xs">{t("contract.parties.body")}</p>
+                    <p className="italic text-[11px]">{t("contract.parties.acceptance")}</p>
                   </section>
 
-                  <section>
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("2. Minimum Contract Term & Renewal")}
-                    </h3>
-                    <p className="text-xs">
-                      {t(
-                        "The Lensly subscription has a mandatory minimum contract duration of twelve (12) months (1 year) from the date of activation. Upon completion of the initial 12-month period, the subscription will automatically renew on a month-to-month basis at the same rate, unless cancelled by the Customer with a minimum of thirty (30) days notice prior to the end of the current billing cycle.",
-                      )}
-                    </p>
+                  {/* §2 Subject Matter */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("2. Subject Matter: Lensly Care Subscription")}</h3>
+                    <p className="text-xs">{t("contract.subject.body")}</p>
+                    <ul className="list-disc list-inside space-y-0.5 pl-1 text-xs">
+                      <li>{t("contract.subject.item1")}</li>
+                      <li>{t("contract.subject.item2")}</li>
+                      <li>{t("contract.subject.item3")}</li>
+                      <li>{t("contract.subject.item4")}</li>
+                    </ul>
                   </section>
 
-                  <section>
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("3. Subscription Fee & Billing")}
-                    </h3>
-                    <p className="text-xs">
-                      {t(
-                        "The subscription fee is €29/month. Payments are processed monthly on a recurring basis via Stripe using the payment details provided at checkout. The fee includes all coatings, prescription lenses, frame procurement, and shipping costs. No additional or hidden surcharges will apply.",
-                      )}
-                    </p>
+                  {/* §3 Subscription Fee & Billing */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("3. Subscription Fee & Billing")}</h3>
+                    <p className="text-xs">{t("contract.billing.body")}</p>
+                    <p className="text-xs">{t("contract.billing.sepa")}</p>
                   </section>
 
-                  <section>
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("4. Deliverables & Replacements")}
-                    </h3>
-                    <p className="text-xs">
-                      {t(
-                        "Lensly guarantees the delivery of one (1) new complete pair of custom prescription glasses per contract year. Furthermore, the plan covers up to three (3) free replacement lenses/glasses per year in the event of accidental breakage, scratches, loss, or changes to the Customer's prescription values.",
-                      )}
-                    </p>
+                  {/* §4 Minimum Term & Renewal */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("4. Minimum Contract Term & Renewal")}</h3>
+                    <p className="text-xs">{t("contract.term.body")}</p>
+                    <p className="text-xs">{t("contract.term.renewal")}</p>
                   </section>
 
-                  <section>
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("5. Custom Goods & Refunds")}
-                    </h3>
-                    <p className="text-xs">
-                      {t(
-                        "As all prescription optical lenses are custom crafted to individual health specifications, the contract is immediately initiated. Refunds are not available once custom lens manufacturing has begun. Corrective replacements are provided completely free if any manufacturing defects occur.",
-                      )}
-                    </p>
+                  {/* §5 Annual Eyewear Entitlement */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("5. Annual Eyewear Entitlement")}</h3>
+                    <p className="text-xs">{t("contract.eyewear.body")}</p>
+                    <p className="text-xs">{t("contract.eyewear.note")}</p>
                   </section>
 
-                  <section className="border-t border-border/60 pt-4">
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("6. Consent to Electronic Signatures")}
-                    </h3>
-                    <p className="text-xs italic">
-                      {t(
-                        "By typing or drawing your signature in this document, you explicitly consent to transact business electronically and agree that your electronic signature carries the full legal weight and binding nature of a handwritten physical signature under standard global electronic transaction acts.",
-                      )}
-                    </p>
+                  {/* §6 Replacement Benefits */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("6. Replacement Benefits")}</h3>
+                    <p className="text-xs">{t("contract.replacements.body")}</p>
+                    <p className="text-xs">{t("contract.replacements.scope")}</p>
+                  </section>
+
+                  {/* §7 Medical Device Classification */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("7. Medical Device Classification")}</h3>
+                    <p className="text-xs">{t("contract.mdr.body")}</p>
+                  </section>
+
+                  {/* §8 Right of Withdrawal */}
+                  <section className="space-y-1 bg-amber-50/30 dark:bg-amber-900/5 p-2 rounded">
+                    <h3 className="font-bold text-amber-700 dark:text-amber-400 text-xs uppercase tracking-wider">{t("8. Exclusion of Right of Withdrawal")}</h3>
+                    <p className="italic text-xs">{t("contract.withdrawal.body")}</p>
+                    <p className="text-xs">{t("contract.withdrawal.instruction")}</p>
+                  </section>
+
+                  {/* §9 Liability */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("9. Liability Limitation")}</h3>
+                    <p className="text-xs">{t("contract.liability.body")}</p>
+                  </section>
+
+                  {/* §10 Termination */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("10. Termination")}</h3>
+                    <p className="text-xs">{t("contract.termination.body")}</p>
+                    <p className="text-xs">{t("contract.termination.extraordinary")}</p>
+                  </section>
+
+                  {/* §11 Data Protection */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("11. Data Protection (GDPR)")}</h3>
+                    <p className="text-xs">{t("contract.gdpr.body")}</p>
+                  </section>
+
+                  {/* §12 Governing Law */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("12. Governing Law & Jurisdiction")}</h3>
+                    <p className="text-xs">{t("contract.law.body")}</p>
+                  </section>
+
+                  {/* §13 Severability */}
+                  <section className="space-y-1">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider">{t("13. Severability & Entire Agreement")}</h3>
+                    <p className="text-xs">{t("contract.severability.body")}</p>
                   </section>
                 </div>
 
