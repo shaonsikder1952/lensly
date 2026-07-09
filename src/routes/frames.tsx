@@ -143,7 +143,7 @@ function FramesPage() {
             </p>
             <div className="mt-4">
               <a
-                href="mailto:lensly@gmail.com?subject=Custom Frame Request"
+                href="mailto:hello@lensly.care?subject=Custom Frame Request"
                 className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-[10.5px] sm:text-xs font-bold uppercase tracking-wider text-primary-foreground hover:opacity-95 shadow-sm shadow-primary/10 transition cursor-pointer"
               >
                 <span>{t("Request Custom Frame")}</span>

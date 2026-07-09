@@ -97,12 +97,12 @@ function Index() {
             </p>
 
             <div className="bg-muted/50 rounded-lg p-2.5 mb-4 border border-border/40 font-mono text-[13px] text-foreground font-semibold select-all break-all">
-              lensly@gmail.com
+              hello@lensly.care
             </div>
 
             <div className="flex flex-col gap-2">
               <a
-                href="mailto:lensly@gmail.com"
+                href="mailto:hello@lensly.care"
                 className="w-full py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xs hover:bg-primary/95 transition text-center block cursor-pointer"
               >
                 {t("Send Email")}
@@ -110,7 +110,7 @@ function Index() {
               
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText("lensly@gmail.com");
+                  navigator.clipboard.writeText("hello@lensly.care");
                   setCopied(true);
                   setTimeout(() => setCopied(false), 2000);
                 }}
@@ -319,7 +319,7 @@ export function Nav({ onContactClick }: { onContactClick?: () => void }) {
                       if (onContactClick) {
                         onContactClick();
                       } else {
-                        window.location.href = "mailto:lensly@gmail.com";
+                        window.location.href = "mailto:hello@lensly.care";
                       }
                     }}
                     className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-primary hover:bg-muted cursor-pointer transition-colors"
@@ -1512,8 +1512,8 @@ export function Footer() {
     <footer className="bg-foreground text-background">
       <div className="border-b border-background/10 py-5 text-center text-xs text-background/60">
         {t("For any help or requests regarding subscription please contact at")}{" "}
-        <a href="mailto:lensly@gmail.com" className="text-primary hover:underline font-medium">
-          lensly@gmail.com
+        <a href="mailto:hello@lensly.care" className="text-primary hover:underline font-medium">
+          hello@lensly.care
         </a>
       </div>
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 py-8 label-mono text-[10px] uppercase tracking-[0.18em] text-background/60">
@@ -1526,10 +1526,10 @@ export function Footer() {
         </Link>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <a
-            href="mailto:lensly@gmail.com"
+            href="mailto:hello@lensly.care"
             className="hover:text-background transition-colors lowercase tracking-normal font-sans text-xs mr-2"
           >
-            lensly@gmail.com
+            hello@lensly.care
           </a>
           <Link to="/contract" className="hover:text-background transition-colors">
             {t("Sign Contract")}
