@@ -1,0 +1,7 @@
+node_modules
+.git
+.output
+dist
+*.log
+.env*
+.DS_Store
