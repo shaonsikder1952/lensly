@@ -287,6 +287,35 @@ bun test --watch
 
 ---
 
+## 👥 Contributors
+
+Thanks to these amazing people who have contributed to Lensly:
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/shaonsikder1952">
+        <img src="https://github.com/shaonsikder1952.png" width="80px;" alt="Shaon Sikder"/>
+        <br />
+        <sub><b>Shaon Sikder</b></sub>
+      </a>
+      <br />
+      <sub>Project Owner</sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/aroyslipk">
+        <img src="https://github.com/aroyslipk.png" width="80px;" alt="Anik Roy"/>
+        <br />
+        <sub><b>Anik Roy</b></sub>
+      </a>
+      <br />
+      <sub>Developer</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
 ## 🤝 Contributing
 
 This is a private project. If you have access and want to contribute:
