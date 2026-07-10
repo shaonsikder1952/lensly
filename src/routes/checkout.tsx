@@ -1448,6 +1448,17 @@ function CheckoutPage() {
                         }
                         if (!consentLocked) {
                           setValidationError(t("⚠️ You must tick the agreement checkbox to proceed. Please read and accept the subscription terms before continuing."));
+                          // Scroll to checkbox to make it visible
+                          const checkboxElement = document.querySelector('input[type="checkbox"]');
+                          if (checkboxElement) {
+                            checkboxElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            // Add shake animation to checkbox container
+                            const labelElement = checkboxElement.closest('label');
+                            if (labelElement) {
+                              labelElement.classList.add('animate-shake');
+                              setTimeout(() => labelElement.classList.remove('animate-shake'), 500);
+                            }
+                          }
                           return;
                         }
                         // All good — save to localStorage and redirect
