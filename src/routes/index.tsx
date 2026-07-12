@@ -377,9 +377,57 @@ function Hero() {
               {t("One plan · €29 / month")}
             </p>
             <h1 className="animate-fade-in mt-3 font-display text-3xl sm:text-4xl md:text-[54px] font-semibold leading-[1.1] md:leading-[1.05] tracking-tight text-foreground">
-              {t("New glasses every year. No optician. ")}
-              <span className="shimmer-text whitespace-nowrap">{t("€29.")}</span>
+              {t("Precision vision care, renewed every year")}{" "}
+              <span className="relative inline-block">
+                <span className="relative text-primary font-bold animate-price-glow">
+                  €29
+                </span>
+              </span>
             </h1>
+            <style dangerouslySetInnerHTML={{__html: `
+              @keyframes price-glow {
+                0%, 100% {
+                  text-shadow: 0 0 10px rgba(59, 130, 246, 0.3),
+                               0 0 20px rgba(59, 130, 246, 0.2),
+                               0 0 30px rgba(59, 130, 246, 0.1);
+                  transform: scale(1);
+                }
+                50% {
+                  text-shadow: 0 0 15px rgba(59, 130, 246, 0.5),
+                               0 0 30px rgba(59, 130, 246, 0.3),
+                               0 0 45px rgba(59, 130, 246, 0.2);
+                  transform: scale(1.05);
+                }
+              }
+              
+              .animate-price-glow {
+                animation: price-glow 3s ease-in-out infinite;
+                display: inline-block;
+              }
+            `}} />
+
+            {/* Key Benefits - 3 Points */}
+            <div className="animate-fade-in mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] sm:text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="font-medium">1 Free Pair/Yr</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="font-medium">3 Replacements</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="font-medium">Flat €29/Mo</span>
+              </div>
+            </div>
+
             <p className="animate-fade-in mt-5 text-[13px] sm:text-sm md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
               {t("Every year, a new pair of prescription glasses — delivered straight to your door. Break them? Three free replacements included.")}
             </p>
@@ -399,61 +447,6 @@ function Hero() {
               >
                 {t("See the plan")}
               </a>
-            </div>
-
-            {/* Trust Indicators directly below CTA */}
-            <div className="animate-fade-in mt-8 flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2.5 pt-6 border-t border-border/40 w-full text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80">
-              <div className="flex items-center gap-2">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="text-primary"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.969 0 1.371 1.24.588 1.81l-3.97 2.883a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.883a1 1 0 00-1.17 0l-3.97 2.883c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118L2.05 9.43c-.783-.57-.38-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z"
-                  />
-                </svg>
-                <span>{t("CE-certified lenses from Germany")}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="text-primary"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v4m0 0L4 7m8 4v10M4 7v10l8 4"
-                  />
-                </svg>
-                <span>{t("Free shipping, EU-wide")}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="text-primary"
-                >
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0110 0v4" />
-                </svg>
-                <span>{t("Payment via Stripe — secure")}</span>
-              </div>
             </div>
           </div>
 

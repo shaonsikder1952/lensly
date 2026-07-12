@@ -4,7 +4,7 @@
 
 ### Prescription Eyewear on Subscription
 
-**€39/month · Fresh lenses every 6 months · 2 free replacements/year**
+**€29/month · Fresh lenses every 6 months · 2 free replacements/year**
 
 [Features](#-features) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [Documentation](#-documentation)
 
@@ -104,7 +104,17 @@ Lensly is a modern direct-to-lab vision care subscription service that revolutio
 3. **Set up environment variables**
    ```bash
    cp .env.example .env
-   # Edit .env with your configuration
+   # Edit .env with your Stripe live keys
+   ```
+   
+   **Important for lensly.care deployment:**
+   - Get your Stripe Live Keys from: https://dashboard.stripe.com/apikeys
+   - Update `.env` file with your actual keys
+   - See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions
+   
+   To verify your environment setup:
+   ```bash
+   node check-env.js
    ```
 
 4. **Start the development server**
