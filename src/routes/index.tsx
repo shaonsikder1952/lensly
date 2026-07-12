@@ -379,31 +379,12 @@ function Hero() {
             <h1 className="animate-fade-in mt-3 font-display text-3xl sm:text-4xl md:text-[54px] font-semibold leading-[1.1] md:leading-[1.05] tracking-tight text-foreground">
               {t("Precision vision care, renewed every year")}{" "}
               <span className="relative inline-block">
-                <span className="relative text-primary font-bold animate-price-glow">
+                <span className="relative text-primary font-bold">
                   €29
                 </span>
               </span>
             </h1>
             <style dangerouslySetInnerHTML={{__html: `
-              @keyframes price-glow {
-                0%, 100% {
-                  text-shadow: 0 0 10px rgba(59, 130, 246, 0.3),
-                               0 0 20px rgba(59, 130, 246, 0.2),
-                               0 0 30px rgba(59, 130, 246, 0.1);
-                  transform: scale(1);
-                }
-                50% {
-                  text-shadow: 0 0 15px rgba(59, 130, 246, 0.5),
-                               0 0 30px rgba(59, 130, 246, 0.3),
-                               0 0 45px rgba(59, 130, 246, 0.2);
-                  transform: scale(1.05);
-                }
-              }
-              
-              .animate-price-glow {
-                animation: price-glow 3s ease-in-out infinite;
-                display: inline-block;
-              }
             `}} />
 
             {/* Key Benefits - 3 Points */}
