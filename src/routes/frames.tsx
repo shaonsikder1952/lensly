@@ -143,7 +143,7 @@ function FramesPage() {
             </p>
             <div className="mt-4">
               <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=lensly@gmail.com&su=Custom%20Frame%20Request"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=hello@lensly.care&su=Custom%20Frame%20Request"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-[10.5px] sm:text-xs font-bold uppercase tracking-wider text-primary-foreground hover:opacity-95 shadow-sm shadow-primary/10 transition cursor-pointer"
