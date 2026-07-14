@@ -494,7 +494,7 @@ function CheckoutPage() {
 
         if (stripeEnabled) {
           // Production Mode: Redirect to Stripe Payment Link
-          const stripeLink = `https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01?prefilled_email=${encodeURIComponent(email.trim())}&client_reference_id=${contractId}`;
+          const stripeLink = `https://buy.stripe.com/test_4gM7sN1k82pL4JX7QO7EQ00?prefilled_email=${encodeURIComponent(email.trim())}&client_reference_id=${contractId}`;
           window.location.href = stripeLink;
         } else {
           // Simulation/Local Mode: Redirect directly to /contract page to simulate completed payment
@@ -1486,7 +1486,7 @@ function CheckoutPage() {
                           savedAt: new Date().toISOString(),
                         };
                         localStorage.setItem("lensly_pending_contract", JSON.stringify(pendingData));
-                        const stripeUrl = `https://buy.stripe.com/bJe8wRbYMggBa4h0om7EQ01?prefilled_email=${encodeURIComponent(email.trim())}`;
+                        const stripeUrl = `https://buy.stripe.com/test_4gM7sN1k82pL4JX7QO7EQ00?prefilled_email=${encodeURIComponent(email.trim())}`;
                         window.location.href = stripeUrl;
                       }}
                     >
