@@ -209,11 +209,14 @@ function MetaPixelTracker() {
       // 2. Track PageView
       if ((window as any).fbq) {
         const testEventCode = sessionStorage.getItem("meta_test_event_code");
-        const options = testEventCode ? { test_event_code: testEventCode } : {};
-        (window as any).fbq("track", "PageView", {
+        const payload: Record<string, any> = {
           page_path: window.location.pathname,
           page_location: window.location.href,
-        }, options);
+        };
+        if (testEventCode) {
+          payload.test_event_code = testEventCode;
+        }
+        (window as any).fbq("track", "PageView", payload);
       }
     }
   }, [location.pathname, location.search]);
