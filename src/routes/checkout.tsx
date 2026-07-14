@@ -1197,78 +1197,12 @@ function CheckoutPage() {
                       className="w-full relative overflow-hidden rounded-xl py-4 text-center text-[15px] font-bold text-white shadow-[0_4px_20px_rgba(0,151,178,0.45)] transition-all hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2.5 cursor-pointer bg-[#0097b2]"
                       style={{ letterSpacing: "0.01em" }}
                       onClick={() => {
-                        // --- Full form validation before Stripe redirect ---
-                        if (!fullName.trim()) {
-                          setValidationError(t("Please enter your full name."));
-                          return;
-                        }
-                        if (!email.trim() || !email.includes("@")) {
-                          setValidationError(t("Please enter a valid email address."));
-                          return;
-                        }
-                        if (!phone.trim() || phone.trim().length < 6) {
-                          setValidationError(t("Please enter a valid phone number."));
-                          return;
-                        }
-                        if (!birthDate) {
-                          setValidationError(t("Please enter your date of birth."));
-                          return;
-                        }
-                        if (!birthPlace.trim()) {
-                          setValidationError(t("Please enter your place of birth."));
-                          return;
-                        }
-                        if (!profession.trim()) {
-                          setValidationError(t("Please enter your profession."));
-                          return;
-                        }
-                        if (!streetAddress.trim()) {
-                          setValidationError(t("Please enter your street address."));
-                          return;
-                        }
-                        if (!postalCode.trim()) {
-                          setValidationError(t("Please enter your postal code."));
-                          return;
-                        }
-                        if (!city.trim()) {
-                          setValidationError(t("Please enter your city."));
-                          return;
-                        }
-                        if (!consentLocked) {
-                          setValidationError(t("⚠️ You must tick the agreement checkbox to proceed. Please read and accept the subscription terms before continuing."));
-                          // Scroll to checkbox to make it visible
-                          const checkboxElement = document.querySelector('input[type="checkbox"]');
-                          if (checkboxElement) {
-                            checkboxElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            // Add shake animation to checkbox container
-                            const labelElement = checkboxElement.closest('label');
-                            if (labelElement) {
-                              labelElement.classList.add('animate-shake');
-                              setTimeout(() => labelElement.classList.remove('animate-shake'), 500);
-                            }
-                          }
-                          return;
-                        }
-                        // All good — save to localStorage and redirect
-                        const pendingData = {
-                          contractId,
-                          fullName: fullName.trim(),
-                          email: email.trim(),
-                          phone: `${phoneCountryCode}${phone.trim()}`,
-                          birthDate,
-                          birthPlace: birthPlace.trim(),
-                          profession: profession.trim(),
-                          streetAddress: streetAddress.trim(),
-                          postalCode: postalCode.trim(),
-                          city: city.trim(),
-                          state: stateInput.trim(),
-                          country: countryInput,
-                          paymentMethod: "card",
-                          savedAt: new Date().toISOString(),
-                        };
-                        localStorage.setItem("lensly_pending_contract", JSON.stringify(pendingData));
-                        const stripeUrl = `https://buy.stripe.com/test_4gM7sN1k82pL4JX7QO7EQ00?prefilled_email=${encodeURIComponent(email.trim())}`;
-                        window.location.href = stripeUrl;
+                        setValidationError("");
+                        const { valid, signatureVal } = validateForm();
+                        if (!valid) return;
+
+                        const fullPhone = phoneCountryCode + " " + phone.trim();
+                        startWalletPayment(signatureVal, fullPhone);
                       }}
                     >
                       {/* Subtle shimmer effect */}
