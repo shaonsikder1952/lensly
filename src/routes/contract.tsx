@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../lib/i18n";
-import { saveSubscription } from "../lib/api/subscriptions.functions";
+import { saveSubscription, confirmStripeSession, clientConfirmPayment } from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
 import { ContractBody } from "../components/ContractBody";
 import {
@@ -123,6 +123,35 @@ function ContractPage() {
           localStorage.removeItem("lensly_pending_contract");
           localStorage.setItem("lensly_signed_contract", JSON.stringify(autoSignedData));
           setSignedData(autoSignedData);
+
+          // Update server database status to 'active'
+          const params = new URLSearchParams(window.location.search);
+          const sessionId = params.get("session_id");
+          if (sessionId) {
+            confirmStripeSession({ data: { sessionId } })
+              .then((updatedRecord) => {
+                console.log("Stripe payment confirmed in database:", updatedRecord);
+              })
+              .catch((err) => {
+                console.error("Stripe session verification failed, using fallback:", err);
+                clientConfirmPayment({
+                  data: {
+                    contractId: parsedPending!.contractId,
+                    email: parsedPending!.email,
+                    paymentMethod: "wallet" as const,
+                  }
+                }).catch(console.error);
+              });
+          } else {
+            clientConfirmPayment({
+              data: {
+                contractId: parsedPending.contractId,
+                email: parsedPending.email,
+                paymentMethod: "wallet" as const,
+              }
+            }).catch(console.error);
+          }
+
           // Fire Meta Pixel Purchase event — this is where the browser lands after Stripe
           if (typeof window !== "undefined" && (window as any).fbq) {
             const testCode = sessionStorage.getItem("meta_test_event_code");

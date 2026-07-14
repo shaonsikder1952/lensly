@@ -155,6 +155,13 @@ export async function ensureDbInitialized(): Promise<boolean> {
     await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS city VARCHAR(255);`;
     await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS state VARCHAR(255);`;
     await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS country VARCHAR(255);`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50) DEFAULT 'wallet';`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS masked_iban VARCHAR(100);`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS signature_type VARCHAR(20) DEFAULT 'type';`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS signature_data TEXT DEFAULT '';`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'active';`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;`;
+    await client`ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;`;
 
     await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS phone VARCHAR(50);`;
     await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS birth_date VARCHAR(50);`;
@@ -165,6 +172,14 @@ export async function ensureDbInitialized(): Promise<boolean> {
     await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS city VARCHAR(255);`;
     await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS state VARCHAR(255);`;
     await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS country VARCHAR(255);`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50) DEFAULT 'wallet';`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS masked_iban VARCHAR(100);`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS signature_type VARCHAR(20) DEFAULT 'type';`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS signature_data TEXT DEFAULT '';`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'active';`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;`;
+    await client`ALTER TABLE deleted_subscriptions ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;`;
 
     // Add indices to speed up common searches
     await client`
