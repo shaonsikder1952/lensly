@@ -502,7 +502,10 @@ function CheckoutPage() {
           signedAt: new Date().toISOString()
         }));
 
-        if (stripeEnabled) {
+        const isLocalhost = typeof window !== "undefined" && 
+          (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+        if (!isLocalhost) {
           // Production Mode: Redirect to Stripe Payment Link
           const stripeLink = `https://buy.stripe.com/4gM7sN1k82pL4JX7QO7EQ00?prefilled_email=${encodeURIComponent(email.trim())}&client_reference_id=${contractId}`;
           window.location.href = stripeLink;
