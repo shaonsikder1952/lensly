@@ -65,8 +65,9 @@ function getSqlClient() {
   if (!config.databaseUrl) {
     return null;
   }
+  const dbUrl = config.databaseUrl.replace(/\r/g, "").trim();
   try {
-    sql = postgres(config.databaseUrl, {
+    sql = postgres(dbUrl, {
       max: 10,
       idle_timeout: 20,
       connect_timeout: 5,
@@ -331,39 +332,38 @@ export async function saveSubscriptionServer(
 }
 
 export async function getSubscriptionsServer(): Promise<Subscription[]> {
-  const isDb = await ensureDbInitialized();
-  const client = getSqlClient();
-
-  if (isDb && client) {
-    try {
-      const rows = await client`
-        SELECT * FROM subscriptions ORDER BY created_at DESC
-      `;
-      return rows.map((row) => ({
-        id: row.id,
-        contract_id: row.contract_id,
-        full_name: row.full_name,
-        email: row.email,
-        phone: row.phone || "",
-        birth_date: row.birth_date || "",
-        birth_place: row.birth_place || "",
-        profession: row.profession || "",
-        street_address: row.street_address || "",
-        postal_code: row.postal_code || "",
-        city: row.city || "",
-        state: row.state || "",
-        country: row.country || "",
-        payment_method: row.payment_method,
-        masked_iban: row.masked_iban || undefined,
-        signature_type: row.signature_type,
-        signature_data: row.signature_data,
-        status: row.status,
-        created_at: row.created_at,
-        updated_at: row.updated_at,
-      }));
-    } catch (error) {
-      console.error("PostgreSQL select failed, falling back to local JSON file storage:", error);
+  const config = getServerConfig();
+  if (config.databaseUrl) {
+    const isDb = await ensureDbInitialized();
+    const client = getSqlClient();
+    if (!isDb || !client) {
+      throw new Error("PostgreSQL database configured but connection or initialization failed.");
     }
+    const rows = await client`
+      SELECT * FROM subscriptions ORDER BY created_at DESC
+    `;
+    return rows.map((row) => ({
+      id: row.id,
+      contract_id: row.contract_id,
+      full_name: row.full_name,
+      email: row.email,
+      phone: row.phone || "",
+      birth_date: row.birth_date || "",
+      birth_place: row.birth_place || "",
+      profession: row.profession || "",
+      street_address: row.street_address || "",
+      postal_code: row.postal_code || "",
+      city: row.city || "",
+      state: row.state || "",
+      country: row.country || "",
+      payment_method: row.payment_method,
+      masked_iban: row.masked_iban || undefined,
+      signature_type: row.signature_type,
+      signature_data: row.signature_data,
+      status: row.status,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+    }));
   }
 
   const list = await readFromJsonFile();
@@ -633,39 +633,38 @@ export async function deleteSubscriptionServer(
 }
 
 export async function getDeletedSubscriptionsServer(): Promise<Subscription[]> {
-  const isDb = await ensureDbInitialized();
-  const client = getSqlClient();
-
-  if (isDb && client) {
-    try {
-      const rows = await client`
-        SELECT * FROM deleted_subscriptions ORDER BY deleted_at DESC
-      `;
-      return rows.map((row) => ({
-        id: row.id,
-        contract_id: row.contract_id,
-        full_name: row.full_name,
-        email: row.email,
-        phone: row.phone || "",
-        birth_date: row.birth_date || "",
-        birth_place: row.birth_place || "",
-        profession: row.profession || "",
-        street_address: row.street_address || "",
-        postal_code: row.postal_code || "",
-        city: row.city || "",
-        state: row.state || "",
-        country: row.country || "",
-        payment_method: row.payment_method,
-        masked_iban: row.masked_iban || undefined,
-        signature_type: row.signature_type,
-        signature_data: row.signature_data,
-        status: row.status,
-        created_at: row.created_at,
-        updated_at: row.updated_at,
-      }));
-    } catch (error) {
-      console.error("PostgreSQL select deleted_subscriptions failed, falling back to local JSON:", error);
+  const config = getServerConfig();
+  if (config.databaseUrl) {
+    const isDb = await ensureDbInitialized();
+    const client = getSqlClient();
+    if (!isDb || !client) {
+      throw new Error("PostgreSQL database configured but connection or initialization failed.");
     }
+    const rows = await client`
+      SELECT * FROM deleted_subscriptions ORDER BY deleted_at DESC
+    `;
+    return rows.map((row) => ({
+      id: row.id,
+      contract_id: row.contract_id,
+      full_name: row.full_name,
+      email: row.email,
+      phone: row.phone || "",
+      birth_date: row.birth_date || "",
+      birth_place: row.birth_place || "",
+      profession: row.profession || "",
+      street_address: row.street_address || "",
+      postal_code: row.postal_code || "",
+      city: row.city || "",
+      state: row.state || "",
+      country: row.country || "",
+      payment_method: row.payment_method,
+      masked_iban: row.masked_iban || undefined,
+      signature_type: row.signature_type,
+      signature_data: row.signature_data,
+      status: row.status,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+    }));
   }
 
   const list = await readFromDeletedJsonFile();
