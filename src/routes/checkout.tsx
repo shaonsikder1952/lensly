@@ -119,6 +119,8 @@ function CheckoutPage() {
             (window as any).fbq("track", "Purchase", {
               value: 29.00,
               currency: "EUR",
+              page_path: window.location.pathname,
+              page_location: window.location.href,
             }, options);
           }
           window.history.replaceState({}, document.title, window.location.pathname);

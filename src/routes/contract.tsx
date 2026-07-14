@@ -127,7 +127,12 @@ function ContractPage() {
           if (typeof window !== "undefined" && (window as any).fbq) {
             const testCode = sessionStorage.getItem("meta_test_event_code");
             const options = testCode ? { test_event_code: testCode } : {};
-            (window as any).fbq("track", "Purchase", { value: 29.00, currency: "EUR" }, options);
+            (window as any).fbq("track", "Purchase", {
+              value: 29.00,
+              currency: "EUR",
+              page_path: window.location.pathname,
+              page_location: window.location.href,
+            }, options);
           }
         }
       } catch (e) {
