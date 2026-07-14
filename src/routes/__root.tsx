@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
   ScrollRestoration,
@@ -163,7 +164,6 @@ function RootShell({ children }: { children: ReactNode }) {
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
               fbq('init', '2582804938869139');
-              fbq('track', 'PageView');
             `,
           }}
         />
@@ -194,6 +194,30 @@ function LanguageSync() {
   return null;
 }
 
+function MetaPixelTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // 1. Capture test_event_code from search params if present
+      const params = new URLSearchParams(window.location.search);
+      const testCode = params.get("test_event_code");
+      if (testCode) {
+        sessionStorage.setItem("meta_test_event_code", testCode);
+      }
+
+      // 2. Track PageView
+      if ((window as any).fbq) {
+        const testEventCode = sessionStorage.getItem("meta_test_event_code");
+        const options = testEventCode ? { test_event_code: testEventCode } : {};
+        (window as any).fbq("track", "PageView", {}, options);
+      }
+    }
+  }, [location.pathname, location.search]);
+
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -201,6 +225,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <LanguageSync />
+        <MetaPixelTracker />
         <ScrollRestoration />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />

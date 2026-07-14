@@ -114,10 +114,12 @@ function CheckoutPage() {
           setIsSuccess(true);
           // Fire Meta Pixel Purchase event on confirmed payment
           if (typeof window !== "undefined" && (window as any).fbq) {
+            const testCode = sessionStorage.getItem("meta_test_event_code");
+            const options = testCode ? { test_event_code: testCode } : {};
             (window as any).fbq("track", "Purchase", {
               value: 29.00,
               currency: "EUR",
-            });
+            }, options);
           }
           window.history.replaceState({}, document.title, window.location.pathname);
         })
