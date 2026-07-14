@@ -430,81 +430,6 @@ function ContractPage() {
                 {t("A copy of your signed agreement has been certified and saved.")}
               </p>
 
-              {/* Certificate Block */}
-              <div className="mt-8 border border-border/80 rounded-xl bg-muted/20 p-5 sm:p-8 text-left relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-3 text-[10px] uppercase font-bold tracking-widest text-emerald-600/20 pointer-events-none select-none">
-                  {t("Verified Secure")}
-                </div>
-
-                <div className="grid gap-y-4 sm:grid-cols-2 sm:gap-x-8 text-xs">
-                  <div>
-                    <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block">
-                      {t("Contract Identification")}
-                    </span>
-                    <span className="font-mono text-foreground font-semibold block mt-0.5">
-                      {signedData.contractId}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block">
-                      {t("Date & Time of Signature")}
-                    </span>
-                    <span className="text-foreground block mt-0.5">
-                      {new Date(signedData.signedAt).toLocaleString()}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block">
-                      {t("Subscriber Name")}
-                    </span>
-                    <span className="text-foreground font-medium block mt-0.5">
-                      {signedData.fullName}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block">
-                      {t("Registered Email")}
-                    </span>
-                    <span className="text-foreground block mt-0.5">{signedData.email}</span>
-                  </div>
-                  {signedData.paymentMethod && (
-                    <div>
-                      <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block">
-                        {t("Payment Method")}
-                      </span>
-                      <span className="text-foreground block mt-0.5 font-medium">
-                        {signedData.maskedIban || t("Stripe Card Payment")}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Signature Render */}
-                <div className="mt-6 border-t border-border pt-5">
-                  <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block mb-2">
-                    {t("Authorized Electronic Signature")}
-                  </span>
-
-                  <div className="border border-dashed border-border/80 bg-card rounded-lg h-24 flex items-center justify-center relative overflow-hidden p-2">
-                    {signedData.signatureType === "draw" ? (
-                      <img
-                        src={signedData.signatureData}
-                        alt="Signature"
-                        className="max-h-full max-w-full object-contain pointer-events-none select-none"
-                      />
-                    ) : (
-                      <span className="font-serif italic text-3xl text-primary font-medium tracking-wide">
-                        {signedData.signatureData}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex justify-between items-center mt-2 text-[9px] font-mono text-muted-foreground">
-                    <span>{t("E-SIGNATURE COMPLIANT (eIDAS REGULATION)")}</span>
-                    <span>SHA-256: {signedData.contractId.replace("-", "")}FD3A...</span>
-                  </div>
-                </div>
-              </div>
-
               {/* Action Buttons */}
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 <button
@@ -517,7 +442,7 @@ function ContractPage() {
                   ) : (
                     <Download className="w-4 h-4" />
                   )}
-                  {downloadingPDF ? t("Downloading...") : t("Print or Save Contract")}
+                  {downloadingPDF ? t("Downloading...") : t("Download Signed Contract (PDF)")}
                 </button>
                 <button
                   onClick={handleReset}
@@ -528,10 +453,10 @@ function ContractPage() {
                 </button>
               </div>
 
-              {/* Printable Document Block wrapper */}
+              {/* Full visible contract — shown in signed state and also used as PDF source */}
               <div
                 id="printable-contract-document"
-                className="hidden"
+                className="mt-8 border border-border/80 rounded-xl bg-muted/20 p-5 text-left text-xs space-y-4"
               >
                 <div className="text-center pb-4 border-b border-border/60">
                   <h2 className="font-display font-bold text-foreground uppercase tracking-widest text-sm">
@@ -546,7 +471,7 @@ function ContractPage() {
                 </div>
 
                 {/* Certified Metadata Grid */}
-                <div className="grid gap-y-3.5 grid-cols-2 gap-x-8 border-b border-border/65 pb-4 mt-4">
+                <div className="grid gap-y-3.5 grid-cols-2 gap-x-8 border-b border-border/65 pb-4">
                   <div>
                     <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
                       {t("Contract ID")}
@@ -589,41 +514,82 @@ function ContractPage() {
                   )}
                 </div>
 
-                {/* GTC Full Agreement Text embedded inside the PDF print block */}
-                <div className="space-y-4 text-[10px] leading-relaxed text-muted-foreground/90 pb-4 border-b border-border/65 mt-4 select-text">
+                {/* GTC Full Agreement Text */}
+                <div className="space-y-3 text-[10px] leading-relaxed text-muted-foreground/90 pb-4 border-b border-border/65 select-text">
                   <h3 className="font-bold text-foreground text-[10px] uppercase tracking-wider text-center">
                     {t("AGREEMENT TERMS & CONDITIONS")}
                   </h3>
-
                   <p>
-                    <strong>{t("1. Contracting Parties:")}</strong>{" "}
-                    {t(
-                      "This agreement is entered into between Sikder LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.",
-                    )}
+                    <strong className="text-foreground">{t("1. Contracting Parties:")}</strong>{" "}
+                    {t("This agreement is entered into between Sikder LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.")}
                   </p>
                   <p>
-                    <strong>{t("2. Subscription Scope:")}</strong>{" "}
-                    {t(
-                      "The subscription provides 1 complete custom-made pair of prescription glasses per contract year at €29.00/month. The plan includes a safety net of up to 3 free prescription or accident replacements per subscription year.",
-                    )}
+                    <strong className="text-foreground">{t("2. Subscription Scope:")}</strong>{" "}
+                    {t("The subscription provides 1 complete custom-made pair of prescription glasses per contract year at €29.00/month. The plan includes a safety net of up to 3 free prescription or accident replacements per subscription year.")}
                   </p>
                   <p>
-                    <strong>{t("3. Term & Cancellation:")}</strong>{" "}
-                    {t(
-                      "This contract features a mandatory 12-month fixed minimum term. Ordinary cancellation prior to the end of the 12th month is excluded. Thereafter, the contract automatically converts into rolling monthly renewals cancelable at any time with 30 days notice.",
-                    )}
+                    <strong className="text-foreground">{t("3. Lensly's Delivery Commitment:")}</strong>{" "}
+                    {t("Once the Lensly Care subscription agreement has been concluded and the Customer has provided all required information — including a valid prescription, fitting details and frame approval — Lensly is obligated to deliver the included custom-made prescription eyewear.")}
                   </p>
                   <p>
-                    <strong>{t("4. Medical MDR Device:")}</strong>{" "}
-                    {t(
-                      "Prescription lenses are Class I Medical Devices under European Medical Device Regulation (EU MDR). Lenses and frames carry CE conformity certifications.",
-                    )}
+                    <strong className="text-foreground">{t("4. Minimum Term & Renewal:")}</strong>{" "}
+                    {t("This contract has a mandatory 12-month minimum term from the activation date. After the initial period, the subscription renews automatically on a monthly basis, cancellable with 30 days' notice.")}
                   </p>
                   <p>
-                    <strong>{t("5. Withdrawal Waiver:")}</strong>{" "}
-                    {t(
-                      "Under § 312g Abs. 2 Nr. 1 BGB, the statutory 14-day consumer right of withdrawal does not apply to goods custom-made to customer specifications. Right of withdrawal regarding individual custom glass routing expires prematurely once production begins.",
-                    )}
+                    <strong className="text-foreground">{t("5. Subscription Fee & Billing:")}</strong>{" "}
+                    {t("The subscription fee is €29/month, billed monthly in advance via the payment method provided. The fee covers all coatings, prescription lenses, frame procurement, and shipping. No hidden surcharges apply.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("6. First Eyewear Production Process:")}</strong>{" "}
+                    {t("After activation, Lensly will contact the Customer to collect the required prescription values, fitting measurements, and frame selection before beginning production.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("7. Prescription Requirements:")}</strong>{" "}
+                    {t("The Customer must supply a valid, current optical prescription issued by a licensed eye care professional. Lensly reserves the right to decline an outdated or incomplete prescription.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("8. Replacement Benefits:")}</strong>{" "}
+                    {t("The Customer is entitled to up to 3 approved replacement eyewear pairs per contract year, subject to the replacement conditions described in this contract.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("9. Replacement Conditions:")}</strong>{" "}
+                    {t("Replacements are provided free of charge where the Customer supplies a valid reason such as a non-conforming prescription, incorrect lens specifications, or confirmed production defects in the frame or fitting measurements, verified by Lensly.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("10. Warranty & Defects:")}</strong>{" "}
+                    {t("All eyewear produced under this contract carries a statutory warranty against manufacturing defects. Lensly will repair or replace defective items at no additional charge.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("11. Shipping & Delivery:")}</strong>{" "}
+                    {t("Lensly will deliver completed eyewear to the address provided by the Customer. Delivery times depend on production, laboratory processing, and shipping conditions. Lensly is not liable for delays caused by third-party carriers.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("12. Frame Ownership:")}</strong>{" "}
+                    {t("After successful delivery of the completed eyewear, ownership of the frame and lenses transfers to the Customer.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("13. Cancellation:")}</strong>{" "}
+                    {t("Early cancellation before the end of the 12-month minimum term is generally not possible. In exceptional hardship cases, Lensly may, at its sole discretion, offer a settlement. After the initial term, cancellation requires 30 days written notice.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("14. Medical Device Compliance:")}</strong>{" "}
+                    {t("Prescription lenses are Class I Medical Devices under European Medical Device Regulation (EU MDR 2017/745). All lenses and frames supplied carry CE conformity certifications.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("15. Liability:")}</strong>{" "}
+                    {t("Lensly's liability is limited to the value of the subscription fees paid by the Customer in the preceding 12 months. Lensly is not liable for indirect, consequential, or incidental damages.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("16. Custom-Made Products & Withdrawal Rights:")}</strong>{" "}
+                    {t("Under § 312g Abs. 2 Nr. 1 BGB, the statutory 14-day right of withdrawal does not apply to custom-made goods produced to individual specifications. The right of withdrawal lapses once production begins.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("17. Customer Information & Privacy:")}</strong>{" "}
+                    {t("Customer information is processed in accordance with applicable data protection laws, including GDPR. Personal data is used solely for subscription management, eyewear production, delivery, customer support, and legal obligations.")}
+                  </p>
+                  <p>
+                    <strong className="text-foreground">{t("18. Customer Support & Communication:")}</strong>{" "}
+                    {t("All requests regarding replacements, delivery, subscription changes, and cancellations must be submitted via Lensly's official communication channels.")}
                   </p>
                 </div>
 
