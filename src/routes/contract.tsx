@@ -115,8 +115,8 @@ function ContractPage() {
             email: parsedPending.email,
             signedAt: new Date().toISOString(),
             contractId: parsedPending.contractId,
-            signatureType: "type" as const,
-            signatureData: parsedPending.fullName, // typed name as electronic signature
+            signatureType: (parsedPending.signatureType || "type") as any,
+            signatureData: parsedPending.signatureData || parsedPending.fullName,
             paymentMethod: parsedPending.paymentMethod,
             maskedIban: "Stripe Card Payment",
           };
