@@ -77,11 +77,17 @@ function ContractPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
-        // If already signed, restore the signed view
-        const saved = localStorage.getItem("lensly_signed_contract");
-        if (saved) {
-          setSignedData(JSON.parse(saved));
-          return;
+        const params = new URLSearchParams(window.location.search);
+        const success = params.get("success");
+        if (success === "true") {
+          localStorage.removeItem("lensly_signed_contract");
+        } else {
+          // If already signed, restore the signed view
+          const saved = localStorage.getItem("lensly_signed_contract");
+          if (saved) {
+            setSignedData(JSON.parse(saved));
+            return;
+          }
         }
 
         // Check for pending details saved before Stripe redirect
