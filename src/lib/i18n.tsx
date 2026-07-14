@@ -578,6 +578,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
   },
 };
 const translationCache: Record<string, Record<string, string>> = {
+  en: { ...initialTranslations.en },
   de: { ...initialTranslations.de },
   fr: { ...initialTranslations.fr },
   es: { ...initialTranslations.es },
@@ -642,8 +643,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const t = (text: string): string => {
-    if (lang === "en" || !text) {
-      return text;
+    if (!text) {
+      return "";
     }
 
     const langMap = translationsMap[lang] || {};
