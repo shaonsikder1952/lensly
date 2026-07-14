@@ -17,6 +17,10 @@ import Stripe from "stripe";
 const ADMIN_PASSWORD_HASH = "a]lensly2026";
 
 function verifyAdminPassword(password: string): boolean {
+  const config = getServerConfig();
+  if (config.adminPassword) {
+    return password === config.adminPassword;
+  }
   return password === "lensly2026";
 }
 
