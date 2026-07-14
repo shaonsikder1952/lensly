@@ -13,6 +13,7 @@ import {
 } from "../subscriptions.server";
 import { getServerConfig } from "../config.server";
 import Stripe from "stripe";
+import { createHash } from "node:crypto";
 
 const ADMIN_PASSWORD_HASH = "a]lensly2026";
 
@@ -36,17 +37,41 @@ export const adminLogin = createServerFn({ method: "POST" })
     if (!valid) {
       return { success: false, token: null };
     }
-    const token = `lensly_admin_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    activeAdminTokens.add(token);
-    setTimeout(() => activeAdminTokens.delete(token), 4 * 60 * 60 * 1000);
+    
+    // Stateless token: timestamp + signature of (timestamp + password)
+    const timestamp = Date.now();
+    const config = getServerConfig();
+    const secret = config.adminPassword || "lensly2026";
+    const signature = createHash("sha256")
+      .update(`${timestamp}:${secret}`)
+      .digest("hex");
+    const token = `${timestamp}:${signature}`;
+    
     return { success: true, token };
   });
 
-const activeAdminTokens = new Set<string>();
 const verificationCodes = new Map<string, { emailCode: string; phoneCode: string; expires: number }>();
 
 function isValidAdminToken(token: string): boolean {
-  return activeAdminTokens.has(token);
+  if (!token) return false;
+  const parts = token.split(":");
+  if (parts.length !== 2) return false;
+  const [timestampStr, signature] = parts;
+  const timestamp = parseInt(timestampStr, 10);
+  if (isNaN(timestamp)) return false;
+  
+  // 12 hours expiration
+  if (Date.now() - timestamp > 12 * 60 * 60 * 1000) {
+    return false;
+  }
+  
+  const config = getServerConfig();
+  const secret = config.adminPassword || "lensly2026";
+  const expectedSignature = createHash("sha256")
+    .update(`${timestampStr}:${secret}`)
+    .digest("hex");
+    
+  return signature === expectedSignature;
 }
 
 // --- Public endpoints (no auth required) ---
