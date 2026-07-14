@@ -95,7 +95,6 @@ const initialTranslations: Record<Language, Record<string, string>> = {
       "Premium-Gläser, Entspiegelung & UV-400 inklusive",
     "Free shipping EU-wide · minimum 1 year contract":
       "Kostenloser EU-Versand · Mindestlaufzeit 1 Jahr",
-    "Subscribe to Lensly Care": "Lensly Care abonnieren",
     "Secure checkout via Stripe": "Sicherer Checkout über Stripe",
     
     // Process Steps
@@ -139,7 +138,6 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Vertrag widerrufen": "Vertrag widerrufen",
     "Kündigung bestätigen": "Kündigung bestätigen",
     "Widerruf bestätigen": "Widerruf bestätigen",
-    "Secure checkout via Stripe": "Sicherer Checkout über Stripe",
     "Traditional optician (4 pairs)": "Herkömmlicher Optiker (4 Brillen)",
     "Lensly subscription (€348/yr)": "Lensly-Abo (348 €/Jahr)",
     "Saved per year with replacements": "Jährliche Ersparnis mit Ersatz",
@@ -279,11 +277,9 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Send Email": "E-Mail senden",
     "Copy Email Address": "E-Mail-Adresse kopieren",
     "Copied!": "Kopiert!",
-    "Sign Contract": "Vertrag unterzeichnen",
     "Impressum": "Impressum",
     "Datenschutz": "Datenschutz",
     "AGB": "AGB",
-    "Vertrag hier kündigen": "Vertrag hier kündigen",
     
     // Product Gallery
     "Signature Frame Styles": "Signatur-Gestelle",
@@ -293,8 +289,6 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     
     // Footer
     "Questions about your subscription? Write to us:": "Fragen zum Abo? Schreib uns:",
-    "For any help or requests regarding subscription please contact at":
-      "Bei Fragen oder Wünschen zu Ihrem Abonnement kontaktieren Sie uns bitte unter",
     Subscribers: "Abonnenten",
     "Total Subscriptions": "Abonnements gesamt",
     "Active Subscriptions": "Aktive Abonnements",
@@ -334,11 +328,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "This page didn't load": "Diese Seite konnte nicht geladen werden",
     "Something went wrong on our end. You can try refreshing or head back home.": "Auf unserer Seite ist ein Fehler aufgetreten. Sie können versuchen, die Seite neu zu laden, oder zur Startseite zurückkehren.",
     "Try again": "Erneut versuchen",
-    "The subscription": "Das Abonnement",
     "Recommended": "Empfohlen",
-    "/ month": "/ Monat",
-    "Continuous vision care": "Kontinuierliche Sehversorgung",
-    "€0.95 a day": "0,95 € pro Tag",
     "Vertreten durch:": "Vertreten durch:",
     "Germany": "Deutschland",
     "Hinweis: Die Gesellschaft befindet sich in Gründung. Umsatzsteuer-Identifikationsnummer und Handelsregistereintragung folgen nach Abschluss des Registrierungsprozesses.": "Hinweis: Die Gesellschaft befindet sich in Gründung. Umsatzsteuer-Identifikationsnummer und Handelsregistereintragung folgen nach Abschluss des Registrierungsprozesses.",
@@ -376,14 +366,8 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Only": "Nur",
     "Flat rate": "Flatrate",
     "Annual Benefit": "Jährlicher Vorteil",
-    "1 Free Pair Every Year": "1 neue Brille jedes Jahr gratis",
-    "Receive a complete new pair of prescription glasses delivered to your door annually.": "Erhalten Sie jährlich eine komplett neue Korrekturbrille direkt nach Hause geliefert.",
     "Peace of Mind": "Sorgenfreiheit",
-    "3 Free Replacements": "3 kostenlose Ersatzgläser",
-    "Accident coverage included. We replace broken lenses or update prescription at zero cost.": "Unfallschutz inklusive. Wir ersetzen beschädigte Gläser oder passen die Sehstärke kostenlos an.",
     "Pricing Model": "Preismodell",
-    "Flat €29 Monthly Only": "Nur 29 € monatlich flat",
-    "All-inclusive subscription with zero retail markup or surprise medical billings.": "All-inclusive-Abonnement ohne Händleraufschläge oder überraschende Zusatzkosten.",
     "Included": "Inklusive",
     "Please enter your full name.": "Bitte geben Sie Ihren vollständigen Namen ein.",
     "Please enter a valid email address.": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
