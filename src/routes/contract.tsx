@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../lib/i18n";
-import { saveSubscription, confirmStripeSession, clientConfirmPayment } from "../lib/api/subscriptions.functions";
+import { saveSubscription, confirmStripeSession, clientConfirmPayment, getPublicContractDetails } from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
 import { ContractBody } from "../components/ContractBody";
 import {
@@ -67,11 +67,13 @@ function ContractPage() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
 
-  // Generate a persistent simulated contract ID if none exists
-  const [contractId, setContractId] = useState(() => {
+  // Generate a persistent simulated contract ID on the client to avoid SSR hydration mismatches
+  const [contractId, setContractId] = useState("");
+
+  useEffect(() => {
     const rand = Math.floor(100000 + Math.random() * 900000);
-    return `LNS-2026-${rand}`;
-  });
+    setContractId(`LNS-2026-${rand}`);
+  }, []);
 
   // Load signed state from localStorage — auto-complete contract if returning from Stripe
   useEffect(() => {
@@ -79,8 +81,33 @@ function ContractPage() {
       try {
         const params = new URLSearchParams(window.location.search);
         const success = params.get("success");
+        const urlContractId = params.get("contractId");
+        const urlEmail = params.get("email");
+
         if (success === "true") {
           localStorage.removeItem("lensly_signed_contract");
+          
+          if (urlContractId && urlEmail) {
+            getPublicContractDetails({ data: { contractId: urlContractId, email: urlEmail } })
+              .then((sub: any) => {
+                if (sub) {
+                  const data = {
+                    signed: true,
+                    fullName: sub.full_name,
+                    email: sub.email,
+                    signedAt: sub.created_at || new Date().toISOString(),
+                    contractId: sub.contract_id,
+                    signatureType: sub.signature_type as any,
+                    signatureData: sub.signature_data,
+                    paymentMethod: sub.payment_method,
+                    maskedIban: sub.masked_iban || "Stripe Card Payment",
+                  };
+                  localStorage.setItem("lensly_signed_contract", JSON.stringify(data));
+                  setSignedData(data);
+                }
+              })
+              .catch(console.error);
+          }
         } else {
           // If already signed, restore the signed view
           const saved = localStorage.getItem("lensly_signed_contract");

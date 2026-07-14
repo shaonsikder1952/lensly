@@ -893,3 +893,52 @@ export async function editSubscriptionServer(
   }
   return updated;
 }
+
+export async function getPublicContractDetailsServer(
+  contractId: string,
+  email: string,
+): Promise<Subscription | null> {
+  const isDb = await ensureDbInitialized();
+  const client = getSqlClient();
+
+  if (isDb && client) {
+    try {
+      const rows = await client`
+        SELECT * FROM subscriptions 
+        WHERE contract_id = ${contractId} AND email = ${email}
+        LIMIT 1
+      `;
+      if (rows && rows[0]) {
+        const row = rows[0];
+        return {
+          id: row.id,
+          contract_id: row.contract_id,
+          full_name: row.full_name,
+          email: row.email,
+          phone: row.phone || "",
+          birth_date: row.birth_date || "",
+          birth_place: row.birth_place || "",
+          profession: row.profession || "",
+          street_address: row.street_address || "",
+          postal_code: row.postal_code || "",
+          city: row.city || "",
+          state: row.state || "",
+          country: row.country || "",
+          payment_method: row.payment_method,
+          masked_iban: row.masked_iban || undefined,
+          signature_type: row.signature_type,
+          signature_data: row.signature_data,
+          status: row.status,
+          created_at: row.created_at,
+          updated_at: row.updated_at,
+        };
+      }
+    } catch (error) {
+      console.error("PostgreSQL select public contract failed:", error);
+    }
+  }
+
+  const list = await readFromJsonFile();
+  const found = list.find((item) => item.contract_id === contractId && item.email === email);
+  return found || null;
+}

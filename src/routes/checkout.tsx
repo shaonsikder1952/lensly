@@ -186,10 +186,12 @@ function CheckoutPage() {
     }
   }, [toast]);
 
-  const [contractId] = useState(() => {
+  const [contractId, setContractId] = useState("");
+
+  useEffect(() => {
     const rand = Math.floor(100000 + Math.random() * 900000);
-    return `LNS-2026-${rand}`;
-  });
+    setContractId(`LNS-2026-${rand}`);
+  }, []);
 
   useEffect(() => {
     if (signatureType === "draw" && canvasRef.current && !isSuccess) {
@@ -502,7 +504,7 @@ function CheckoutPage() {
 
         if (stripeEnabled) {
           // Production Mode: Redirect to Stripe Payment Link
-          const stripeLink = `https://buy.stripe.com/test_4gM7sN1k82pL4JX7QO7EQ00?prefilled_email=${encodeURIComponent(email.trim())}&client_reference_id=${contractId}`;
+          const stripeLink = `https://buy.stripe.com/4gM7sN1k82pL4JX7QO7EQ00?prefilled_email=${encodeURIComponent(email.trim())}&client_reference_id=${contractId}`;
           window.location.href = stripeLink;
         } else {
           // Simulation/Local Mode: Redirect directly to /contract page to simulate completed payment

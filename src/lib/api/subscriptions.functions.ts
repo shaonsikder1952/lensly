@@ -10,6 +10,7 @@ import {
   getDeletedSubscriptionsServer,
   restoreSubscriptionServer,
   permanentlyDeleteSubscriptionServer,
+  getPublicContractDetailsServer,
 } from "../subscriptions.server";
 import { getServerConfig } from "../config.server";
 import Stripe from "stripe";
@@ -632,4 +633,16 @@ export const clientConfirmPayment = createServerFn({ method: "POST" })
       data.maskedIban || "Stripe Card Payment"
     );
     return { success };
+  });
+
+export const getPublicContractDetails = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      contractId: z.string().min(1),
+      email: z.string().email(),
+    }),
+  )
+  .handler(async ({ data }) => {
+    const details = await getPublicContractDetailsServer(data.contractId, data.email);
+    return details;
   });
