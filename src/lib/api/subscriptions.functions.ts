@@ -614,3 +614,22 @@ export const verifyCodes = createServerFn({ method: "POST" })
     verificationCodes.delete(key);
     return { valid: true };
   });
+
+export const clientConfirmPayment = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      contractId: z.string().min(1),
+      email: z.string().email(),
+      paymentMethod: z.enum(["sepa", "wallet"]),
+      maskedIban: z.string().optional(),
+    }),
+  )
+  .handler(async ({ data }) => {
+    const success = await confirmSubscriptionPaymentServer(
+      data.contractId,
+      data.email,
+      data.paymentMethod,
+      data.maskedIban || "Stripe Card Payment"
+    );
+    return { success };
+  });
