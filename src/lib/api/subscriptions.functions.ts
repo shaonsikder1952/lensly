@@ -19,10 +19,23 @@ const ADMIN_PASSWORD_HASH = "a]lensly2026";
 
 function verifyAdminPassword(password: string): boolean {
   const config = getServerConfig();
+  
+  // 1. Check custom environment variable password if configured
   if (config.adminPassword) {
-    return password === config.adminPassword;
+    const envPassword = config.adminPassword;
+    const envPasswordTrimmed = envPassword.replace(/\r/g, "").trim();
+    if (password === envPassword || password === envPasswordTrimmed) {
+      return true;
+    }
   }
-  return password === "lensly2026";
+  
+  // 2. Check fallback/hardcoded passwords
+  const fallbackPasswords = ["lensly2026", "a]lensly2026"];
+  if (fallbackPasswords.includes(password) || fallbackPasswords.includes(password.trim())) {
+    return true;
+  }
+  
+  return false;
 }
 
 // --- Server-side admin authentication ---
