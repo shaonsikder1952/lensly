@@ -111,6 +111,13 @@ function CheckoutPage() {
             contractHash,
           });
           setIsSuccess(true);
+          // Fire Meta Pixel Purchase event on confirmed payment
+          if (typeof window !== "undefined" && (window as any).fbq) {
+            (window as any).fbq("track", "Purchase", {
+              value: 29.00,
+              currency: "EUR",
+            });
+          }
           window.history.replaceState({}, document.title, window.location.pathname);
         })
         .catch((error) => {
