@@ -1144,8 +1144,6 @@ function CheckoutPage() {
                         <div className="border border-border rounded-lg bg-background overflow-hidden relative touch-none">
                           <canvas
                             ref={canvasRef}
-                            width={800}
-                            height={240}
                             className="w-full bg-background block cursor-crosshair h-24"
                             onMouseDown={startDrawing}
                             onMouseMove={draw}

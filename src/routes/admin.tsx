@@ -120,6 +120,7 @@ function AdminPage() {
   const [showTrash, setShowTrash] = useState(false);
   const [deletedSubscriptions, setDeletedSubscriptions] = useState<SubscriptionItem[]>([]);
   const [loadingDeleted, setLoadingDeleted] = useState(false);
+  const [dbError, setDbError] = useState<string | null>(null);
 
   // Load unlock state from sessionStorage on mount
   useEffect(() => {
@@ -139,15 +140,21 @@ function AdminPage() {
       return;
     }
     setLoading(true);
+    setDbError(null);
     getSubscriptions({ data: { adminToken: token } })
       .then((data) => {
         setSubscriptions(data as SubscriptionItem[]);
         setLoading(false);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.error("Failed to load subscriptions:", err);
         setLoading(false);
-        handleLogout();
+        const errMsg = err?.message || String(err);
+        if (errMsg.includes("Unauthorized") || errMsg.includes("invalid") || errMsg.includes("expired")) {
+          handleLogout();
+        } else {
+          setDbError(errMsg);
+        }
       });
   };
 
@@ -164,9 +171,15 @@ function AdminPage() {
         setDeletedSubscriptions(data as SubscriptionItem[]);
         setLoadingDeleted(false);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.error("Failed to load deleted subscriptions:", err);
         setLoadingDeleted(false);
+        const errMsg = err?.message || String(err);
+        if (errMsg.includes("Unauthorized") || errMsg.includes("invalid") || errMsg.includes("expired")) {
+          handleLogout();
+        } else {
+          setDbError(errMsg);
+        }
       });
   };
 
@@ -857,6 +870,17 @@ function AdminPage() {
               </button>
             </div>
           </div>
+
+          {/* Database Error Banner */}
+          {dbError && (
+            <div className="mb-6 rounded-lg border border-destructive/20 bg-destructive/5 p-4 text-xs text-destructive flex items-start gap-2.5 leading-relaxed no-print">
+              <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold">{t("Database Error Details")}</p>
+                <p className="mt-1 font-mono break-all">{dbError}</p>
+              </div>
+            </div>
+          )}
 
           {/* KPI grid row */}
           <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-4 mb-8">

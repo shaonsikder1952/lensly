@@ -757,8 +757,6 @@ function ContractPage() {
                         <div className="border border-border rounded-lg bg-background overflow-hidden relative touch-none">
                           <canvas
                             ref={canvasRef}
-                            width={400}
-                            height={140}
                             className="w-full bg-background block cursor-crosshair"
                             onMouseDown={startDrawing}
                             onMouseMove={draw}
