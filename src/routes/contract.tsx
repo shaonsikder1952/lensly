@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../lib/i18n";
 import { saveSubscription } from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
+import { ContractBody } from "../components/ContractBody";
 import {
   PenTool,
   Type,
@@ -122,6 +123,10 @@ function ContractPage() {
           localStorage.removeItem("lensly_pending_contract");
           localStorage.setItem("lensly_signed_contract", JSON.stringify(autoSignedData));
           setSignedData(autoSignedData);
+          // Fire Meta Pixel Purchase event — this is where the browser lands after Stripe
+          if (typeof window !== "undefined" && (window as any).fbq) {
+            (window as any).fbq("track", "Purchase", { value: 29.00, currency: "EUR" });
+          }
         }
       } catch (e) {
         console.error("Failed to load signed contract", e);
@@ -514,83 +519,9 @@ function ContractPage() {
                   )}
                 </div>
 
-                {/* GTC Full Agreement Text */}
-                <div className="space-y-3 text-[10px] leading-relaxed text-muted-foreground/90 pb-4 border-b border-border/65 select-text">
-                  <h3 className="font-bold text-foreground text-[10px] uppercase tracking-wider text-center">
-                    {t("AGREEMENT TERMS & CONDITIONS")}
-                  </h3>
-                  <p>
-                    <strong className="text-foreground">{t("1. Contracting Parties:")}</strong>{" "}
-                    {t("This agreement is entered into between Sikder LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("2. Subscription Scope:")}</strong>{" "}
-                    {t("The subscription provides 1 complete custom-made pair of prescription glasses per contract year at €29.00/month. The plan includes a safety net of up to 3 free prescription or accident replacements per subscription year.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("3. Lensly's Delivery Commitment:")}</strong>{" "}
-                    {t("Once the Lensly Care subscription agreement has been concluded and the Customer has provided all required information — including a valid prescription, fitting details and frame approval — Lensly is obligated to deliver the included custom-made prescription eyewear.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("4. Minimum Term & Renewal:")}</strong>{" "}
-                    {t("This contract has a mandatory 12-month minimum term from the activation date. After the initial period, the subscription renews automatically on a monthly basis, cancellable with 30 days' notice.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("5. Subscription Fee & Billing:")}</strong>{" "}
-                    {t("The subscription fee is €29/month, billed monthly in advance via the payment method provided. The fee covers all coatings, prescription lenses, frame procurement, and shipping. No hidden surcharges apply.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("6. First Eyewear Production Process:")}</strong>{" "}
-                    {t("After activation, Lensly will contact the Customer to collect the required prescription values, fitting measurements, and frame selection before beginning production.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("7. Prescription Requirements:")}</strong>{" "}
-                    {t("The Customer must supply a valid, current optical prescription issued by a licensed eye care professional. Lensly reserves the right to decline an outdated or incomplete prescription.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("8. Replacement Benefits:")}</strong>{" "}
-                    {t("The Customer is entitled to up to 3 approved replacement eyewear pairs per contract year, subject to the replacement conditions described in this contract.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("9. Replacement Conditions:")}</strong>{" "}
-                    {t("Replacements are provided free of charge where the Customer supplies a valid reason such as a non-conforming prescription, incorrect lens specifications, or confirmed production defects in the frame or fitting measurements, verified by Lensly.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("10. Warranty & Defects:")}</strong>{" "}
-                    {t("All eyewear produced under this contract carries a statutory warranty against manufacturing defects. Lensly will repair or replace defective items at no additional charge.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("11. Shipping & Delivery:")}</strong>{" "}
-                    {t("Lensly will deliver completed eyewear to the address provided by the Customer. Delivery times depend on production, laboratory processing, and shipping conditions. Lensly is not liable for delays caused by third-party carriers.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("12. Frame Ownership:")}</strong>{" "}
-                    {t("After successful delivery of the completed eyewear, ownership of the frame and lenses transfers to the Customer.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("13. Cancellation:")}</strong>{" "}
-                    {t("Early cancellation before the end of the 12-month minimum term is generally not possible. In exceptional hardship cases, Lensly may, at its sole discretion, offer a settlement. After the initial term, cancellation requires 30 days written notice.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("14. Medical Device Compliance:")}</strong>{" "}
-                    {t("Prescription lenses are Class I Medical Devices under European Medical Device Regulation (EU MDR 2017/745). All lenses and frames supplied carry CE conformity certifications.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("15. Liability:")}</strong>{" "}
-                    {t("Lensly's liability is limited to the value of the subscription fees paid by the Customer in the preceding 12 months. Lensly is not liable for indirect, consequential, or incidental damages.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("16. Custom-Made Products & Withdrawal Rights:")}</strong>{" "}
-                    {t("Under § 312g Abs. 2 Nr. 1 BGB, the statutory 14-day right of withdrawal does not apply to custom-made goods produced to individual specifications. The right of withdrawal lapses once production begins.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("17. Customer Information & Privacy:")}</strong>{" "}
-                    {t("Customer information is processed in accordance with applicable data protection laws, including GDPR. Personal data is used solely for subscription management, eyewear production, delivery, customer support, and legal obligations.")}
-                  </p>
-                  <p>
-                    <strong className="text-foreground">{t("18. Customer Support & Communication:")}</strong>{" "}
-                    {t("All requests regarding replacements, delivery, subscription changes, and cancellations must be submitted via Lensly's official communication channels.")}
-                  </p>
+                {/* Full 18-clause GTC — identical to checkout, language-aware */}
+                <div className="pb-4 border-b border-border/65">
+                  <ContractBody contractId={signedData.contractId} />
                 </div>
 
                 {/* Digital Signature block */}
@@ -642,83 +573,8 @@ function ContractPage() {
                   </div>
                 </div>
 
-                {/* Scrollable Document Content */}
-                <div className="p-6 overflow-y-auto space-y-5 text-sm leading-relaxed text-muted-foreground/90 font-sans custom-scrollbar select-text">
-                  <div className="text-center border-b border-border pb-4 mb-4">
-                    <h2 className="font-display font-bold text-foreground uppercase tracking-widest text-sm">
-                      {t("LENSLY CARE VISION SUBSCRIPTION AGREEMENT")}
-                    </h2>
-                    <p className="text-[10px] text-muted-foreground/80 tracking-wide mt-1">
-                      {t("Contract Reference")}: {contractId}
-                    </p>
-                  </div>
-
-                  <section>
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("1. Contracting Parties")}
-                    </h3>
-                    <p className="text-xs">
-                      {t(
-                        "This legally binding agreement is entered into between Lensly (hereinafter 'Lensly') and the subscriber (hereinafter 'the Customer') whose custom information and digital signatures are attached hereto.",
-                      )}
-                    </p>
-                  </section>
-
-                  <section>
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("2. Minimum Contract Term & Renewal")}
-                    </h3>
-                    <p className="text-xs">
-                      {t(
-                        "The Lensly subscription has a mandatory minimum contract duration of twelve (12) months (1 year) from the date of activation. Upon completion of the initial 12-month period, the subscription will automatically renew on a month-to-month basis at the same rate, unless cancelled by the Customer with a minimum of thirty (30) days notice prior to the end of the current billing cycle.",
-                      )}
-                    </p>
-                  </section>
-
-                  <section>
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("3. Subscription Fee & Billing")}
-                    </h3>
-                    <p className="text-xs">
-                      {t(
-                        "The subscription fee is €29/month. Payments are processed monthly on a recurring basis via Stripe using the payment details provided at checkout. The fee includes all coatings, prescription lenses, frame procurement, and shipping costs. No additional or hidden surcharges will apply.",
-                      )}
-                    </p>
-                  </section>
-
-                  <section>
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("4. Deliverables & Replacements")}
-                    </h3>
-                    <p className="text-xs">
-                      {t(
-                        "Lensly guarantees the delivery of one (1) new complete pair of custom prescription glasses per contract year. Furthermore, the plan covers up to three (3) free replacement lenses/glasses per year in the event of accidental breakage, scratches, loss, or changes to the Customer's prescription values.",
-                      )}
-                    </p>
-                  </section>
-
-                  <section>
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("5. Custom Goods & Refunds")}
-                    </h3>
-                    <p className="text-xs">
-                      {t(
-                        "As all prescription optical lenses are custom crafted to individual health specifications, the contract is immediately initiated. Refunds are not available once custom lens manufacturing has begun. Corrective replacements are provided completely free if any manufacturing defects occur.",
-                      )}
-                    </p>
-                  </section>
-
-                  <section className="border-t border-border/60 pt-4">
-                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
-                      {t("6. Consent to Electronic Signatures")}
-                    </h3>
-                    <p className="text-xs italic">
-                      {t(
-                        "By typing or drawing your signature in this document, you explicitly consent to transact business electronically and agree that your electronic signature carries the full legal weight and binding nature of a handwritten physical signature under standard global electronic transaction acts.",
-                      )}
-                    </p>
-                  </section>
-                </div>
+                {/* Scrollable Contract Viewer — same 18-clause contract, language-aware */}
+                <ContractBody contractId={contractId} scrollable />
 
                 <div className="bg-muted/30 border-t border-border/80 px-5 py-3 text-center text-[10px] text-muted-foreground flex justify-between items-center">
                   <span>© 2026 Lensly Care AG</span>
