@@ -14,157 +14,212 @@ export function ContractBody({ contractId, scrollable = false }: ContractBodyPro
     <div className="space-y-4 text-xs leading-relaxed text-muted-foreground select-text">
       <div className="text-center pb-3 border-b border-border/60">
         <h4 className="font-display font-bold text-foreground uppercase tracking-widest text-xs">
-          {t("LENSLY CARE VISION SUBSCRIPTION AGREEMENT")}
+          {t("contract.title")}
         </h4>
         {contractId && (
           <p className="text-[9px] text-muted-foreground mt-0.5">
-            {t("Contract Reference")}: {contractId}
+            {t("contract.ref_prefix")}: {contractId}
           </p>
         )}
       </div>
 
+      {/* §1 Contracting Parties */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("1. Contracting Parties")}</h5>
-        <p>{t("This agreement is concluded between:")}</p>
-        <p className="font-semibold">{t("Sikder LLC, Germany")}</p>
-        <p>{t('(hereinafter referred to as "Lensly" or "the Provider")')}</p>
-        <p className="mt-2">{t("and")}</p>
-        <p>{t('the subscriber whose personal information, payment details, and electronic acceptance are recorded during the checkout process (hereinafter referred to as "the Customer").')}</p>
-        <p className="mt-2">{t("By completing the checkout process and confirming payment, the Customer accepts this agreement electronically.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.parties.title")}
+        </h5>
+        <p>{t("contract.parties.body")}</p>
+        <p className="italic text-[9px]">{t("contract.parties.acceptance")}</p>
       </section>
 
+      {/* §2 Lensly Care Subscription */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("2. Lensly Care Subscription")}</h5>
-        <p>{t("Lensly Care is a vision subscription service providing customers with access to custom-made prescription eyewear benefits.")}</p>
-        <p className="mt-2">{t("The subscription includes:")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.subscription.title")}
+        </h5>
+        <p>{t("contract.subscription.body")}</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>{t("One (1) complete custom-made prescription glasses pair per contract year.")}</li>
-          <li>{t("Up to three (3) approved replacement services per contract year according to the replacement conditions described in this agreement.")}</li>
+          <li>{t("contract.subscription.item1")}</li>
+          <li>{t("contract.subscription.item2")}</li>
         </ul>
       </section>
 
+      {/* §3 Lensly Delivery Commitment */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("3. Lensly Delivery Commitment")}</h5>
-        <p>{t("Once the Lensly Care subscription agreement has been successfully established and the Customer has provided all required information, including valid prescription details, fitting information, and frame selection approval, Lensly is obligated to provide the included custom-made prescription eyewear benefit according to the terms of this agreement.")}</p>
-        <p className="mt-2">{t("Lensly will make reasonable efforts to complete production and delivery within the stated timeframe.")}</p>
-        <p className="mt-2">{t("Delays caused by missing customer information, supplier availability, laboratory processing times, shipping conditions, or circumstances outside Lensly's reasonable control do not remove Lensly's obligation to fulfil the agreed eyewear benefit.")}</p>
-        <p className="mt-2">{t("Lensly will continue to work toward completion and delivery of the Customer's included eyewear benefit.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.delivery.title")}
+        </h5>
+        <p>{t("contract.delivery.body1")}</p>
+        <p>{t("contract.delivery.body2")}</p>
+        <p>{t("contract.delivery.body3")}</p>
       </section>
 
+      {/* §4 Minimum Contract Term and Renewal */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("4. Minimum Contract Term and Renewal")}</h5>
-        <p>{t("The Lensly Care subscription has a minimum contract term of twelve (12) months from the activation date.")}</p>
-        <p className="mt-2">{t("The contract year begins on the date of subscription activation and continues for twelve (12) consecutive months.")}</p>
-        <p className="mt-2">{t("After the initial twelve-month period, the subscription automatically continues on a monthly basis and may be cancelled with thirty (30) days' notice.")}</p>
-        <p className="mt-2">{t("The Customer acknowledges that the minimum financial commitment during the initial contract term is €348 (€29 × 12 months).")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.term.title")}
+        </h5>
+        <p>{t("contract.term.body1")}</p>
+        <p>{t("contract.term.body2")}</p>
+        <p>{t("contract.term.body3")}</p>
+        <p className="font-semibold">{t("contract.term.commitment")}</p>
       </section>
 
+      {/* §5 Subscription Fee and Payment */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("5. Subscription Fee and Payment")}</h5>
-        <p>{t("The subscription fee is €29 per month.")}</p>
-        <p className="mt-2">{t("Payments are collected monthly in advance through approved payment providers, including Stripe-supported payment methods.")}</p>
-        <p className="mt-2">{t("The Customer is responsible for maintaining valid payment information.")}</p>
-        <p className="mt-2">{t("If a payment cannot be processed, Lensly will notify the Customer and provide an opportunity to update payment information or complete payment.")}</p>
-        <p className="mt-2">{t("The first failed payment attempt will not result in an additional charge.")}</p>
-        <p className="mt-2">{t("For repeated failed payment attempts caused by customer-related payment issues, Lensly may apply a reasonable processing fee of €5 per failed payment attempt after notifying the Customer.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.fee.title")}
+        </h5>
+        <p>{t("contract.fee.body1")}</p>
+        <p>{t("contract.fee.body2")}</p>
+        <p>{t("contract.fee.body3")}</p>
+        <p>{t("contract.fee.failed1")}</p>
+        <p>{t("contract.fee.failed2")}</p>
+        <p>{t("contract.fee.failed3")}</p>
       </section>
 
+      {/* §6 First Glasses Production Process */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("6. First Glasses Production Process")}</h5>
-        <p>{t("After activation, the Customer must provide all required information, including valid prescription details, fitting information, and selected frame information.")}</p>
-        <p className="mt-2">{t("The Customer may select a preferred frame and provide frame details or images through approved Lensly communication channels.")}</p>
-        <p className="mt-2">{t("Lensly will confirm the selected frame before production begins.")}</p>
-        <p className="mt-2">{t("Custom lens processing will begin only after the required information and approvals have been received.")}</p>
-        <p className="mt-2">{t("Because the first glasses are custom-made according to the Customer's individual prescription, measurements, and selected frame, the Customer may request changes before final confirmation of the first glasses order.")}</p>
-        <p className="mt-2">{t("Once the Customer has confirmed the first glasses order through an approved Lensly communication channel, including email or another official communication method, the custom glasses order cannot be cancelled or changed due to the individual nature of the product.")}</p>
-        <p className="mt-2">{t("Lensly will proceed with fulfilling the confirmed eyewear benefit according to the details approved by the Customer.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.first_glasses.title")}
+        </h5>
+        <p>{t("contract.first_glasses.body1")}</p>
+        <p>{t("contract.first_glasses.body2")}</p>
+        <p>{t("contract.first_glasses.body3")}</p>
+        <p>{t("contract.first_glasses.changes")}</p>
+        <p className="font-semibold">{t("contract.first_glasses.final")}</p>
       </section>
 
+      {/* §7 Customer Responsibilities */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("7. Customer Responsibilities")}</h5>
-        <p>{t("The Customer is responsible for providing accurate and complete information required for production.")}</p>
-        <p className="mt-2">{t("Lensly manufactures prescription eyewear according to the information and specifications provided by the Customer.")}</p>
-        <p className="mt-2">{t("Delays caused by missing, incomplete, or incorrect customer information may delay production.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.customer_responsibilities.title")}
+        </h5>
+        <p>{t("contract.customer_responsibilities.body1")}</p>
+        <p>{t("contract.customer_responsibilities.body2")}</p>
+        <p>{t("contract.customer_responsibilities.body3")}</p>
       </section>
 
+      {/* §8 Replacement Coverage */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("8. Replacement Coverage")}</h5>
-        <p>{t("Lensly provides up to three (3) approved replacement services per contract year.")}</p>
-        <p className="mt-2">{t("Replacement coverage applies only in the following situations:")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.replacement.title")}
+        </h5>
+        <p>{t("contract.replacement.body1")}</p>
+        <p className="font-semibold">{t("contract.replacement.body2")}</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>{t("Accidental breakage of the glasses.")}</li>
-          <li>{t("Lens damage or scratches that materially affect clear vision.")}</li>
-          <li>{t("Verified prescription changes.")}</li>
+          <li>{t("contract.replacement.item1")}</li>
+          <li>{t("contract.replacement.item2")}</li>
+          <li>{t("contract.replacement.item3")}</li>
         </ul>
-        <p className="mt-2">{t("The Customer must provide appropriate proof for replacement requests.")}</p>
-        <p className="mt-2">{t("Replacement coverage does not include: Loss or theft, intentional damage, misuse or improper handling, cosmetic damage that does not affect vision, or changes based only on personal preference.")}</p>
-        <p className="mt-2">{t("Lensly reserves the right to review and verify replacement requests.")}</p>
+        <p>{t("contract.replacement.proof")}</p>
+        <strong className="text-foreground block mt-1.5">{t("contract.replacement.excl_title")}</strong>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>{t("contract.replacement.excl1")}</li>
+          <li>{t("contract.replacement.excl2")}</li>
+          <li>{t("contract.replacement.excl3")}</li>
+          <li>{t("contract.replacement.excl4")}</li>
+          <li>{t("contract.replacement.excl5")}</li>
+        </ul>
+        <p>{t("contract.replacement.reserve")}</p>
       </section>
 
+      {/* §9 Frame and Lens Adjustments */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("9. Frame and Lens Adjustments")}</h5>
-        <p>{t("If the Customer provides a valid reason, including incorrect prescription compared with the submitted prescription, incorrect lens specifications, or confirmed fitting or frame-related production issues, Lensly will replace the affected lenses free of charge after verification.")}</p>
-        <p className="mt-2">{t("Issues caused by incorrect customer-provided information or incorrect customer selection may not qualify for free replacement.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.adjustments.title")}
+        </h5>
+        <p>{t("contract.adjustments.body1")}</p>
+        <p>{t("contract.adjustments.body2")}</p>
       </section>
 
+      {/* §10 Delivery and Production Time */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("10. Delivery and Production Time")}</h5>
-        <p>{t("Lensly will make reasonable efforts to process and deliver custom-made eyewear within approximately 14 to 21 days after receiving all required customer information, including valid prescription details, fitting information, and final frame approval.")}</p>
-        <p className="mt-2">{t("Because prescription eyewear is individually manufactured, delivery times may vary depending on production requirements, supplier availability, laboratory processing times, and shipping conditions.")}</p>
-        <p className="mt-2">{t("Lensly will keep the Customer informed in case of significant delays.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.delivery_time.title")}
+        </h5>
+        <p>{t("contract.delivery_time.body1")}</p>
+        <p>{t("contract.delivery_time.body2")}</p>
+        <p>{t("contract.delivery_time.body3")}</p>
       </section>
 
+      {/* §11 Laboratory and Supplier Processing */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("11. Laboratory and Supplier Processing")}</h5>
-        <p>{t("Lensly works with selected optical suppliers and laboratories for the production and adjustment of prescription eyewear.")}</p>
-        <p className="mt-2">{t("Production and delivery may depend on third-party availability and processing times.")}</p>
-        <p className="mt-2">{t("Lensly will make reasonable efforts to source the selected frame requested by the Customer through available supplier and retail channels to complete the eyewear order according to the Customer's selection.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.laboratory.title")}
+        </h5>
+        <p>{t("contract.laboratory.body1")}</p>
+        <p>{t("contract.laboratory.body2")}</p>
+        <p>{t("contract.laboratory.body3")}</p>
       </section>
 
+      {/* §12 Ownership of Eyewear */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("12. Ownership of Eyewear")}</h5>
-        <p>{t("After successful delivery of the completed eyewear, ownership of the frame and lenses transfers to the Customer.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.ownership.title")}
+        </h5>
+        <p>{t("contract.ownership.body1")}</p>
       </section>
 
+      {/* §13 Early Cancellation */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("13. Early Cancellation")}</h5>
-        <p>{t("The Lensly Care subscription has a minimum contract term of twelve (12) months.")}</p>
-        <p className="mt-2">{t("Early cancellation during this period is generally not available.")}</p>
-        <p className="mt-2">{t("However, Lensly may review exceptional circumstances and consider early cancellation requests on a case-by-case basis.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.early_cancellation.title")}
+        </h5>
+        <p>{t("contract.early_cancellation.body1")}</p>
+        <p>{t("contract.early_cancellation.body2")}</p>
       </section>
 
+      {/* §14 Payment Suspension */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("14. Payment Suspension")}</h5>
-        <p>{t("If subscription payments remain unpaid, Lensly may temporarily suspend benefits that require active payment, including future production and replacement services, until outstanding payments are resolved.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.suspension.title")}
+        </h5>
+        <p>{t("contract.suspension.body1")}</p>
       </section>
 
+      {/* §15 Prescription Eyewear Information */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("15. Prescription Eyewear Information")}</h5>
-        <p>{t("Lensly provides custom-made prescription eyewear through selected optical suppliers and laboratories.")}</p>
-        <p className="mt-2">{t("The eyewear is produced according to applicable requirements for prescription optical products.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.eyewear_info.title")}
+        </h5>
+        <p>{t("contract.eyewear_info.body1")}</p>
+        <p>{t("contract.eyewear_info.body2")}</p>
       </section>
 
+      {/* §16 Custom-Made Products and Withdrawal Rights */}
       <section className="space-y-1 border-t border-border/50 pt-2 bg-primary/[0.01] p-2 rounded">
-        <h5 className="font-bold text-primary text-[10px] uppercase tracking-wider">{t("16. Custom-Made Products and Withdrawal Rights")}</h5>
-        <p className="text-[11px] italic">{t("Prescription glasses manufactured according to individual customer specifications may qualify as custom-made goods under applicable German consumer law.")}</p>
-        <p className="mt-2 text-[11px] italic">{t("The Customer acknowledges that individual custom-made lens processing may affect withdrawal rights according to applicable legal provisions.")}</p>
+        <h5 className="font-bold text-primary text-[10px] uppercase tracking-wider">
+          {t("contract.withdrawal.title")}
+        </h5>
+        <p className="text-[11px] italic">{t("contract.withdrawal.body1")}</p>
+        <p>{t("contract.withdrawal.body2")}</p>
       </section>
 
+      {/* §17 Customer Information and Privacy */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("17. Customer Information and Privacy")}</h5>
-        <p>{t("Customer information is processed according to applicable data protection laws, including GDPR requirements.")}</p>
-        <p className="mt-2">{t("Personal information is used for subscription management, eyewear production, delivery, customer support, and legal obligations.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.privacy.title")}
+        </h5>
+        <p>{t("contract.privacy.body1")}</p>
+        <p>{t("contract.privacy.body2")}</p>
       </section>
 
+      {/* §18 Customer Support and Communication */}
       <section className="space-y-1">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("18. Customer Support and Communication")}</h5>
-        <p>{t("Requests regarding replacements, delivery, subscription changes, and cancellations should be submitted through official Lensly communication channels.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.support.title")}
+        </h5>
+        <p>{t("contract.support.body1")}</p>
       </section>
 
+      {/* Customer Acceptance */}
       <section className="space-y-1 border-t border-border/50 pt-3">
-        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">{t("Customer Acceptance")}</h5>
-        <p>{t("By completing payment and accepting this agreement, the Customer confirms that they have read and accepted the Lensly Care Vision Subscription Agreement.")}</p>
-        <p className="mt-1">{t("Customer acceptance is recorded electronically during checkout.")}</p>
+        <h5 className="font-bold text-foreground text-[10px] uppercase tracking-wider">
+          {t("contract.acceptance.title")}
+        </h5>
+        <p>{t("contract.acceptance.body1")}</p>
+        <p className="mt-1">{t("contract.acceptance.body2")}</p>
       </section>
     </div>
   );
