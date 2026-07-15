@@ -529,8 +529,9 @@ function AdminPage() {
     return matchesSearch;
   });
 
-  // KPI calculations
-  const totalCount = subscriptions.length;
+  // KPI calculations — pending (unpaid) subs are hidden from view
+  const paidSubscriptions = subscriptions.filter((s) => s.status !== "pending");
+  const totalCount = paidSubscriptions.length;
   const activeCount = subscriptions.filter((s) => s.status === "active").length;
   const pendingCount = subscriptions.filter((s) => s.status === "pending").length;
   const pausedCount = subscriptions.filter((s) => s.status === "paused").length;
@@ -939,7 +940,7 @@ function AdminPage() {
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t("Active Subscriptions")} ({subscriptions.length})
+              {t("Active Subscriptions")} ({filteredSubscriptions.length})
             </button>
             <button
               onClick={() => {
