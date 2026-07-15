@@ -121,7 +121,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Stripe Card Payment": "Stripe Card Payment",
     "Authorized Electronic Signature": "Authorized Electronic Signature",
     "E-SIGNATURE COMPLIANT (eIDAS REGULATION)": "E-SIGNATURE COMPLIANT (eIDAS REGULATION)",
-    "contract.footer": "© 2026 Sikder LLC — All Rights Reserved",
+    "contract.footer": "© 2026 Sikder LLC . All Rights Reserved",
     "Minimum term 12 months, billing €29 monthly, automatic renewal.": "Minimum term 12 months, billing €29 monthly, automatic renewal.",
   },
   de: {
@@ -234,7 +234,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Stripe Card Payment": "Stripe Kreditkartenzahlung",
     "Authorized Electronic Signature": "Autorisierte elektronische Unterschrift",
     "E-SIGNATURE COMPLIANT (eIDAS REGULATION)": "E-SIGNATURE KONFORM (eIDAS-VERORDNUNG)",
-    "contract.footer": "© 2026 Sikder LLC — Alle Rechte vorbehalten",
+    "contract.footer": "© 2026 Sikder LLC . Alle Rechte vorbehalten",
     "Minimum term 12 months, billing €29 monthly, automatic renewal.": "Mindestlaufzeit 12 Monate, Abrechnung 29 € monatlich, automatische Verlängerung.",
   },
   fr: {
@@ -347,7 +347,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Stripe Card Payment": "Paiement par Carte Stripe",
     "Authorized Electronic Signature": "Signature Électronique Autorisée",
     "E-SIGNATURE COMPLIANT (eIDAS REGULATION)": "CONFORME À LA SIGNATURE ÉLECTRONIQUE (RÈGLEMENT eIDAS)",
-    "contract.footer": "© 2026 Sikder LLC — Tous droits réservés",
+    "contract.footer": "© 2026 Sikder LLC . Tous droits réservés",
     "Minimum term 12 months, billing €29 monthly, automatic renewal.": "Durée minimale de 12 mois, facturation de 29 € par mois, renouvellement automatique.",
   },
   es: {
@@ -460,7 +460,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Stripe Card Payment": "Pago con Tarjeta Stripe",
     "Authorized Electronic Signature": "Firma Electrónica Autorizada",
     "E-SIGNATURE COMPLIANT (eIDAS REGULATION)": "CONFORME CON FIRMA ELECTRÓNICA (REGLAMENTO eIDAS)",
-    "contract.footer": "© 2026 Sikder LLC — Todos los derechos reservados",
+    "contract.footer": "© 2026 Sikder LLC . Todos los derechos reservados",
     "Minimum term 12 months, billing €29 monthly, automatic renewal.": "Plazo mínimo de 12 meses, facturación de 29 € mensuales, renovación automática.",
   },
   it: {
@@ -573,7 +573,7 @@ const initialTranslations: Record<Language, Record<string, string>> = {
     "Stripe Card Payment": "Pagamento con Carta Stripe",
     "Authorized Electronic Signature": "Firma Elettronica Autorizzata",
     "E-SIGNATURE COMPLIANT (eIDAS REGULATION)": "CONFORME ALLA FIRMA ELETTRONICA (REGOLAMENTO eIDAS)",
-    "contract.footer": "© 2026 Sikder LLC — Tutti i diritti riservati",
+    "contract.footer": "© 2026 Sikder LLC . Tutti i diritti riservati",
     "Minimum term 12 months, billing €29 monthly, automatic renewal.": "Durata minima 12 mesi, fatturazione 29 € al mese, rinnovo automatico.",
   },
 };

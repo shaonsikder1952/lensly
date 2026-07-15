@@ -91,7 +91,7 @@ function FramesPage() {
               {t("Signature Eyewear Collection")}
             </h1>
             <p className="mt-3 text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-semibold">
-              {t("10 premium frame options — CE-certified German lenses included")}
+              {t("10 premium frame options - CE-certified German lenses included")}
             </p>
           </div>
 
@@ -139,7 +139,7 @@ function FramesPage() {
               {t("Looking for a different style?")}
             </h3>
             <p className="text-[11.5px] sm:text-xs text-muted-foreground leading-relaxed">
-              {t("If you want any frame outside our signature collection, just contact us via email. We can source almost any frame style and custom-fit your premium German lenses — free of charge.")}
+              {t("If you want any frame outside our signature collection, just contact us via email. We can source almost any frame style and custom-fit your premium German lenses - free of charge.")}
             </p>
             <div className="mt-4">
               <a

@@ -12,6 +12,7 @@ import {
   permanentlyDeleteSubscription,
 } from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
+import { ContractBody } from "../components/ContractBody";
 import {
   Users,
   CreditCard,
@@ -513,8 +514,9 @@ function AdminPage() {
       (sub.birthDate && sub.birthDate.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesStatus = statusFilter === "all" || sub.status === statusFilter;
+    const isPaid = sub.status !== "pending";
 
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && isPaid;
   });
 
   const filteredDeletedSubscriptions = deletedSubscriptions.filter((sub) => {
@@ -777,38 +779,7 @@ function AdminPage() {
             </div>
           </div>
 
-          <div className="space-y-4 text-[10px] leading-relaxed text-gray-700 border-b border-gray-300 pb-4">
-            <h3 className="font-bold text-gray-900 text-center uppercase tracking-wider">
-              AGREEMENT TERMS & CONDITIONS
-            </h3>
-            <p>
-              <strong>1. Contracting Parties:</strong> This agreement is entered into between Sikder
-              LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.
-            </p>
-            <p>
-              <strong>2. Subscription Scope:</strong> The subscription provides 1 complete
-              custom-made pair of prescription glasses per contract year at €29.00/month. The plan
-              includes a safety net of up to 3 free prescription or accident replacements per
-              subscription year.
-            </p>
-            <p>
-              <strong>3. Term & Cancellation:</strong> This contract features a mandatory 12-month
-              fixed minimum term. Ordinary cancellation prior to the end of the 12th month is
-              excluded. Thereafter, the contract automatically converts into rolling monthly
-              renewals cancelable at any time with 30 days notice.
-            </p>
-            <p>
-              <strong>4. Medical MDR Device:</strong> Prescription lenses are Class I Medical
-              Devices under European Medical Device Regulation (EU MDR). Lenses and frames carry CE
-              conformity certifications.
-            </p>
-            <p>
-              <strong>5. Withdrawal Waiver:</strong> Under § 312g Abs. 2 Nr. 1 BGB, the statutory
-              14-day consumer right of withdrawal does not apply to goods custom-made to customer
-              specifications. Right of withdrawal regarding individual custom glass routing expires
-              prematurely once production begins.
-            </p>
-          </div>
+          <ContractBody contractId={selectedSub.contractId} />
 
           <div>
             <span className="text-[10px] uppercase font-bold text-gray-500 block mb-2">
@@ -1459,41 +1430,7 @@ function AdminPage() {
               </div>
 
               {/* Agreement Text */}
-              <div className="space-y-3 text-[10px] leading-relaxed text-muted-foreground/90 border-b border-border/65 pb-4 select-text">
-                <h4 className="font-bold text-foreground text-center uppercase tracking-wider">
-                  {t("AGREEMENT TERMS & CONDITIONS")}
-                </h4>
-                <p>
-                  <strong>{t("1. Contracting Parties:")}</strong>{" "}
-                  {t(
-                    "This agreement is entered into between Sikder LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.",
-                  )}
-                </p>
-                <p>
-                  <strong>{t("2. Subscription Scope:")}</strong>{" "}
-                  {t(
-                    "The subscription provides 1 complete custom-made pair of prescription glasses per contract year at €29.00/month. The plan includes a safety net of up to 3 free prescription or accident replacements per subscription year.",
-                  )}
-                </p>
-                <p>
-                  <strong>{t("3. Term & Cancellation:")}</strong>{" "}
-                  {t(
-                    "This contract features a mandatory 12-month fixed minimum term. Ordinary cancellation prior to the end of the 12th month is excluded. Thereafter, the contract automatically converts into rolling monthly renewals cancelable at any time with 30 days notice.",
-                  )}
-                </p>
-                <p>
-                  <strong>{t("4. Medical MDR Device:")}</strong>{" "}
-                  {t(
-                    "Prescription lenses are Class I Medical Devices under European Medical Device Regulation (EU MDR). Lenses and frames carry CE conformity certifications.",
-                  )}
-                </p>
-                <p>
-                  <strong>{t("5. Withdrawal Waiver:")}</strong>{" "}
-                  {t(
-                    "Under § 312g Abs. 2 Nr. 1 BGB, the statutory 14-day consumer right of withdrawal does not apply to goods custom-made to customer specifications. Right of withdrawal regarding individual custom glass routing expires prematurely once production begins.",
-                  )}
-                </p>
-              </div>
+              <ContractBody contractId={selectedSub.contractId} />
 
               {/* E-Signature */}
               <div>

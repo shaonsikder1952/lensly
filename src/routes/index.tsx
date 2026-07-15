@@ -410,7 +410,7 @@ function Hero() {
             </div>
 
             <p className="animate-fade-in mt-5 text-[13px] sm:text-sm md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
-              {t("Every year, a new pair of prescription glasses — delivered straight to your door. Break them? Three free replacements included.")}
+              {t("Every year, a new pair of prescription glasses - delivered straight to your door. Break them? Three free replacements included.")}
             </p>
 
             {/* Premium CTA Buttons */}
@@ -473,7 +473,7 @@ function Hero() {
                   {t("Every year, fresh.")}
                 </h3>
                 <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
-                  {t("Your eyesight changes. Your style changes too. That's why we deliver a completely new pair every year — no reordering, no extra cost.")}
+                  {t("Your eyesight changes. Your style changes too. That's why we deliver a completely new pair every year - no reordering, no extra cost.")}
                 </p>
               </div>
             </div>
@@ -488,7 +488,7 @@ function Hero() {
                   {t("Broken? No problem.")}
                 </h3>
                 <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
-                  {t("Glasses break. We send replacements — up to three times per year, free of charge. Damaged, prescription changed — doesn't matter. We fix it.")}
+                  {t("Glasses break. We send replacements - up to three times per year, free of charge. Damaged, prescription changed - doesn't matter. We fix it.")}
                 </p>
               </div>
             </div>
@@ -503,7 +503,7 @@ function Hero() {
                   {t("€29. That's it.")}
                 </h3>
                 <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
-                  {t("No hidden costs. No upcharges for anti-reflective coating or thin lenses. €29 once a month — that's all.")}
+                  {t("No hidden costs. No upcharges for anti-reflective coating or thin lenses. €29 once a month - that's all.")}
                 </p>
               </div>
             </div>
@@ -552,7 +552,7 @@ function Plan() {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                  {t("Anti-reflective, UV coating — all extra, all expensive.")}
+                  {t("Anti-reflective, UV coating - all extra, all expensive.")}
                 </li>
                 <li className="flex items-center gap-2.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
@@ -636,7 +636,7 @@ function Plan() {
                   {t("Subscribe via Stripe")}
                 </h5>
                 <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
-                  {t("Just click 'Subscribe' below — takes 2 minutes.")}
+                  {t("Just click 'Subscribe' below - takes 2 minutes.")}
                 </p>
               </div>
             </div>
@@ -666,7 +666,7 @@ function Plan() {
                   {t("Send frame details")}
                 </h5>
                 <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
-                  {t("Just reply to our email with your prescription, PD, and a photo of the frame you like — from any shop, any brand.")}
+                  {t("Just reply to our email with your prescription, PD, and a photo of the frame you like - from any shop, any brand.")}
                 </p>
               </div>
             </div>
@@ -696,7 +696,7 @@ function Plan() {
                   {t("Delivered to your door")}
                 </h5>
                 <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
-                  {t("In about 15 days, your new glasses arrive in the mailbox — done.")}
+                  {t("In about 15 days, your new glasses arrive in the mailbox - done.")}
                 </p>
               </div>
             </div>
@@ -1024,7 +1024,7 @@ export function ProductGallery() {
             {t("Signature Frame Styles")}
           </h2>
           <p className="mt-2 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-            {t("Send us a photo — we'll source the frame for you.")}
+            {t("Send us a photo - we'll source the frame for you.")}
           </p>
         </div>
 
@@ -1093,7 +1093,7 @@ export function Faq() {
       a: (
         <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
           {t(
-            "We're a small team from Germany. The idea came up because glasses in Europe are absurdly expensive — not because they have to be, but because the market wants it that way. We work directly with certified optical labs and skip the retail markup.",
+            "We're a small team from Germany. The idea came up because glasses in Europe are absurdly expensive - not because they have to be, but because the market wants it that way. We work directly with certified optical labs and skip the retail markup.",
           )}
         </p>
       ),
@@ -1103,7 +1103,7 @@ export function Faq() {
       a: (
         <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
           {t(
-            "Yes — and that's actually the best part. You can pick any frame you like. From Mister Spex, JINS, a local optician, Amazon — doesn't matter. Just send us a screenshot and we'll source the frame for you. No markup, no restrictions.",
+            "Yes - and that's actually the best part. You can pick any frame you like. From Mister Spex, JINS, a local optician, Amazon - doesn't matter. Just send us a screenshot and we'll source the frame for you. No markup, no restrictions.",
           )}
         </p>
       ),
@@ -1127,7 +1127,7 @@ export function Faq() {
       ),
     },
     {
-      q: t("I have a strong prescription — will this still work?"),
+      q: t("I have a strong prescription - will this still work?"),
       a: (
         <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
           {t(
@@ -1151,7 +1151,7 @@ export function Faq() {
       a: (
         <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
           {t(
-            "We source the frame for you based on your photo or screenshot. It's included in your subscription — nothing extra to pay.",
+            "We source the frame for you based on your photo or screenshot. It's included in your subscription - nothing extra to pay.",
           )}
         </p>
       ),
@@ -1229,7 +1229,7 @@ export function Reviews() {
       badge: t("Student"),
       badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
       image: "/sarah-lindner.png",
-      text: t("As a student, I couldn't just drop €380 for new glasses every two years. With Lensly I pay €29 a month and get a new pair every year. Last week my frame got damaged — the replacement arrived in 4 days.")
+      text: t("As a student, I couldn't just drop €380 for new glasses every two years. With Lensly I pay €29 a month and get a new pair every year. Last week my frame got damaged - the replacement arrived in 4 days.")
     },
     {
       name: "Markus Becker",
@@ -1237,7 +1237,7 @@ export function Reviews() {
       badge: t("Office Worker"),
       badgeColor: "bg-indigo-50/50 text-indigo-700 border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
       image: "/markus-becker.png",
-      text: t("I work 9 hours a day in front of three monitors. The blue-light filter lenses from Lensly are noticeably better than what I used to buy at the local optician — and for a third of the price. Setup took 10 minutes.")
+      text: t("I work 9 hours a day in front of three monitors. The blue-light filter lenses from Lensly are noticeably better than what I used to buy at the local optician - and for a third of the price. Setup took 10 minutes.")
     },
     {
       name: "Lukas Weber",
@@ -1253,7 +1253,7 @@ export function Reviews() {
       badge: t("Student"),
       badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
       image: "/jonas-schmidt.png",
-      text: t("I never understood why glasses should be so expensive. Lensly explains it: because opticians charge retail markups. With the subscription I pay €348 per year for new glasses including replacements — at the optician, one pair alone was €320.")
+      text: t("I never understood why glasses should be so expensive. Lensly explains it: because opticians charge retail markups. With the subscription I pay €348 per year for new glasses including replacements - at the optician, one pair alone was €320.")
     },
     {
       name: "Emma Fischer",
@@ -1269,7 +1269,7 @@ export function Reviews() {
       badge: t("Office Worker"),
       badgeColor: "bg-indigo-50/50 text-indigo-700 border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
       image: "/laura-weber.png",
-      text: t("I change my style every year. At a normal optician that costs €400 per pair. Now I just pick a new frame, send a screenshot — and get it built and delivered. That's the model I always wanted.")
+      text: t("I change my style every year. At a normal optician that costs €400 per pair. Now I just pick a new frame, send a screenshot - and get it built and delivered. That's the model I always wanted.")
     }
   ];
 
