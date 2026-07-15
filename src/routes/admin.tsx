@@ -514,7 +514,8 @@ function AdminPage() {
       (sub.birthDate && sub.birthDate.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesStatus = statusFilter === "all" || sub.status === statusFilter;
-    const isPaid = sub.status !== "pending";
+    // Hide pending from "All" view — show only when explicitly filtered
+    const isPaid = statusFilter === "pending" || sub.status !== "pending";
 
     return matchesSearch && matchesStatus && isPaid;
   });
