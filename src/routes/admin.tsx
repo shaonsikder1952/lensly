@@ -857,7 +857,10 @@ function AdminPage() {
 
           {/* KPI grid row */}
           <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-4 mb-8">
-            <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
+            <button
+              onClick={() => { setStatusFilter("all"); setShowTrash(false); }}
+              className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/40 hover:shadow-md cursor-pointer text-left w-full"
+            >
               <div className="flex items-center justify-between text-muted-foreground mb-2">
                 <span className="text-[10px] font-semibold uppercase tracking-wider">
                   {t("Total")}
@@ -865,9 +868,12 @@ function AdminPage() {
                 <Users className="w-4 h-4 text-primary/80" />
               </div>
               <div className="text-2xl font-bold">{totalCount}</div>
-            </div>
+            </button>
 
-            <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
+            <button
+              onClick={() => { setStatusFilter("active"); setShowTrash(false); }}
+              className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-emerald-400/40 hover:shadow-md cursor-pointer text-left w-full"
+            >
               <div className="flex items-center justify-between text-muted-foreground mb-2">
                 <span className="text-[10px] font-semibold uppercase tracking-wider">
                   {t("Active")}
@@ -875,9 +881,12 @@ function AdminPage() {
                 <CalendarCheck className="w-4 h-4 text-emerald-600" />
               </div>
               <div className="text-2xl font-bold text-emerald-600">{activeCount}</div>
-            </div>
+            </button>
 
-            <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
+            <button
+              onClick={() => { setStatusFilter("pending"); setShowTrash(false); }}
+              className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-blue-400/40 hover:shadow-md cursor-pointer text-left w-full"
+            >
               <div className="flex items-center justify-between text-muted-foreground mb-2">
                 <span className="text-[10px] font-semibold uppercase tracking-wider">
                   {t("Pending")}
@@ -885,7 +894,7 @@ function AdminPage() {
                 <Clock className="w-4 h-4 text-blue-600" />
               </div>
               <div className="text-2xl font-bold text-blue-600">{pendingCount}</div>
-            </div>
+            </button>
 
             <div className="bg-card border border-border/70 p-4 rounded-xl shadow-xs transition hover:border-primary/20">
               <div className="flex items-center justify-between text-muted-foreground mb-2">
