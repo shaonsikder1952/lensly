@@ -39,10 +39,10 @@ function Impressum() {
               <p>
                 {t("E-Mail:")}{" "}
                 <a
-                  href="mailto:hello@lensly.care"
+                  href="mailto:support@lensly.care"
                   className="text-primary hover:underline font-medium"
                 >
-                  hello@lensly.care
+                  support@lensly.care
                 </a>
               </p>
             </section>

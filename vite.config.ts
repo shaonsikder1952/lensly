@@ -14,4 +14,7 @@ export default defineConfig({
     tailwindcss(),
     tsConfigPaths(),
   ],
+  optimizeDeps: {
+    exclude: ["@node-rs/argon2", "@node-rs/argon2-wasm32-wasi"],
+  },
 });

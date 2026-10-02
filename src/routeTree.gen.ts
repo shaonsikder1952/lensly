@@ -13,9 +13,11 @@ import { Route as WithdrawRouteImport } from './routes/withdraw'
 import { Route as ImpressumRouteImport } from './routes/impressum'
 import { Route as FramesRouteImport } from './routes/frames'
 import { Route as DatenschutzRouteImport } from './routes/datenschutz'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContractRouteImport } from './routes/contract'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CancelRouteImport } from './routes/cancel'
+import { Route as AngebotRouteImport } from './routes/angebot'
 import { Route as AgbRouteImport } from './routes/agb'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -40,6 +42,11 @@ const DatenschutzRoute = DatenschutzRouteImport.update({
   path: '/datenschutz',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContractRoute = ContractRouteImport.update({
   id: '/contract',
   path: '/contract',
@@ -53,6 +60,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
 const CancelRoute = CancelRouteImport.update({
   id: '/cancel',
   path: '/cancel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AngebotRoute = AngebotRouteImport.update({
+  id: '/angebot',
+  path: '/angebot',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgbRoute = AgbRouteImport.update({
@@ -75,9 +87,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/agb': typeof AgbRoute
+  '/angebot': typeof AngebotRoute
   '/cancel': typeof CancelRoute
   '/checkout': typeof CheckoutRoute
   '/contract': typeof ContractRoute
+  '/dashboard': typeof DashboardRoute
   '/datenschutz': typeof DatenschutzRoute
   '/frames': typeof FramesRoute
   '/impressum': typeof ImpressumRoute
@@ -87,9 +101,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/agb': typeof AgbRoute
+  '/angebot': typeof AngebotRoute
   '/cancel': typeof CancelRoute
   '/checkout': typeof CheckoutRoute
   '/contract': typeof ContractRoute
+  '/dashboard': typeof DashboardRoute
   '/datenschutz': typeof DatenschutzRoute
   '/frames': typeof FramesRoute
   '/impressum': typeof ImpressumRoute
@@ -100,9 +116,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/agb': typeof AgbRoute
+  '/angebot': typeof AngebotRoute
   '/cancel': typeof CancelRoute
   '/checkout': typeof CheckoutRoute
   '/contract': typeof ContractRoute
+  '/dashboard': typeof DashboardRoute
   '/datenschutz': typeof DatenschutzRoute
   '/frames': typeof FramesRoute
   '/impressum': typeof ImpressumRoute
@@ -114,9 +132,11 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agb'
+    | '/angebot'
     | '/cancel'
     | '/checkout'
     | '/contract'
+    | '/dashboard'
     | '/datenschutz'
     | '/frames'
     | '/impressum'
@@ -126,9 +146,11 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agb'
+    | '/angebot'
     | '/cancel'
     | '/checkout'
     | '/contract'
+    | '/dashboard'
     | '/datenschutz'
     | '/frames'
     | '/impressum'
@@ -138,9 +160,11 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agb'
+    | '/angebot'
     | '/cancel'
     | '/checkout'
     | '/contract'
+    | '/dashboard'
     | '/datenschutz'
     | '/frames'
     | '/impressum'
@@ -151,9 +175,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AgbRoute: typeof AgbRoute
+  AngebotRoute: typeof AngebotRoute
   CancelRoute: typeof CancelRoute
   CheckoutRoute: typeof CheckoutRoute
   ContractRoute: typeof ContractRoute
+  DashboardRoute: typeof DashboardRoute
   DatenschutzRoute: typeof DatenschutzRoute
   FramesRoute: typeof FramesRoute
   ImpressumRoute: typeof ImpressumRoute
@@ -190,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DatenschutzRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contract': {
       id: '/contract'
       path: '/contract'
@@ -209,6 +242,13 @@ declare module '@tanstack/react-router' {
       path: '/cancel'
       fullPath: '/cancel'
       preLoaderRoute: typeof CancelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/angebot': {
+      id: '/angebot'
+      path: '/angebot'
+      fullPath: '/angebot'
+      preLoaderRoute: typeof AngebotRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agb': {
@@ -239,9 +279,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AgbRoute: AgbRoute,
+  AngebotRoute: AngebotRoute,
   CancelRoute: CancelRoute,
   CheckoutRoute: CheckoutRoute,
   ContractRoute: ContractRoute,
+  DashboardRoute: DashboardRoute,
   DatenschutzRoute: DatenschutzRoute,
   FramesRoute: FramesRoute,
   ImpressumRoute: ImpressumRoute,

@@ -31,5 +31,9 @@ dist-ssr
 *.sln
 *.sw?
 .env
-.env.local
-.env.*.local
+.env.*
+
+# Private storage and runtime data
+storage/
+data/
+*.json.bak

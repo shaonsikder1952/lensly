@@ -40,12 +40,12 @@ function WithdrawPage() {
             </p>
 
             <div className="bg-muted/50 rounded-lg p-3 my-5 border border-border/40 font-mono text-sm text-foreground font-semibold select-all break-all">
-              hello@lensly.care
+              support@lensly.care
             </div>
 
             <div className="flex flex-col gap-2.5">
               <a
-                href="mailto:hello@lensly.care?subject=Contract Withdrawal Request"
+                href="mailto:support@lensly.care?subject=Contract Withdrawal Request"
                 className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xs hover:bg-primary/95 transition text-center block cursor-pointer"
               >
                 {t("Send Email")}
@@ -53,7 +53,7 @@ function WithdrawPage() {
               
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText("hello@lensly.care");
+                  navigator.clipboard.writeText("support@lensly.care");
                   setCopied(true);
                   setTimeout(() => setCopied(false), 2000);
                 }}

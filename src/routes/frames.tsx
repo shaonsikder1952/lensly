@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { useLanguage } from "../lib/i18n";
 import { Nav, Footer } from "./index";
+import { FrameRequestModal } from "../components/frame-request-modal";
+import { Sparkles, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/frames")({
   head: () => ({
@@ -8,7 +11,7 @@ export const Route = createFileRoute("/frames")({
       { title: "Signature Frames | Lensly" },
       {
         name: "description",
-        content: "Explore the full collection of signature Lensly Care eyewear frames, CE certified and fitted with premium lenses.",
+        content: "Explore the collection of signature Lensly Care eyewear frames, fitted with custom-surfaced prescription lenses.",
       },
     ],
   }),
@@ -17,6 +20,7 @@ export const Route = createFileRoute("/frames")({
 
 function FramesPage() {
   const { t } = useLanguage();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const styles = [
     {
@@ -84,14 +88,14 @@ function FramesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col justify-between">
       <div>
-        <Nav />
+        <Nav onOpenFrameModal={() => setIsModalOpen(true)} />
         <main className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
           <div className="text-center mb-10 md:mb-16">
             <h1 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               {t("Signature Eyewear Collection")}
             </h1>
             <p className="mt-3 text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-semibold">
-              {t("10 premium frame options - CE-certified German lenses included")}
+              {t("10 ausgewählte Fassungsmodelle — Individuell verglast für Ihre Sehstärke")}
             </p>
           </div>
 
@@ -126,7 +130,7 @@ function FramesPage() {
                     <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span>{t("German Lenses Fitted")}</span>
+                    <span>{t("Präzisions-Verglasung")}</span>
                   </div>
                 </div>
               </div>
@@ -136,25 +140,31 @@ function FramesPage() {
           {/* Custom Frame Request Banner */}
           <div className="mt-12 max-w-xl mx-auto bg-gradient-to-br from-primary/5 to-teal-500/5 border border-primary/10 rounded-2xl p-5 sm:p-7 text-center">
             <h3 className="font-display font-semibold text-xs sm:text-[14px] text-foreground tracking-tight mb-2">
-              {t("Looking for a different style?")}
+              {t("Wunschfassung gefunden? Schicke sie uns.")}
             </h3>
             <p className="text-[11.5px] sm:text-xs text-muted-foreground leading-relaxed">
-              {t("If you want any frame outside our signature collection, just contact us via email. We can source almost any frame style and custom-fit your premium German lenses - free of charge.")}
+              {t("Wenn Sie eine Fassung außerhalb unserer Signature-Kollektion wünschen, senden Sie uns einfach den Link oder einen Screenshot. Wir prüfen Verfügbarkeit und Kompatibilität mit Ihren Brillenwerten vor der Zahlung.")}
             </p>
             <div className="mt-4">
-              <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=hello@lensly.care&su=Custom%20Frame%20Request"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-[10.5px] sm:text-xs font-bold uppercase tracking-wider text-primary-foreground hover:opacity-95 shadow-sm shadow-primary/10 transition cursor-pointer"
               >
-                <span>{t("Request Custom Frame")}</span>
-              </a>
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{t("Wunschfassung einreichen")}</span>
+                <ArrowRight className="w-3 h-3 ml-0.5" />
+              </button>
             </div>
           </div>
         </main>
       </div>
       <Footer />
+
+      <FrameRequestModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

@@ -4,7 +4,6 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
-  useLocation,
   HeadContent,
   Scripts,
   ScrollRestoration,
@@ -98,23 +97,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lensly" },
+      { title: "Lensly | Prescription Eyewear Subscription & Pre-Payment Frame Verification" },
       {
         name: "description",
-        content: "Premium prescription eyewear subscription service - Fresh glasses every year with free replacements.",
+        content:
+          "Found a frame you love? Send Lensly the link or screenshot. We check frame availability, compatibility, and prescription requirements before you pay. €29/month.",
       },
-      { name: "author", content: "Lensly" },
-      { property: "og:title", content: "Lensly" },
+      { name: "author", content: "Lensly Care" },
+      { property: "og:title", content: "Lensly | Found a frame you love? Send it to Lensly." },
       {
         property: "og:description",
-        content: "Premium prescription eyewear subscription service - Fresh glasses every year with free replacements.",
+        content:
+          "Discover any frame elsewhere, send us the link or screenshot, and we'll check feasibility and your prescription requirements before you pay. €29/month plan.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Lensly" },
+      { property: "og:url", content: "https://lensly.care" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Lensly | Found a frame you love? Send it to Lensly." },
       {
         name: "twitter:description",
-        content: "Premium prescription eyewear subscription service - Fresh glasses every year with free replacements.",
+        content:
+          "Prescription eyewear subscription with pre-payment frame review. Fresh glasses every contract year with up to 3 replacements per plan terms.",
       },
     ],
     links: [
@@ -122,6 +125,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "icon",
         type: "image/svg+xml",
         href: "/favicon.svg",
+      },
+      {
+        rel: "canonical",
+        href: "https://lensly.care",
       },
       {
         rel: "stylesheet",
@@ -136,10 +143,32 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Lensly",
+    url: "https://lensly.care",
+    logo: "https://lensly.care/favicon.svg",
+    description:
+      "Direct-to-lab prescription vision care subscription service with pre-payment frame and prescription verification.",
+    offers: {
+      "@type": "Offer",
+      name: "Lensly Care Subscription",
+      price: "29.00",
+      priceCurrency: "EUR",
+      billingDuration: "P1M",
+      eligibleRegion: "EU",
+    },
+  };
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -151,30 +180,6 @@ function RootShell({ children }: { children: ReactNode }) {
             `,
           }}
         />
-        {/* Meta Pixel */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '2582804938869139');
-            `,
-          }}
-        />
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=2582804938869139&ev=PageView&noscript=1"
-          />
-        </noscript>
       </head>
       <body>
         {children}
@@ -194,36 +199,6 @@ function LanguageSync() {
   return null;
 }
 
-function MetaPixelTracker() {
-  const location = useLocation();
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // 1. Capture test_event_code from search params if present
-      const params = new URLSearchParams(window.location.search);
-      const testCode = params.get("test_event_code");
-      if (testCode) {
-        sessionStorage.setItem("meta_test_event_code", testCode);
-      }
-
-      // 2. Track PageView
-      if ((window as any).fbq) {
-        const testEventCode = sessionStorage.getItem("meta_test_event_code");
-        const payload: Record<string, any> = {
-          page_path: window.location.pathname,
-          page_location: window.location.href,
-        };
-        if (testEventCode) {
-          payload.test_event_code = testEventCode;
-        }
-        (window as any).fbq("track", "PageView", payload);
-      }
-    }
-  }, [location.pathname, location.search]);
-
-  return null;
-}
-
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -231,7 +206,6 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <LanguageSync />
-        <MetaPixelTracker />
         <ScrollRestoration />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />

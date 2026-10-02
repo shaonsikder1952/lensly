@@ -1,0 +1,16 @@
+# Lensly.care Robots Exclusion Protocol
+User-agent: *
+Allow: /
+Allow: /frames
+Allow: /angebot
+Allow: /agb
+Allow: /datenschutz
+Allow: /impressum
+
+# Disallow private operational, internal storage, and administrative paths
+Disallow: /admin
+Disallow: /storage/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://lensly.care/sitemap.xml

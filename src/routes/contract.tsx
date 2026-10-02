@@ -1,9 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../lib/i18n";
-import { saveSubscription, confirmStripeSession, clientConfirmPayment, getPublicContractDetails } from "../lib/api/subscriptions.functions";
+import { saveSubscription } from "../lib/api/subscriptions.functions";
 import { Nav, Footer } from "./index";
-import { ContractBody } from "../components/ContractBody";
 import {
   PenTool,
   Type,
@@ -67,54 +66,21 @@ function ContractPage() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
 
-  // Generate a persistent simulated contract ID on the client to avoid SSR hydration mismatches
-  const [contractId, setContractId] = useState("");
-
-  useEffect(() => {
+  // Generate a persistent simulated contract ID if none exists
+  const [contractId, setContractId] = useState(() => {
     const rand = Math.floor(100000 + Math.random() * 900000);
-    setContractId(`LNS-2026-${rand}`);
-  }, []);
+    return `LNS-2026-${rand}`;
+  });
 
   // Load signed state from localStorage — auto-complete contract if returning from Stripe
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
-        const params = new URLSearchParams(window.location.search);
-        const success = params.get("success");
-        const urlContractId = params.get("contractId");
-        const urlEmail = params.get("email");
-
-        if (success === "true") {
-          localStorage.removeItem("lensly_signed_contract");
-          
-          if (urlContractId && urlEmail) {
-            getPublicContractDetails({ data: { contractId: urlContractId, email: urlEmail } })
-              .then((sub: any) => {
-                if (sub) {
-                  const data = {
-                    signed: true,
-                    fullName: sub.full_name,
-                    email: sub.email,
-                    signedAt: sub.created_at || new Date().toISOString(),
-                    contractId: sub.contract_id,
-                    signatureType: sub.signature_type as any,
-                    signatureData: sub.signature_data,
-                    paymentMethod: sub.payment_method,
-                    maskedIban: sub.masked_iban || "Stripe Card Payment",
-                  };
-                  localStorage.setItem("lensly_signed_contract", JSON.stringify(data));
-                  setSignedData(data);
-                }
-              })
-              .catch(console.error);
-          }
-        } else {
-          // If already signed, restore the signed view
-          const saved = localStorage.getItem("lensly_signed_contract");
-          if (saved) {
-            setSignedData(JSON.parse(saved));
-            return;
-          }
+        // If already signed, restore the signed view
+        const saved = localStorage.getItem("lensly_signed_contract");
+        if (saved) {
+          setSignedData(JSON.parse(saved));
+          return;
         }
 
         // Check for pending details saved before Stripe redirect
@@ -139,66 +105,23 @@ function ContractPage() {
         setContractId(parsedPending.contractId);
         setPendingDetails(parsedPending as any);
 
-        // If the customer paid via Stripe card/wallet, auto-generate the signed contract
+        // If the customer paid via Stripe card, auto-generate the signed contract
         // so they land directly on the ready-to-download screen
-        if ((parsedPending.paymentMethod === "card" || parsedPending.paymentMethod === "wallet") && parsedPending.fullName && parsedPending.email) {
+        if (parsedPending.paymentMethod === "card" && parsedPending.fullName && parsedPending.email) {
           const autoSignedData = {
             signed: true,
             fullName: parsedPending.fullName,
             email: parsedPending.email,
             signedAt: new Date().toISOString(),
             contractId: parsedPending.contractId,
-            signatureType: (parsedPending.signatureType || "type") as any,
-            signatureData: parsedPending.signatureData || parsedPending.fullName,
-            paymentMethod: parsedPending.paymentMethod,
+            signatureType: "type" as const,
+            signatureData: parsedPending.fullName, // typed name as electronic signature
+            paymentMethod: "card" as const,
             maskedIban: "Stripe Card Payment",
           };
           localStorage.removeItem("lensly_pending_contract");
           localStorage.setItem("lensly_signed_contract", JSON.stringify(autoSignedData));
           setSignedData(autoSignedData);
-
-          // Update server database status to 'active'
-          const params = new URLSearchParams(window.location.search);
-          const sessionId = params.get("session_id");
-          if (sessionId) {
-            confirmStripeSession({ data: { sessionId } })
-              .then((updatedRecord) => {
-                console.log("Stripe payment confirmed in database:", updatedRecord);
-              })
-              .catch((err) => {
-                console.error("Stripe session verification failed, using fallback:", err);
-                clientConfirmPayment({
-                  data: {
-                    contractId: parsedPending!.contractId,
-                    email: parsedPending!.email,
-                    paymentMethod: "wallet" as const,
-                  }
-                }).catch(console.error);
-              });
-          } else {
-            clientConfirmPayment({
-              data: {
-                contractId: parsedPending.contractId,
-                email: parsedPending.email,
-                paymentMethod: "wallet" as const,
-              }
-            }).catch(console.error);
-          }
-
-          // Fire Meta Pixel Purchase event — this is where the browser lands after Stripe
-          if (typeof window !== "undefined" && (window as any).fbq) {
-            const testCode = sessionStorage.getItem("meta_test_event_code");
-            const payload: Record<string, any> = {
-              value: 29.00,
-              currency: "EUR",
-              page_path: window.location.pathname,
-              page_location: window.location.href,
-            };
-            if (testCode) {
-              payload.test_event_code = testCode;
-            }
-            (window as any).fbq("track", "Purchase", payload);
-          }
         }
       } catch (e) {
         console.error("Failed to load signed contract", e);
@@ -463,21 +386,19 @@ function ContractPage() {
         <Nav />
         <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
           {/* Preview Warning Banner */}
-          {!signedData && (
-            <div className="max-w-2xl mx-auto mb-8 rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-amber-700 dark:text-amber-400 flex items-start gap-2.5 leading-relaxed no-print">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-bold">{t("Contract Preview Mode")}</p>
-                <p className="mt-1">
-                  {t("This standalone page is for reviewing and previewing the contract layout only. Signing here will not start an active subscription or trigger payments. To complete a real subscription, please go to the")}{" "}
-                  <Link to="/checkout" className="underline font-semibold hover:text-amber-800 dark:hover:text-amber-300">
-                    {t("Checkout Page")}
-                  </Link>
-                  .
-                </p>
-              </div>
+          <div className="max-w-2xl mx-auto mb-8 rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-amber-700 dark:text-amber-400 flex items-start gap-2.5 leading-relaxed no-print">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold">{t("Contract Preview Mode")}</p>
+              <p className="mt-1">
+                {t("This standalone page is for reviewing and previewing the contract layout only. Signing here will not start an active subscription or trigger payments. To complete a real subscription, please go to the")}{" "}
+                <Link to="/checkout" className="underline font-semibold hover:text-amber-800 dark:hover:text-amber-300">
+                  {t("Checkout Page")}
+                </Link>
+                .
+              </p>
             </div>
-          )}
+          </div>
 
           {/* Header */}
           <div className="text-center mb-10">
@@ -509,6 +430,81 @@ function ContractPage() {
                 {t("A copy of your signed agreement has been certified and saved.")}
               </p>
 
+              {/* Certificate Block */}
+              <div className="mt-8 border border-border/80 rounded-xl bg-muted/20 p-5 sm:p-8 text-left relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-3 text-[10px] uppercase font-bold tracking-widest text-emerald-600/20 pointer-events-none select-none">
+                  {t("Verified Secure")}
+                </div>
+
+                <div className="grid gap-y-4 sm:grid-cols-2 sm:gap-x-8 text-xs">
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                      {t("Contract Identification")}
+                    </span>
+                    <span className="font-mono text-foreground font-semibold block mt-0.5">
+                      {signedData.contractId}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                      {t("Date & Time of Signature")}
+                    </span>
+                    <span className="text-foreground block mt-0.5">
+                      {new Date(signedData.signedAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                      {t("Subscriber Name")}
+                    </span>
+                    <span className="text-foreground font-medium block mt-0.5">
+                      {signedData.fullName}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                      {t("Registered Email")}
+                    </span>
+                    <span className="text-foreground block mt-0.5">{signedData.email}</span>
+                  </div>
+                  {signedData.paymentMethod && (
+                    <div>
+                      <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block">
+                        {t("Payment Method")}
+                      </span>
+                      <span className="text-foreground block mt-0.5 font-medium">
+                        {signedData.maskedIban || t("Stripe Card Payment")}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Signature Render */}
+                <div className="mt-6 border-t border-border pt-5">
+                  <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider block mb-2">
+                    {t("Authorized Electronic Signature")}
+                  </span>
+
+                  <div className="border border-dashed border-border/80 bg-card rounded-lg h-24 flex items-center justify-center relative overflow-hidden p-2">
+                    {signedData.signatureType === "draw" ? (
+                      <img
+                        src={signedData.signatureData}
+                        alt="Signature"
+                        className="max-h-full max-w-full object-contain pointer-events-none select-none"
+                      />
+                    ) : (
+                      <span className="font-serif italic text-3xl text-primary font-medium tracking-wide">
+                        {signedData.signatureData}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex justify-between items-center mt-2 text-[9px] font-mono text-muted-foreground">
+                    <span>{t("E-SIGNATURE COMPLIANT (eIDAS REGULATION)")}</span>
+                    <span>SHA-256: {signedData.contractId.replace("-", "")}FD3A...</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Action Buttons */}
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 <button
@@ -521,7 +517,7 @@ function ContractPage() {
                   ) : (
                     <Download className="w-4 h-4" />
                   )}
-                  {downloadingPDF ? t("Downloading...") : t("Download Signed Contract (PDF)")}
+                  {downloadingPDF ? t("Downloading...") : t("Print or Save Contract")}
                 </button>
                 <button
                   onClick={handleReset}
@@ -532,10 +528,10 @@ function ContractPage() {
                 </button>
               </div>
 
-              {/* Full visible contract — shown in signed state and also used as PDF source */}
+              {/* Printable Document Block wrapper */}
               <div
                 id="printable-contract-document"
-                className="mt-8 border border-border/80 rounded-xl bg-muted/20 p-5 text-left text-xs space-y-4"
+                className="hidden"
               >
                 <div className="text-center pb-4 border-b border-border/60">
                   <h2 className="font-display font-bold text-foreground uppercase tracking-widest text-sm">
@@ -550,7 +546,7 @@ function ContractPage() {
                 </div>
 
                 {/* Certified Metadata Grid */}
-                <div className="grid gap-y-3.5 grid-cols-2 gap-x-8 border-b border-border/65 pb-4">
+                <div className="grid gap-y-3.5 grid-cols-2 gap-x-8 border-b border-border/65 pb-4 mt-4">
                   <div>
                     <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider block">
                       {t("Contract ID")}
@@ -593,9 +589,42 @@ function ContractPage() {
                   )}
                 </div>
 
-                {/* Full 18-clause GTC — identical to checkout, language-aware */}
-                <div className="pb-4 border-b border-border/65">
-                  <ContractBody contractId={signedData.contractId} />
+                {/* GTC Full Agreement Text embedded inside the PDF print block */}
+                <div className="space-y-4 text-[10px] leading-relaxed text-muted-foreground/90 pb-4 border-b border-border/65 mt-4 select-text">
+                  <h3 className="font-bold text-foreground text-[10px] uppercase tracking-wider text-center">
+                    {t("AGREEMENT TERMS & CONDITIONS")}
+                  </h3>
+
+                  <p>
+                    <strong>{t("1. Contracting Parties:")}</strong>{" "}
+                    {t(
+                      "This agreement is entered into between Sikder LLC, Germany (the Provider) and the subscriber (the Customer) whose signature is attached hereto.",
+                    )}
+                  </p>
+                  <p>
+                    <strong>{t("2. Subscription Scope:")}</strong>{" "}
+                    {t(
+                      "The subscription provides 1 complete custom-made pair of prescription glasses per contract year at €29.00/month. The plan includes up to 3 replacement requests per subscription year for damage, loss, or prescription update, subject to the applicable plan terms.",
+                    )}
+                  </p>
+                  <p>
+                    <strong>{t("3. Term & Cancellation:")}</strong>{" "}
+                    {t(
+                      "This contract features a mandatory 12-month fixed minimum term. Ordinary cancellation prior to the end of the 12th month is excluded. Thereafter, the contract automatically converts into rolling monthly renewals cancelable at any time with 30 days notice.",
+                    )}
+                  </p>
+                  <p>
+                    <strong>{t("4. Medical MDR Device:")}</strong>{" "}
+                    {t(
+                      "Prescription lenses are Class I Medical Devices under European Medical Device Regulation (EU MDR). Lenses and frames carry CE conformity certifications.",
+                    )}
+                  </p>
+                  <p>
+                    <strong>{t("5. Withdrawal Waiver:")}</strong>{" "}
+                    {t(
+                      "Under § 312g Abs. 2 Nr. 1 BGB, the statutory 14-day consumer right of withdrawal does not apply to goods custom-made to customer specifications. Right of withdrawal regarding individual custom glass routing expires prematurely once production begins.",
+                    )}
+                  </p>
                 </div>
 
                 {/* Digital Signature block */}
@@ -647,8 +676,83 @@ function ContractPage() {
                   </div>
                 </div>
 
-                {/* Scrollable Contract Viewer — same 18-clause contract, language-aware */}
-                <ContractBody contractId={contractId} scrollable />
+                {/* Scrollable Document Content */}
+                <div className="p-6 overflow-y-auto space-y-5 text-sm leading-relaxed text-muted-foreground/90 font-sans custom-scrollbar select-text">
+                  <div className="text-center border-b border-border pb-4 mb-4">
+                    <h2 className="font-display font-bold text-foreground uppercase tracking-widest text-sm">
+                      {t("LENSLY CARE VISION SUBSCRIPTION AGREEMENT")}
+                    </h2>
+                    <p className="text-[10px] text-muted-foreground/80 tracking-wide mt-1">
+                      {t("Contract Reference")}: {contractId}
+                    </p>
+                  </div>
+
+                  <section>
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
+                      {t("1. Contracting Parties")}
+                    </h3>
+                    <p className="text-xs">
+                      {t(
+                        "This legally binding agreement is entered into between Lensly (hereinafter 'Lensly') and the subscriber (hereinafter 'the Customer') whose custom information and digital signatures are attached hereto.",
+                      )}
+                    </p>
+                  </section>
+
+                  <section>
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
+                      {t("2. Minimum Contract Term & Renewal")}
+                    </h3>
+                    <p className="text-xs">
+                      {t(
+                        "The Lensly subscription has a mandatory minimum contract duration of twelve (12) months (1 year) from the date of activation. Upon completion of the initial 12-month period, the subscription will automatically renew on a month-to-month basis at the same rate, unless cancelled by the Customer with a minimum of thirty (30) days notice prior to the end of the current billing cycle.",
+                      )}
+                    </p>
+                  </section>
+
+                  <section>
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
+                      {t("3. Subscription Fee & Billing")}
+                    </h3>
+                    <p className="text-xs">
+                      {t(
+                        "The subscription fee is €29/month. Payments are processed monthly on a recurring basis via Stripe using the payment details provided at checkout. The fee includes all coatings, prescription lenses, frame procurement, and shipping costs. No additional or hidden surcharges will apply.",
+                      )}
+                    </p>
+                  </section>
+
+                  <section>
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
+                      {t("4. Deliverables & Replacements")}
+                    </h3>
+                    <p className="text-xs">
+                      {t(
+                        "The subscription includes the provision of one (1) complete custom prescription glasses pair per contract year. Furthermore, the plan covers a quota of up to three (3) replacement requests per contract year in the event of accidental breakage, severe scratches, or verified changes to the Customer's prescription values, subject to applicable plan terms.",
+                      )}
+                    </p>
+                  </section>
+
+                  <section>
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
+                      {t("5. Custom Goods & Refunds")}
+                    </h3>
+                    <p className="text-xs">
+                      {t(
+                        "As all prescription optical lenses are custom crafted to individual health specifications, the contract is immediately initiated. Refunds are not available once custom lens manufacturing has begun. Corrective replacements for verified manufacturing defects are provided in accordance with statutory warranty provisions.",
+                      )}
+                    </p>
+                  </section>
+
+                  <section className="border-t border-border/60 pt-4">
+                    <h3 className="font-bold text-foreground text-xs uppercase tracking-wider mb-1.5">
+                      {t("6. Consent to Electronic Signatures")}
+                    </h3>
+                    <p className="text-xs italic">
+                      {t(
+                        "By typing or drawing your signature in this document, you explicitly consent to transact business electronically and agree that your electronic signature carries the full legal weight and binding nature of a handwritten physical signature under standard global electronic transaction acts.",
+                      )}
+                    </p>
+                  </section>
+                </div>
 
                 <div className="bg-muted/30 border-t border-border/80 px-5 py-3 text-center text-[10px] text-muted-foreground flex justify-between items-center">
                   <span>© 2026 Lensly Care AG</span>
@@ -790,6 +894,8 @@ function ContractPage() {
                         <div className="border border-border rounded-lg bg-background overflow-hidden relative touch-none">
                           <canvas
                             ref={canvasRef}
+                            width={400}
+                            height={140}
                             className="w-full bg-background block cursor-crosshair"
                             onMouseDown={startDrawing}
                             onMouseMove={draw}

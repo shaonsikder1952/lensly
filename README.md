@@ -4,7 +4,7 @@
 
 ### Prescription Eyewear on Subscription
 
-**€29/month · Fresh lenses every 6 months · 2 free replacements/year**
+**€29/month · New complete pair every 12 months · Up to 3 replacement requests/year**
 
 [Features](#-features) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [Documentation](#-documentation)
 
@@ -14,26 +14,26 @@
 
 ##  About Lensly
 
-Lensly is a modern direct-to-lab vision care subscription service that revolutionizes how people access prescription eyewear. Instead of paying €1,000+ upfront for glasses that quickly become outdated, Lensly provides an affordable monthly subscription model with continuous care.
+Lensly is a modern vision care subscription service that changes how people access prescription eyewear. Customers can discover any frame elsewhere, submit a link or photo, and receive pre-payment verification of frame compatibility and prescription parameters before activating their subscription.
 
 ### 💡 Why Lensly?
 
-|                           | Traditional Optician      | Lensly Care              |
+|                           | Traditional Retail        | Lensly Care              |
 | ------------------------- | ------------------------- | ------------------------ |
-|  **Cost**               | €1,200+ one-time          | €39/month (€468/year)    |
-|  **Fresh Lenses**       | Every 2–3 years           | Every 6 months           |
-|  **Replacements**      | Full price each time      | 2 free per year          |
-|  **Shipping**           | In-store collection       | Free EU delivery         |
-|  **Minimum Contract**   | N/A                       | 1 year                   |
+|  **Cost Structure**       | High upfront retail price | €29/month (€348 1st year)|
+|  **Annual Renewal**       | Repurchase at full retail | New complete pair yearly |
+|  **Replacement Quota**    | Full retail price each time| Up to 3 requests / year  |
+|  **Pre-Payment Review**   | Often store-visit dependent| Free online pre-check    |
+|  **Minimum Contract**     | N/A                       | 12 months                |
 
 ###  Features
 
--  **Regular Updates**: Get new lenses every 6 months to match your current prescription
--  **Damage Protection**: Two free replacements annually for lost, broken, or scratched glasses
--  **EU-Wide Shipping**: Free delivery across the European Union
--  **Flexible Payments**: Monthly subscription via Stripe
--  **Style Variety**: Choose from multiple frame styles and colors
--  **Modern Platform**: Sleek, responsive web application built with cutting-edge technology
+-  **Annual Eyewear Update**: Receive a new complete prescription pair every contract year
+-  **Continuous Care**: Up to 3 replacement requests per year for breakage, severe scratches, or power shifts per plan terms
+-  **EU-Wide Shipping**: Insured shipping across the European Union
+-  **Flexible Payments**: Monthly subscription via SEPA Lastschrift or Stripe
+-  **Pre-Payment Verification**: Check frame availability and optical parameters before payment
+-  **Modern Platform**: Sleek, secure web application with Argon2id authentication and strict customer privacy isolation
 
 ---
 
@@ -104,17 +104,7 @@ Lensly is a modern direct-to-lab vision care subscription service that revolutio
 3. **Set up environment variables**
    ```bash
    cp .env.example .env
-   # Edit .env with your Stripe live keys
-   ```
-   
-   **Important for lensly.care deployment:**
-   - Get your Stripe Live Keys from: https://dashboard.stripe.com/apikeys
-   - Update `.env` file with your actual keys
-   - See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions
-   
-   To verify your environment setup:
-   ```bash
-   node check-env.js
+   # Edit .env with your configuration
    ```
 
 4. **Start the development server**
@@ -294,35 +284,6 @@ bun test
 # Run tests in watch mode
 bun test --watch
 ```
-
----
-
-## 👥 Contributors
-
-Thanks to these amazing people who have contributed to Lensly:
-
-<table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/shaonsikder1952">
-        <img src="https://github.com/shaonsikder1952.png" width="80px;" alt="Shaon Sikder"/>
-        <br />
-        <sub><b>Shaon Sikder</b></sub>
-      </a>
-      <br />
-      <sub>Project Owner</sub>
-    </td>
-    <td align="center">
-      <a href="https://github.com/aroyslipk">
-        <img src="https://github.com/aroyslipk.png" width="80px;" alt="Anik Roy"/>
-        <br />
-        <sub><b>Anik Roy</b></sub>
-      </a>
-      <br />
-      <sub>Developer</sub>
-    </td>
-  </tr>
-</table>
 
 ---
 

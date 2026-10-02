@@ -38,7 +38,7 @@ function Datenschutz() {
               <div className="font-medium text-foreground pl-4 border-l-2 border-primary/20">
                 <p>Sikder LLC</p>
                 <p>Germany</p>
-                <p>{t("E-Mail:")} hello@lensly.care</p>
+                <p>{t("E-Mail:")} support@lensly.care</p>
               </div>
             </section>
 
@@ -119,10 +119,10 @@ function Datenschutz() {
               <p>
                 {t("Wenn Sie Auskunft über Ihre Daten wünschen oder die Löschung beantragen möchten, schreiben Sie uns an:")}{" "}
                 <a
-                  href="mailto:hello@lensly.care"
+                  href="mailto:support@lensly.care"
                   className="text-primary hover:underline font-medium"
                 >
-                  hello@lensly.care
+                  support@lensly.care
                 </a>
               </p>
             </section>

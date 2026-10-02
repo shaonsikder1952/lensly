@@ -1,16 +1,58 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useLanguage, Language } from "../lib/i18n";
+import { CURRENT_PLAN, getAnnualTotal, getDailyEquivalent, formatEur } from "../lib/pricing";
+import { trackEvent } from "../lib/analytics";
+import { FrameRequestModal } from "../components/frame-request-modal";
+import { FrameStatusTracker } from "../components/frame-status-tracker";
+import { VirtualTryOnPreview } from "../components/virtual-tryon-preview";
+import {
+  ShieldCheck,
+  Check,
+  CheckCircle2,
+  ArrowRight,
+  Clock,
+  Sparkles,
+  Glasses,
+  FileText,
+  Lock,
+  ChevronDown,
+  ExternalLink,
+  Eye,
+  HelpCircle,
+  Send,
+  Package,
+  RefreshCw,
+  Search,
+  Building2,
+  Phone,
+  Mail,
+  X,
+  Copy,
+  User,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Lensly | One plan. €29/month. New lenses every year." },
+      {
+        title: "Lensly | Found a frame you love? Send it to Lensly",
+      },
       {
         name: "description",
         content:
-          "One care plan: new prescription glasses every year + 3 free replacements a year, for €29/month. No retail markup.",
+          "Discover any frame elsewhere, send us the link or screenshot, and we'll check compatibility and your prescription requirements before you pay. €29/month.",
       },
+      {
+        property: "og:title",
+        content: "Lensly — Prescription Eyewear Subscription with Pre-Payment Verification",
+      },
+      {
+        property: "og:description",
+        content:
+          "Share a frame link or screenshot and we'll check availability, compatibility and your prescription requirements before you pay.",
+      },
+      { property: "og:type", content: "website" },
     ],
   }),
   component: Index,
@@ -18,110 +60,170 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { t } = useLanguage();
-  const [activeSection, setActiveSection] = useState("hero");
-
-  // Contact modal state
+  const [isFrameModalOpen, setIsFrameModalOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
 
   useEffect(() => {
-    const sections = ["hero", "plan", "faq"];
-    const observers = sections.map((id) => {
-      const el = document.getElementById(id);
-      if (!el) return null;
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setActiveSection(id);
-          }
-        },
-        { threshold: 0.3, rootMargin: "-20% 0px -20% 0px" }
-      );
-      observer.observe(el);
-      return { observer, el };
-    });
-
-    return () => {
-      observers.forEach((obs) => {
-        if (obs) obs.observer.unobserve(obs.el);
-      });
-    };
+    trackEvent("page_view", { page: "homepage" });
   }, []);
 
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
+  const openFrameModal = (source: string) => {
+    trackEvent("frame_request_started", { source });
+    setIsFrameModalOpen(true);
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground relative">
-      <Nav onContactClick={() => setIsContactOpen(true)} />
-      <Hero />
-      <Plan />
-      <ProductGallery />
-      <Faq />
-      <Reviews />
-      <Footer />
+    <div className="min-h-screen bg-background text-foreground relative selection:bg-primary/20 selection:text-primary">
+      {/* 1. Announcement / Trust Bar */}
+      <TrustBar />
 
-      {/* Contact Modal Panel */}
+      {/* 2. Navbar */}
+      <Nav
+        onOpenFrameModal={() => openFrameModal("navbar_cta")}
+        onContactClick={() => setIsContactOpen(true)}
+      />
+
+      <main>
+        {/* 3. Hero Section */}
+        <Hero onOpenFrameModal={() => openFrameModal("hero_primary_cta")} />
+
+        {/* 4. Simple Explanation of Lensly Concept */}
+        <ConceptExplanation />
+
+        {/* 5. How It Works Timeline (6-Stage Journey) */}
+        <HowItWorksTimeline onOpenFrameModal={() => openFrameModal("timeline_cta")} />
+
+        {/* 6. Virtual Try-On Section */}
+        <VirtualTryOnPreview onOpenFrameModal={() => openFrameModal("vto_cta")} />
+
+        {/* Status Tracker: Real-Time Pipeline Lookup */}
+        <section id="tracking" className="py-12 md:py-16 border-b border-border/60 bg-background">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6">
+            <FrameStatusTracker />
+          </div>
+        </section>
+
+        {/* 9. Signature Frame Collection (Optional In-House Styles) */}
+        <ProductGallery onOpenFrameModal={() => openFrameModal("gallery_custom_request")} />
+
+        {/* 10. Transparent Pricing Section */}
+        <PricingSection />
+
+        {/* 11. What Is Included */}
+        <InclusionsSection />
+
+        {/* 12. Replacement & Service Coverage Explanation */}
+        <ReplacementCareSection />
+
+        {/* 13. Trust & Data Privacy Section */}
+        <TrustAndPrivacySection />
+
+        {/* 14. Partner Optical Lab Concept */}
+        <PartnerOpticianSection />
+
+        {/* 15. Truthful FAQ */}
+        <FaqSection />
+
+        {/* 16. Final CTA */}
+        <FinalCta onOpenFrameModal={() => openFrameModal("final_cta")} />
+      </main>
+
+      {/* Footer */}
+      <Footer onContactClick={() => setIsContactOpen(true)} />
+
+      {/* Interactive Modal: Send Your Frame & Prescription */}
+      <FrameRequestModal
+        isOpen={isFrameModalOpen}
+        onClose={() => setIsFrameModalOpen(false)}
+      />
+
+      {/* Direct Contact Modal */}
       {isContactOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/40 backdrop-blur-xs no-print">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/60 backdrop-blur-xs">
           <div className="fixed inset-0" onClick={() => setIsContactOpen(false)} />
-          
-          <div className="relative w-full max-w-xs rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-center">
+          <div className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-center z-10">
             <button
               onClick={() => setIsContactOpen(false)}
-              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground cursor-pointer"
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground cursor-pointer p-1"
               aria-label="Close modal"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
+              <X className="w-4 h-4" />
             </button>
 
             <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
+              <Mail className="w-6 h-6" />
             </div>
 
             <h3 className="font-display font-bold text-base text-foreground mb-1">
               {t("Contact Us")}
             </h3>
             <p className="text-xs text-muted-foreground mb-4">
-              {t("Have questions? Send us an email directly.")}
+              {t("Have questions about frame sourcing or prescription lenses? Our optical specialists reply within 24 hours.")}
             </p>
 
-            <div className="bg-muted/50 rounded-lg p-2.5 mb-4 border border-border/40 font-mono text-[13px] text-foreground font-semibold select-all break-all">
-              hello@lensly.care
+            <div className="bg-muted/40 rounded-lg p-2.5 mb-4 border border-border/60 font-mono text-xs text-foreground font-semibold select-all break-all">
+              support@lensly.care
             </div>
 
             <div className="flex flex-col gap-2">
               <a
-                href="mailto:hello@lensly.care"
-                className="w-full py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xs hover:bg-primary/95 transition text-center block cursor-pointer"
+                href="mailto:support@lensly.care?subject=Lensly%20Inquiry"
+                className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/95 transition text-center"
               >
                 {t("Send Email")}
               </a>
-              
               <button
+                type="button"
                 onClick={() => {
-                  navigator.clipboard.writeText("hello@lensly.care");
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 2000);
+                  navigator.clipboard.writeText("support@lensly.care");
+                  setCopiedEmail(true);
+                  setTimeout(() => setCopiedEmail(false), 2000);
                 }}
-                className="w-full py-2 rounded-lg border border-border bg-background text-foreground text-xs font-semibold hover:bg-muted transition cursor-pointer"
+                className="w-full py-2.5 rounded-lg border border-border bg-background text-foreground text-xs font-semibold hover:bg-muted transition flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                {copied ? t("Copied!") : t("Copy Email Address")}
+                {copiedEmail ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-primary" />
+                    <span>{t("Copied!")}</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>{t("Copy Email Address")}</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// -------------------------------------------------------------
+// SUBCOMPONENTS
+// -------------------------------------------------------------
+
+function TrustBar() {
+  const { t } = useLanguage();
+  return (
+    <div className="bg-primary text-primary-foreground text-[8.5px] sm:text-[10px] py-2 px-4 font-sans tracking-wider text-center uppercase font-semibold flex items-center justify-center gap-x-6 gap-y-1 flex-wrap border-b border-white/10 select-none">
+      <span className="flex items-center gap-1.5">
+        <ShieldCheck className="w-3 h-3 shrink-0" />
+        {t("Precision Lens Surfacing")}
+      </span>
+      <span className="hidden sm:inline opacity-30">•</span>
+      <span className="flex items-center gap-1.5">
+        <Eye className="w-3 h-3 shrink-0" />
+        {t("Free Pre-Payment Verification")}
+      </span>
+      <span className="hidden sm:inline opacity-30">•</span>
+      <span className="flex items-center gap-1.5">
+        <Package className="w-3 h-3 shrink-0" />
+        {t("Insured EU Shipping Included")}
+      </span>
     </div>
   );
 }
@@ -134,84 +236,105 @@ const languages = [
   { code: "it", name: "Italiano", flag: "🇮🇹" },
 ];
 
-export function Nav({ onContactClick }: { onContactClick?: () => void }) {
+export function Nav({
+  onOpenFrameModal,
+  onContactClick,
+}: {
+  onOpenFrameModal?: () => void;
+  onContactClick?: () => void;
+}) {
   const { lang, setLang, t } = useLanguage();
-  const [open, setOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const currentLang = languages.find((l) => l.code === lang) || languages[0];
 
-  const handleScrollTo = (id: string) => {
-    setMenuOpen(false);
-    if (window.location.pathname === "/") {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    } else {
-      window.location.href = `/#${id}`;
+  const handleNavScroll = (id: string) => {
+    setMobileMenuOpen(false);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-md">
-      {/* Sleek Trust & Announcement Bar */}
-      <div className="bg-primary text-primary-foreground text-[8.5px] sm:text-[9.5px] py-1.5 px-4 font-sans tracking-wider text-center uppercase font-bold flex items-center justify-center gap-x-6 gap-y-1 flex-wrap border-b border-white/10 select-none">
-        <span>{t("✓ CE Certified Lenses")}</span>
-        <span className="hidden sm:inline opacity-30">•</span>
-        <span>{t("✓ Free EU Shipping")}</span>
-        <span className="hidden sm:inline opacity-30">•</span>
-        <span>{t("✓ 14-Day Satisfaction Guarantee")}</span>
-      </div>
-
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2.5">
           <LensMark />
-          <span className="font-display text-[15px] font-semibold tracking-tight">Lensly</span>
+          <span className="font-display text-base font-bold tracking-tight text-foreground">
+            Lensly<span className="text-primary">.care</span>
+          </span>
         </Link>
 
+        {/* Desktop Quick Nav Links */}
+        <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-muted-foreground">
+          <button
+            onClick={() => handleNavScroll("concept")}
+            className="hover:text-foreground transition cursor-pointer"
+          >
+            {t("How it Works")}
+          </button>
+          <button
+            onClick={() => handleNavScroll("journey")}
+            className="hover:text-foreground transition cursor-pointer"
+          >
+            {t("Journey")}
+          </button>
+          <button
+            onClick={() => handleNavScroll("try-on")}
+            className="hover:text-foreground transition cursor-pointer"
+          >
+            {t("Try-On")}
+          </button>
+          <button
+            onClick={() => handleNavScroll("pricing")}
+            className="hover:text-foreground transition cursor-pointer"
+          >
+            {t("Pricing")}
+          </button>
+          <button
+            onClick={() => handleNavScroll("tracking")}
+            className="hover:text-foreground transition cursor-pointer"
+          >
+            {t("Track Request")}
+          </button>
+          <button
+            onClick={() => handleNavScroll("faq")}
+            className="hover:text-foreground transition cursor-pointer"
+          >
+            {t("FAQ")}
+          </button>
+        </nav>
+
+        {/* Right Action Stack */}
         <div className="flex items-center gap-2.5">
-          {/* Language Dropdown Selector */}
+          {/* Language Selector */}
           <div className="relative">
             <button
-              onClick={() => setOpen(!open)}
+              onClick={() => setLangOpen(!langOpen)}
               aria-label={t("Select Language")}
-              aria-haspopup="listbox"
-              aria-expanded={open}
-              className="flex items-center gap-1.5 rounded-md border border-border/80 bg-background/50 px-2.5 py-1.5 text-xs font-semibold text-foreground/80 transition hover:bg-muted/80 hover:text-foreground cursor-pointer"
+              className="flex items-center gap-1.5 rounded-lg border border-border/80 bg-background/50 px-2.5 py-1.5 text-xs font-semibold text-foreground/80 hover:bg-muted transition cursor-pointer"
             >
               <span>{currentLang.flag}</span>
-              <span className="uppercase">{currentLang.code}</span>
-              <svg
-                className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${
-                  open ? "rotate-180" : ""
-                }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
+              <span className="uppercase text-[11px]">{currentLang.code}</span>
+              <ChevronDown className="w-3 h-3 text-muted-foreground" />
             </button>
 
-            {open && (
+            {langOpen && (
               <>
-                <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-                <div
-                  role="listbox"
-                  className="absolute right-0 mt-1.5 z-50 w-36 rounded-lg border border-border bg-card/95 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in-50 slide-in-from-top-1 duration-150"
-                >
+                <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
+                <div className="absolute right-0 mt-1.5 z-50 w-36 rounded-xl border border-border bg-card p-1.5 shadow-xl animate-in fade-in-50 duration-150">
                   {languages.map((l) => (
                     <button
                       key={l.code}
-                      role="option"
-                      aria-selected={lang === l.code}
                       onClick={() => {
                         setLang(l.code as Language);
-                        setOpen(false);
+                        setLangOpen(false);
                       }}
-                      className={`flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors hover:bg-muted cursor-pointer ${
+                      className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs font-medium transition cursor-pointer ${
                         lang === l.code
                           ? "bg-muted text-primary font-semibold"
-                          : "text-foreground/90"
+                          : "text-foreground hover:bg-muted/50"
                       }`}
                     >
                       <span>{l.flag}</span>
@@ -223,108 +346,81 @@ export function Nav({ onContactClick }: { onContactClick?: () => void }) {
             )}
           </div>
 
-          {/* Subscribe CTA Button (Laptop & Mobile) */}
+          {/* Primary Navbar Action CTA: Portal */}
           <Link
-            to="/"
-            hash="plan"
-            onClick={(e) => {
-              if (window.location.pathname === "/") {
-                e.preventDefault();
-                const el = document.getElementById("plan");
-                if (el) el.scrollIntoView({ behavior: "smooth" });
-              }
-            }}
-            className="rounded-md bg-primary px-3 py-1.5 text-[10.5px] sm:text-xs font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            to="/dashboard"
+            className="rounded-lg bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/95 transition cursor-pointer flex items-center gap-1.5"
           >
-            <span className="hidden xs:inline">{t("Subscribe")}</span>
-            <span className="xs:hidden">{t("Subscribe")}</span>
+            <User className="w-3.5 h-3.5" />
+            <span>{t("Portal")}</span>
           </Link>
 
-          {/* Hamburger Menu Button (Laptop & Mobile) */}
-          <div className="relative">
+          {/* Mobile Hamburger Menu */}
+          <div className="relative md:hidden">
             <button
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle navigation menu"
-              className="flex justify-center items-center w-8.5 h-8.5 rounded-md border border-border/80 bg-background/50 hover:bg-muted transition cursor-pointer text-foreground"
+              className="w-8.5 h-8.5 rounded-lg border border-border/80 bg-background/50 flex items-center justify-center text-foreground hover:bg-muted transition cursor-pointer"
             >
-              {menuOpen ? (
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              ) : (
-                <svg
-                  width="18"
-                  height="14"
-                  viewBox="0 0 18 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1.5 1.5h15M1.5 7h15M1.5 12.5h15"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              )}
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <MenuIcon />}
             </button>
 
-            {menuOpen && (
+            {mobileMenuOpen && (
               <>
-                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-                <div className="absolute right-0 mt-1.5 z-50 w-44 rounded-lg border border-border bg-card/95 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in-50 slide-in-from-top-1 duration-150 flex flex-col gap-0.5">
+                <div className="fixed inset-0 z-40" onClick={() => setMobileMenuOpen(false)} />
+                <div className="absolute right-0 mt-1.5 z-50 w-48 rounded-xl border border-border bg-card p-1.5 shadow-xl flex flex-col gap-0.5 text-xs font-medium">
                   <button
-                    onClick={() => handleScrollTo("hero")}
-                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
+                    onClick={() => handleNavScroll("concept")}
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted text-foreground cursor-pointer"
                   >
-                    {t("Home")}
+                    {t("The Lensly Concept")}
                   </button>
                   <button
-                    onClick={() => handleScrollTo("plan")}
-                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
+                    onClick={() => handleNavScroll("journey")}
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted text-foreground cursor-pointer"
                   >
-                    {t("Pricing")}
+                    {t("Journey")}
                   </button>
                   <button
-                    onClick={() => handleScrollTo("styles")}
-                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
+                    onClick={() => handleNavScroll("try-on")}
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted text-foreground cursor-pointer"
                   >
-                    {t("Frames")}
+                    {t("Try-On")}
                   </button>
                   <button
-                    onClick={() => handleScrollTo("reviews")}
-                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
+                    onClick={() => handleNavScroll("pricing")}
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted text-foreground cursor-pointer"
                   >
-                    {t("Feedbacks")}
+                    {t("Pricing & Coverage")}
                   </button>
                   <button
-                    onClick={() => handleScrollTo("faq")}
-                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-foreground/80 hover:bg-muted cursor-pointer transition-colors"
+                    onClick={() => handleNavScroll("tracking")}
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted text-foreground cursor-pointer"
+                  >
+                    {t("Track Request")}
+                  </button>
+                  <button
+                    onClick={() => handleNavScroll("faq")}
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted text-foreground cursor-pointer"
                   >
                     {t("FAQ")}
                   </button>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-left px-3 py-2 rounded-lg bg-primary/10 text-primary font-semibold flex items-center gap-2 border-t border-border/40 mt-1"
+                  >
+                    <User className="w-3.5 h-3.5" />
+                    <span>{t("Portal")}</span>
+                  </Link>
                   <button
                     onClick={() => {
-                      setMenuOpen(false);
-                      if (onContactClick) {
-                        onContactClick();
-                      } else {
-                        window.location.href = "mailto:hello@lensly.care";
-                      }
+                      setMobileMenuOpen(false);
+                      if (onContactClick) onContactClick();
                     }}
-                    className="flex w-full items-center rounded-md px-3 py-2.5 text-left text-xs font-semibold text-primary hover:bg-muted cursor-pointer transition-colors"
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted text-muted-foreground font-medium cursor-pointer"
                   >
-                    {t("Contact Us")}
+                    {t("Contact Support")}
                   </button>
                 </div>
               </>
@@ -336,175 +432,145 @@ export function Nav({ onContactClick }: { onContactClick?: () => void }) {
   );
 }
 
-export function LensMark() {
+function MenuIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-      <circle
-        cx="11"
-        cy="16"
-        r="7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        className="text-primary"
-      />
-      <circle
-        cx="22"
-        cy="16"
-        r="7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        className="text-primary"
-      />
-      <path d="M18 16h-3" stroke="currentColor" strokeWidth="1.5" className="text-primary" />
+    <svg width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <line x1="1.5" y1="2" x2="16.5" y2="2" />
+      <line x1="1.5" y1="7" x2="16.5" y2="7" />
+      <line x1="1.5" y1="12" x2="16.5" y2="12" />
     </svg>
   );
 }
 
-function Hero() {
-  const { t } = useLanguage();
+export function LensMark() {
   return (
-    <section id="hero" className="relative overflow-hidden border-b border-border/60">
-      {/* Decorative background layers */}
-      <div className="pointer-events-none absolute inset-0 grid-bg opacity-50" />
-      <div className="pointer-events-none absolute left-1/2 top-[62%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 radial-glow" />
+    <svg width="22" height="22" viewBox="0 0 32 32" fill="none" className="shrink-0">
+      <circle cx="11" cy="16" r="7" stroke="currentColor" strokeWidth="1.6" className="text-primary" />
+      <circle cx="22" cy="16" r="7" stroke="currentColor" strokeWidth="1.6" className="text-primary" />
+      <path d="M18 16h-3" stroke="currentColor" strokeWidth="1.6" className="text-primary" />
+    </svg>
+  );
+}
 
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 pt-16 pb-16 md:pt-28 md:pb-28">
-        {/* Two-column grid on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 items-center">
-          {/* Left Column: Headline, Description, CTAs, and Trust Badges */}
-          <div className="md:col-span-7 flex flex-col items-center text-center md:items-start md:text-left">
-            <p className="label-mono animate-fade-in text-[11px] uppercase tracking-[0.2em] text-primary">
-              {t("One plan · €29 / month")}
-            </p>
-            <h1 className="animate-fade-in mt-3 font-display text-3xl sm:text-4xl md:text-[54px] font-semibold leading-[1.1] md:leading-[1.05] tracking-tight text-foreground">
-              {t("Precision vision care, renewed every year")}{" "}
-              <span className="relative inline-block">
-                <span className="relative text-primary font-bold">
-                  €29
-                </span>
-              </span>
+function Hero({ onOpenFrameModal }: { onOpenFrameModal: () => void }) {
+  const { t } = useLanguage();
+
+  const handleExploreClick = () => {
+    trackEvent("hero_cta_click", { action: "explore" });
+    const el = document.getElementById("concept");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-background via-background to-[var(--mint)]/20">
+      <div className="pointer-events-none absolute inset-0 grid-bg opacity-35" />
+
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 pt-16 pb-16 md:pt-24 md:pb-24">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14 items-center">
+          {/* Left Hero Content */}
+          <div className="md:col-span-7 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-wider bg-primary/10 text-primary font-semibold mb-4 border border-primary/20">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{t("Pre-Payment Verification · German Vision Care")}</span>
+            </div>
+
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-[1.1]">
+              {t("Found a frame you love?")}{" "}
+              <span className="shimmer-text">{t("Send it to Lensly.")}</span>
             </h1>
-            <style dangerouslySetInnerHTML={{__html: `
-            `}} />
 
-            {/* Key Benefits - 3 Points */}
-            <div className="animate-fade-in mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] sm:text-sm text-muted-foreground">
-              <div className="flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="font-medium">1 Free Pair/Yr</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="font-medium">3 Replacements</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="font-medium">Flat €29/Mo</span>
-              </div>
-            </div>
-
-            <p className="animate-fade-in mt-5 text-[13px] sm:text-sm md:text-[16px] text-muted-foreground leading-relaxed max-w-lg">
-              {t("Every year, a new pair of prescription glasses - delivered straight to your door. Break them? Three free replacements included.")}
+            <p className="mt-5 text-sm sm:text-base text-muted-foreground leading-relaxed max-w-xl">
+              {t("Share a frame link or screenshot and we’ll check availability, compatibility and your prescription requirements before you pay.")}
             </p>
 
-            {/* Premium CTA Buttons */}
-            <div className="animate-fade-in mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-              <a
-                href="/checkout"
-                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-7 py-4 text-xs sm:text-sm font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.46_0.07_210/0.6)] transition hover:opacity-95 hover:shadow-[0_12px_32px_-8px_oklch(0.46_0.07_210/0.7)] hover:scale-[1.01] active:scale-[0.99]"
+            {/* CTAs */}
+            <div className="mt-8 flex flex-col sm:flex-row items-center gap-3.5 justify-center md:justify-start">
+              <button
+                type="button"
+                onClick={() => {
+                  trackEvent("hero_cta_click", { action: "check_frame_prescription" });
+                  onOpenFrameModal();
+                }}
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-xs sm:text-sm shadow-md hover:bg-primary/95 transition flex items-center justify-center gap-2 cursor-pointer group"
               >
-                {t("Start for €29/mo")}
-                <span className="transition-transform group-hover:translate-x-0.5">→</span>
-              </a>
-              <a
-                href="/#plan"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-primary/10 bg-white/50 backdrop-blur-xs px-7 py-4 text-xs sm:text-sm font-semibold text-foreground hover:bg-white hover:border-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+                <span>{t("Check My Prescription & Frame")}</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              </button>
+
+              <button
+                type="button"
+                onClick={handleExploreClick}
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-border bg-card/80 text-foreground font-semibold text-xs sm:text-sm hover:bg-muted transition cursor-pointer"
               >
-                {t("See the plan")}
-              </a>
+                {t("Explore How Lensly Works")}
+              </button>
             </div>
-          </div>
 
-          {/* Right Column: Optometrist Consultation Image Card */}
-          <div className="md:col-span-5 relative w-full px-4 animate-fade-in mt-10 md:mt-0 max-w-[340px] md:max-w-none mx-auto">
-            {/* Solid Teal Offset Backdrop Accent Frame */}
-            <div className="absolute inset-0 bg-primary/10 rounded-2xl translate-x-3.5 translate-y-3.5 pointer-events-none border border-primary/20" />
-            
-            {/* Image Container Card */}
-            <div className="relative overflow-hidden rounded-2xl bg-white shadow-[0_12px_36px_rgba(0,0,0,0.06)] border border-border/80 aspect-[4/5]">
-              <img
-                src="/doctor-consultation.png"
-                alt="Lensly personalized optometrist consultation"
-                width={1024}
-                height={1024}
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-[1.02]"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* 3 Premium Value Features - positioned nicely below */}
-        <div className="mt-24 md:mt-36 max-w-5xl mx-auto">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-              <div className="w-full border-t border-border/60"></div>
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-background px-4 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/80">
-                {t("What is included in Lensly Care")}
+            {/* Trust Badges directly beneath Hero CTA */}
+            <div className="mt-8 pt-6 border-t border-border/40 flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 text-[11px] text-muted-foreground font-medium">
+              <span className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-primary" />
+                {t("Free Pre-Payment Verification")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-primary" />
+                {t("Prescription & Frame Sizing Check")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-primary" />
+                {t("Monthly Cancellation After 12 Months")}
               </span>
             </div>
           </div>
 
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 text-left px-4">
-            {/* Card 1: 1 Free Pair */}
-            <div className="bg-white/60 border border-primary/5 rounded-2xl p-6 shadow-xs group transition-all duration-300 hover:shadow-md hover:border-primary/10">
-              <div className="w-10 h-10 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-11 md:h-11">
-                01
+          {/* Right Visual Element: Frame Discovery + Optical Card */}
+          <div className="md:col-span-5 relative w-full max-w-sm md:max-w-none mx-auto">
+            <div className="relative rounded-2xl border border-border bg-card p-5 shadow-xl space-y-4">
+              {/* Sourcing Preview Card */}
+              <div className="rounded-xl bg-muted/40 p-3.5 border border-border/60">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-2">
+                  <span className="font-mono uppercase font-semibold">{t("1. Customer Discovers Frame")}</span>
+                  <span className="text-emerald-600 font-semibold">{t("Any store or brand")}</span>
+                </div>
+                <div className="flex items-center gap-3 bg-card p-2.5 rounded-lg border border-border/80">
+                  <img
+                    src="/classic-acetate.png"
+                    alt="Frame preview"
+                    className="w-14 h-10 object-contain"
+                  />
+                  <div className="truncate">
+                    <p className="text-xs font-bold text-foreground truncate">{t("Tortoiseshell Acetate")}</p>
+                    <p className="text-[10px] text-muted-foreground truncate">{t("Screenshot or URL uploaded")}</p>
+                  </div>
+                </div>
               </div>
-              <div className="mt-4">
-                <h3 className="font-display font-semibold text-[15px] sm:text-[16px] text-foreground tracking-tight">
-                  {t("Every year, fresh.")}
-                </h3>
-                <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
-                  {t("Your eyesight changes. Your style changes too. That's why we deliver a completely new pair every year - no reordering, no extra cost.")}
-                </p>
-              </div>
-            </div>
 
-            {/* Card 2: 3 Free Replacements */}
-            <div className="bg-white/60 border border-primary/5 rounded-2xl p-6 shadow-xs group transition-all duration-300 hover:shadow-md hover:border-primary/10">
-              <div className="w-10 h-10 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-11 md:h-11">
-                02
+              {/* Lab Review Stage */}
+              <div className="rounded-xl bg-primary/5 p-3.5 border border-primary/20 space-y-2">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-mono uppercase font-semibold text-primary">{t("2. Lensly Lab Reviews")}</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">{t("Free Check")}</span>
+                </div>
+                <ul className="text-[11px] text-muted-foreground space-y-1 pl-1">
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                    <span>{t("Diopter range & index matching (1.50 - 1.67)")}</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                    <span>{t("Lens bevel & frame structural compatibility")}</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                    <span>{t("Distributor authenticity & availability check")}</span>
+                  </li>
+                </ul>
               </div>
-              <div className="mt-4">
-                <h3 className="font-display font-semibold text-[15px] sm:text-[16px] text-foreground tracking-tight flex items-center gap-2">
-                  {t("Broken? No problem.")}
-                </h3>
-                <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
-                  {t("Glasses break. We send replacements - up to three times per year, free of charge. Damaged, prescription changed - doesn't matter. We fix it.")}
-                </p>
-              </div>
-            </div>
 
-            {/* Card 3: €29 Only */}
-            <div className="bg-white/60 border border-primary/5 rounded-2xl p-6 shadow-xs group transition-all duration-300 hover:shadow-md hover:border-primary/10">
-              <div className="w-10 h-10 shrink-0 bg-primary/10 border border-primary/20 text-primary rounded-full flex items-center justify-center font-display font-bold text-sm transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-teal-500 group-hover:text-primary-foreground group-hover:scale-105 shadow-xs shadow-primary/5 md:w-11 md:h-11">
-                03
-              </div>
-              <div className="mt-4">
-                <h3 className="font-display font-semibold text-[15px] sm:text-[16px] text-foreground tracking-tight">
-                  {t("€29. That's it.")}
-                </h3>
-                <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
-                  {t("No hidden costs. No upcharges for anti-reflective coating or thin lenses. €29 once a month - that's all.")}
-                </p>
+              {/* Outcome Badge */}
+              <div className="flex items-center justify-between pt-2 text-xs border-t border-border/40">
+                <span className="text-muted-foreground font-medium">{t("All-Inclusive Monthly:")}</span>
+                <span className="font-display font-bold text-base text-primary">€29 {t("/ month")}</span>
               </div>
             </div>
           </div>
@@ -514,418 +580,59 @@ function Hero() {
   );
 }
 
-function Plan() {
+function ConceptExplanation() {
   const { t } = useLanguage();
-  const [insuranceTab, setInsuranceTab] = useState<"insurance" | "lensly">("lensly");
 
   return (
-    <section id="plan" className="border-b border-border/60 bg-[var(--mint)]/30">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-16 md:py-28">
-        {/* Section Header */}
-        <div className="text-center mb-10 md:mb-16">
-          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            {t("The honest comparison.")}
+    <section id="concept" className="py-16 md:py-24 border-b border-border/60 bg-background">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <p className="text-[10.5px] font-mono uppercase tracking-widest text-primary font-bold">
+            {t("The Lensly Care Model")}
+          </p>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-2">
+            {t("Why Vision Care Belongs on Subscription")}
           </h2>
-          <p className="mt-2 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-            {t("€400 once at the optician or €29/month with us. The difference is in the details.")}
+          <p className="mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {t("Eyesight changes continuously. Frames scratch or break. Traditional retail forces large irregular upfront payments with costly repairs. Lensly bundles precision lenses, frame sourcing, and replacements into one predictable monthly plan.")}
           </p>
         </div>
 
-        {/* Comparison Grid */}
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Traditional Optician Card */}
-          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
-            <div>
-              <p className="label-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {t("Traditional optician")}
-              </p>
-              <div className="mt-3.5 font-display text-4xl sm:text-5xl font-semibold tracking-tight text-foreground/35 line-through decoration-[oklch(0.7_0.17_55)] decoration-[3px]">
-                €400
-              </div>
-              <p className="mt-1.5 text-[11px] font-medium text-muted-foreground/80 uppercase tracking-wider">
-                {t("Upfront · 1 pair · no free replacements")}
-              </p>
-              <ul className="mt-4 space-y-2.5 border-t border-border/60 pt-4 text-xs sm:text-[13px] text-muted-foreground">
-                <li className="flex items-center gap-2.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                  {t("Broken glasses? Full price, no replacement.")}
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                  {t("Anti-reflective, UV coating - all extra, all expensive.")}
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                  {t("New prescription? Another €400 out.")}
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/45" />
-                  {t("Wait 2–3 years until you can afford it again.")}
-                </li>
-              </ul>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-6 rounded-2xl border border-border bg-card shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-sm mb-4">
+              01
             </div>
-          </div>
-
-          {/* Lensly Care Card (Featured) */}
-          <div className="relative rounded-2xl border-2 border-primary bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
-              {t("Lensly Care")}
-            </div>
-            <div>
-              <p className="label-mono text-[10px] uppercase tracking-[0.2em] text-primary">
-                {t("The subscription")}
-              </p>
-              <div className="mt-3.5 flex items-baseline gap-2">
-                <span className="font-display text-5xl sm:text-6xl font-semibold tracking-tight text-primary">
-                  €29
-                </span>
-                <span className="text-sm font-medium text-muted-foreground">{t("/ month")}</span>
-              </div>
-              <p className="mt-1.5 text-xs text-muted-foreground">
-                {t("Continuous vision care")} ·{" "}
-                <span className="font-semibold text-foreground">{t("€0.95 a day")}</span> (
-                {t("less than a daily coffee")}).
-              </p>
-              <ul className="mt-4 space-y-2.5 border-t border-border pt-4 text-xs sm:text-[13px]">
-                <Feature>{t("1 new pair of precision lenses every year")}</Feature>
-                <Feature>
-                  {t("3 free replacements (broken, power change? We got you covered)")}
-                </Feature>
-                <Feature>{t("Premium lenses, anti-reflective & UV-400 coatings included")}</Feature>
-                <Feature>{t("Free shipping EU-wide · minimum 1 year contract")}</Feature>
-              </ul>
-            </div>
-            <div className="mt-6 pt-4 border-t border-border/60">
-              <Link
-                to="/checkout"
-                className="block w-full rounded-lg bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground shadow-[0_4px_12px_-4px_oklch(0.46_0.07_210/0.6)] transition-all hover:bg-primary/95 hover:shadow-[0_6px_16px_-4px_oklch(0.46_0.07_210/0.7)] cursor-pointer"
-              >
-                {t("Subscribe to Lensly Care")}
-              </Link>
-              <p className="mt-1.5 text-center text-[9px] text-muted-foreground/80">
-                {t("Secure checkout via Stripe")}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* How it works timeline */}
-        <div className="mt-12 border-t border-border/40 pt-10">
-          <div className="text-center max-w-2xl mx-auto mb-8">
-            <h4 className="font-display text-sm font-semibold tracking-wider text-primary uppercase">
-              {t("How it works")}
-            </h4>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("Get your custom prescription glasses in five simple steps.")}
-            </p>
-          </div>
-
-          <div className="relative flex flex-col gap-6 sm:grid sm:grid-cols-5 sm:gap-5 text-left pl-3 sm:pl-0">
-            {/* Connector line for mobile (runs vertically) */}
-            <div className="absolute left-[26px] top-3 bottom-3 w-[1.5px] bg-border/80 sm:hidden z-0" />
-            {/* Subtle connector line for desktop */}
-            <div className="hidden sm:block absolute top-[16px] left-[5%] right-[5%] h-[1px] bg-border/60 z-0" />
-
-            {/* Step 1 */}
-            <div className="relative z-10 flex gap-4 items-start sm:flex-col sm:items-start sm:gap-0 bg-transparent p-0 border-0 shadow-none">
-              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs shrink-0 ring-4 ring-[oklch(0.97_0.01_180)] sm:w-8 sm:h-8 sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
-                1
-              </div>
-              <div className="flex-1 sm:mt-3">
-                <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
-                  {t("Subscribe via Stripe")}
-                </h5>
-                <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
-                  {t("Just click 'Subscribe' below - takes 2 minutes.")}
-                </p>
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div className="relative z-10 flex gap-4 items-start sm:flex-col sm:items-start sm:gap-0 bg-transparent p-0 border-0 shadow-none">
-              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs shrink-0 ring-4 ring-[oklch(0.97_0.01_180)] sm:w-8 sm:h-8 sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
-                2
-              </div>
-              <div className="flex-1 sm:mt-3">
-                <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
-                  {t("E-mail contact within 24 hours")}
-                </h5>
-                <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
-                  {t("We'll reach out within a day via email and ask for everything we need.")}
-                </p>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="relative z-10 flex gap-4 items-start sm:flex-col sm:items-start sm:gap-0 bg-transparent p-0 border-0 shadow-none">
-              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs shrink-0 ring-4 ring-[oklch(0.97_0.01_180)] sm:w-8 sm:h-8 sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
-                3
-              </div>
-              <div className="flex-1 sm:mt-3">
-                <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug truncate max-w-full sm:whitespace-normal">
-                  {t("Send frame details")}
-                </h5>
-                <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
-                  {t("Just reply to our email with your prescription, PD, and a photo of the frame you like - from any shop, any brand.")}
-                </p>
-              </div>
-            </div>
-
-            {/* Step 4 */}
-            <div className="relative z-10 flex gap-4 items-start sm:flex-col sm:items-start sm:gap-0 bg-transparent p-0 border-0 shadow-none">
-              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs shrink-0 ring-4 ring-[oklch(0.97_0.01_180)] sm:w-8 sm:h-8 sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
-                4
-              </div>
-              <div className="flex-1 sm:mt-3">
-                <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
-                  {t("Sourcing & production")}
-                </h5>
-                <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
-                  {t("We order the frame for you and have your lenses made to spec.")}
-                </p>
-              </div>
-            </div>
-
-            {/* Step 5 */}
-            <div className="relative z-10 flex gap-4 items-start sm:flex-col sm:items-start sm:gap-0 bg-transparent p-0 border-0 shadow-none">
-              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs flex items-center justify-center shadow-xs shrink-0 ring-4 ring-[oklch(0.97_0.01_180)] sm:w-8 sm:h-8 sm:ring-8 sm:ring-[oklch(0.97_0.01_180)]">
-                5
-              </div>
-              <div className="flex-1 sm:mt-3">
-                <h5 className="font-display font-semibold text-[13px] text-foreground leading-snug">
-                  {t("Delivered to your door")}
-                </h5>
-                <p className="text-[10.5px] text-muted-foreground mt-1 leading-relaxed max-w-[260px] sm:max-w-none">
-                  {t("In about 15 days, your new glasses arrive in the mailbox - done.")}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-        {/* The math */}
-        <div className="mt-8 flex flex-col sm:grid sm:grid-cols-3 gap-5 sm:gap-6 rounded-2xl border border-border bg-card p-5 sm:p-8">
-          <Math k="€1,600" l={t("Traditional optician (4 pairs)")} />
-          <Math k="€29/month" l={t("Lensly subscription (incl. replacements)")} highlight />
-          <Math k="€1,252" l={t("Saved when using replacements")} />
-        </div>
-
-        {/* Insurance Comparison */}
-        <div className="mt-16 border-t border-border/60 pt-16">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <h3 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
-              {t("Lensly vs. Glasses Insurance")}
+            <h3 className="font-display font-bold text-base text-foreground">
+              {t("Pre-Payment Feasibility")}
             </h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {t(
-                "Supplemental insurance plans look cheap upfront but often leave you with heavy out-of-pocket costs.",
-              )}
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+              {t("Unlike ordinary shops where you pay first and hope for the best, Lensly checks your frame and diopters beforehand. If a frame cannot accommodate your cylinder or thickness, we inform you transparently.")}
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Glasses Insurance */}
-            <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between border-b border-border/60 pb-4">
-                  <div>
-                    <h4 className="font-display text-base font-semibold text-foreground">
-                      {t("Glasses Insurance")}
-                    </h4>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      {t("Standard supplemental policy")}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-display text-xl font-bold text-foreground">
-                      €7-20<span className="text-xs font-normal text-muted-foreground">/month</span>
-                    </span>
-                  </div>
-                </div>
-
-                <ul className="mt-4 space-y-3 text-xs text-muted-foreground">
-                  <li className="flex items-start gap-2.5">
-                    <svg
-                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-destructive"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    <div>
-                      <span className="font-semibold text-foreground">
-                        {t("1 pair every 2 years")}
-                      </span>
-                      <p className="text-[11px] text-muted-foreground/80 mt-0.5">
-                        {t("pay €240 in premiums, get €150 back, lose €90 minimum")}
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <svg
-                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-destructive"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    <div>
-                      <span className="font-semibold text-foreground">{t("Break them once")}</span>
-                      <p className="text-[11px] text-muted-foreground/80 mt-0.5">
-                        {t("€400 out of pocket, not covered")}
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <svg
-                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-destructive"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    <div>
-                      <span className="font-semibold text-foreground">
-                        {t("Need anti-reflective or thin lenses")}
-                      </span>
-                      <p className="text-[11px] text-muted-foreground/80 mt-0.5">
-                        {t("€150+ extra, not covered")}
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <svg
-                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-destructive"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    <div>
-                      <span className="font-semibold text-foreground">
-                        {t("Prescription changes")}
-                      </span>
-                      <p className="text-[11px] text-muted-foreground/80 mt-0.5">
-                        {t("full retail price, not covered")}
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-6 border-t border-border/60 pt-4">
-                <div className="text-[14px] font-bold text-destructive">
-                  {t("Total realistic cost over 2 years: €800-1,200+")}
-                </div>
-                <div className="text-[10.5px] font-medium text-muted-foreground/75 mt-0.5">
-                  {t("Premiums + gaps + extras + one replacement")}
-                </div>
-              </div>
+          <div className="p-6 rounded-2xl border border-border bg-card shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-sm mb-4">
+              02
             </div>
+            <h3 className="font-display font-bold text-base text-foreground">
+              {t("Fresh Lenses Every Single Year")}
+            </h3>
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+              {t("Every contract year you receive a complete new pair of prescription glasses with fresh anti-reflective coatings and updated diopters to ensure optimal visual health.")}
+            </p>
+          </div>
 
-            {/* Lensly */}
-            <div className="relative rounded-2xl border-2 border-primary bg-card p-6 sm:p-8 shadow-xs flex flex-col justify-between">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
-                {t("Recommended")}
-              </div>
-              <div>
-                <div className="flex items-center justify-between border-b border-border/60 pb-4">
-                  <div>
-                    <h4 className="font-display text-base font-semibold text-primary">
-                      {t("Lensly Care")}
-                    </h4>
-                    <p className="text-[11px] text-primary/80 mt-0.5">
-                      {t("Complete continuous vision plan")}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-display text-xl font-bold text-primary">
-                      €29<span className="text-xs font-normal text-muted-foreground">/month</span>
-                    </span>
-                  </div>
-                </div>
-
-                <ul className="mt-4 space-y-3 text-xs text-foreground/95">
-                  <li className="flex items-start gap-2.5">
-                    <svg
-                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-primary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <div>
-                      <span className="font-semibold text-foreground">
-                        {t("1 complete pair delivered to you")}
-                      </span>
-                      <p className="text-[11px] text-primary/70 mt-0.5">
-                        {t("Fully covered every single year, zero waiting periods")}
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <svg
-                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-primary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <div>
-                      <span className="font-semibold text-foreground">
-                        {t("3 free replacements (broken, power change)")}
-                      </span>
-                      <p className="text-[11px] text-primary/70 mt-0.5">
-                        {t(
-                          "€0 out-of-pocket costs for prescription changes or accident replacements",
-                        )}
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <svg
-                      className="w-3.5 h-3.5 mt-0.5 shrink-0 text-primary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <div>
-                      <span className="font-semibold text-foreground">
-                        {t("Nothing extra to pay ever")}
-                      </span>
-                      <p className="text-[11px] text-primary/70 mt-0.5">
-                        {t("Premium lenses, anti-reflective & UV-400 coatings are 100% included")}
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-6 border-t border-border/60 pt-4">
-                <div className="text-[14px] font-bold text-primary">
-                  {t("Flat €29/month, completely covered")}
-                </div>
-                <div className="text-[10.5px] font-medium text-muted-foreground/75 mt-0.5">
-                  {t("Zero hidden fees, 1 pair per year and 3 replacements per year")}
-                </div>
-              </div>
+          <div className="p-6 rounded-2xl border border-border bg-card shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-sm mb-4">
+              03
             </div>
+            <h3 className="font-display font-bold text-base text-foreground">
+              {t("Up to 3 Replacements per Contract Year")}
+            </h3>
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+              {t("Broken frames, deep scratches, or verified prescription changes within the year? Your plan includes up to three replacement requests per contract year per plan terms.")}
+            </p>
           </div>
         </div>
       </div>
@@ -933,149 +640,427 @@ function Plan() {
   );
 }
 
-function Feature({ children }: { children: React.ReactNode }) {
+function HowItWorksTimeline({ onOpenFrameModal }: { onOpenFrameModal: () => void }) {
+  const { t } = useLanguage();
+
+  const steps = [
+    {
+      num: "01",
+      title: "Discover Frame",
+      desc: "Find any frame you like online, in a magazine, or in a retail shop.",
+    },
+    {
+      num: "02",
+      title: "Send to Lensly",
+      desc: "Submit a screenshot, photo, or product URL through our free review tool.",
+    },
+    {
+      num: "03",
+      title: "Prescription Review",
+      desc: "Upload your prescription or optical pass. Our opticians check feasibility before you pay.",
+    },
+    {
+      num: "04",
+      title: "Confirmation & Options",
+      desc: "Receive an availability report and lens recommendation directly by email.",
+    },
+    {
+      num: "05",
+      title: "Simple Checkout",
+      desc: "Activate your €29/month subscription with free EU delivery and complete coverage.",
+    },
+    {
+      num: "06",
+      title: "Fulfillment & Care",
+      desc: "Your custom eyewear is delivered upon completion, backed by up to 3 contractual replacement requests per year.",
+    },
+  ];
+
   return (
-    <li className="flex items-start gap-3 text-foreground/90">
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        className="mt-0.5 shrink-0 text-primary"
-        fill="none"
-      >
-        <circle cx="8" cy="8" r="7.25" stroke="currentColor" strokeWidth="1" opacity="0.4" />
-        <path
-          d="M5 8.2l2.2 2.1L11 6.5"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-      <span>{children}</span>
-    </li>
+    <section id="journey" className="py-16 md:py-24 border-b border-border/60 bg-background">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <p className="text-[10.5px] font-mono uppercase tracking-widest text-primary font-bold">
+            {t("Transparent Workflow")}
+          </p>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-2">
+            {t("The Lensly Customer Journey")}
+          </h2>
+          <p className="mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {t("Designed from the ground up to eliminate hesitation. You know exactly whether your frame and lenses work before committing a single euro.")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+          {steps.map((s) => (
+            <div
+              key={s.num}
+              className="p-6 rounded-2xl border border-border bg-card shadow-xs flex flex-col justify-between hover:border-primary/30 transition"
+            >
+              <div>
+                <span className="font-mono text-xs font-bold text-primary">{s.num}</span>
+                <h3 className="font-display font-bold text-sm text-foreground mt-2">{t(s.title)}</h3>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{t(s.desc)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <button
+            type="button"
+            onClick={onOpenFrameModal}
+            className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-xs shadow-md hover:bg-primary/95 transition inline-flex items-center gap-2 cursor-pointer"
+          >
+            <span>{t("Start Free Frame & Prescription Review")}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </section>
   );
 }
 
-function Math({
-  k,
-  l,
-  sub,
-  highlight = false,
-}: {
-  k: string;
-  l: string;
-  sub?: string;
-  highlight?: boolean;
-}) {
-  return (
-    <div className="flex flex-row items-center justify-start text-left gap-4 sm:flex-col sm:items-start sm:justify-center sm:text-left sm:gap-0">
-      <div
-        className={
-          "font-display text-[22px] sm:text-3xl md:text-4xl font-semibold tracking-tight shrink-0 " +
-          (highlight ? "text-primary" : "text-foreground")
-        }
-      >
-        {k}
-      </div>
-      <div className="flex-1">
-        <div className="text-[11.5px] sm:text-[13px] leading-snug text-muted-foreground">{l}</div>
-        {sub && <div className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground/75 font-medium">{sub}</div>}
-      </div>
-    </div>
-  );
-}
-
-export function ProductGallery() {
+function ProductGallery({ onOpenFrameModal }: { onOpenFrameModal: () => void }) {
   const { t } = useLanguage();
 
   const styles = [
     {
-      name: t("The Classic Acetate"),
-      desc: t("Premium handcrafted tortoiseshell frame with durable metal inner core. Sleek vintage design suitable for any face shape."),
-      tag: t("Premium Acetate"),
-      image: "/classic-acetate.png"
+      name: "The Classic Acetate",
+      desc: "Handcrafted tortoiseshell frame with durable metal inner core. Suitable for all face profiles.",
+      tag: "Handcrafted Acetate",
+      image: "/classic-acetate.png",
     },
     {
-      name: t("The Modern Gold"),
-      desc: t("Ultra-lightweight round stainless steel frame plated with high-polish warm gold. Minimalist styling with adjustable silicone nose pads."),
-      tag: t("Stainless Steel"),
-      image: "/modern-gold.png"
+      name: "The Modern Gold",
+      desc: "Ultra-lightweight round stainless steel frame with subtle warm gold finish.",
+      tag: "Stainless Steel",
+      image: "/modern-gold.png",
     },
     {
-      name: t("The Bold Black"),
-      desc: t("Chic thick-rimmed square frame in deep polished onyx black. Solid construction with high-grade flexible hinges."),
-      tag: t("Polished Resin"),
-      image: "/bold-black.png"
+      name: "The Bold Black",
+      desc: "Structured square frame in polished onyx resin with reinforced flexible hinges.",
+      tag: "Polished Resin",
+      image: "/bold-black.png",
     },
     {
-      name: t("The Crystal Clear"),
-      desc: t("Elegant transparent round frame crafting a modern, intellectual look. Soft keyhole bridge for maximum all-day comfort."),
-      tag: t("Transparent TR90"),
-      image: "/crystal-clear.png"
-    }
+      name: "The Crystal Clear",
+      desc: "Minimalist translucent frame with soft keyhole bridge for comfortable all-day wear.",
+      tag: "Transparent TR90",
+      image: "/crystal-clear.png",
+    },
   ];
 
   return (
-    <section id="styles" className="py-16 md:py-28 bg-background border-t border-border/40">
+    <section id="frames" className="py-16 md:py-24 border-b border-border/60 bg-background">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="text-center mb-10 md:mb-16">
-          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            {t("Signature Frame Styles")}
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <p className="text-[10.5px] font-mono uppercase tracking-widest text-primary font-bold">
+            {t("Curated Styles")}
+          </p>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-2">
+            {t("Lensly Signature Frame Collection")}
           </h2>
-          <p className="mt-2 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-            {t("Send us a photo - we'll source the frame for you.")}
+          <p className="mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {t("Don't have an external frame in mind? Choose from our signature in-house collection, all fitted with custom German-surfaced lenses.")}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
           {styles.map((style, idx) => (
             <div
               key={idx}
-              className="bg-white/60 border border-primary/5 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between hover:shadow-md hover:border-primary/10 transition-all duration-300 group"
+              className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs hover:shadow-md hover:border-primary/20 transition group flex flex-col justify-between"
             >
-              <div className="aspect-[4/5] overflow-hidden bg-muted/40 relative">
+              <div className="aspect-[4/3] overflow-hidden bg-muted/30 p-6 flex items-center justify-center relative">
                 <img
                   src={style.image}
                   alt={style.name}
-                  width={400}
-                  height={500}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-contain transition duration-300 group-hover:scale-105"
                 />
-                <span className="absolute top-3 left-3 bg-primary/95 text-primary-foreground text-[8px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border border-white/10 shadow-sm">
-                  {style.tag}
+                <span className="absolute top-3 left-3 bg-primary/95 text-primary-foreground text-[8px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full shadow-xs">
+                  {t(style.tag)}
                 </span>
               </div>
               <div className="p-5 flex-1 flex flex-col justify-between">
-                <div className="mb-4">
-                  <h3 className="font-display font-semibold text-xs sm:text-[14px] text-foreground tracking-tight">
-                    {style.name}
-                  </h3>
-                  <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1.5 leading-relaxed">
-                    {style.desc}
-                  </p>
+                <div>
+                  <h3 className="font-display font-bold text-sm text-foreground">{t(style.name)}</h3>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{t(style.desc)}</p>
                 </div>
-                <div className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1 border-t border-border/40 pt-3">
-                  <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span>{t("German Lenses Fitted")}</span>
+                <div className="mt-4 pt-3 border-t border-border/40 text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                  <Check className="w-3.5 h-3.5" />
+                  <span>{t("Lab Surfacing Included")}</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Explore All Link/Button */}
-        <div className="text-center mt-12">
+        <div className="mt-10 text-center flex flex-wrap items-center justify-center gap-4">
           <Link
             to="/frames"
-            className="inline-flex items-center gap-2 rounded-xl border border-primary/15 bg-white px-6 py-3 text-xs font-bold uppercase tracking-wider text-primary hover:bg-primary/5 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-xs"
+            className="px-5 py-2.5 rounded-xl border border-border bg-card text-xs font-semibold text-foreground hover:bg-muted transition"
           >
-            <span>{t("Explore All Signature Frames")}</span>
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
+            {t("Explore All 10 Signature Frames →")}
+          </Link>
+          <button
+            type="button"
+            onClick={onOpenFrameModal}
+            className="px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/95 transition cursor-pointer"
+          >
+            {t("Request Sourcing for an Outside Frame")}
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PricingSection() {
+  const { t } = useLanguage();
+  const plan = CURRENT_PLAN;
+  const annualTotal = getAnnualTotal(plan);
+  const dailyEq = getDailyEquivalent(plan);
+
+  return (
+    <section id="pricing" className="py-16 md:py-24 border-b border-border/60 bg-[var(--mint)]/20">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <p className="text-[10.5px] font-mono uppercase tracking-widest text-primary font-bold">
+            {t("Transparent Pricing")}
+          </p>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-2">
+            {t("One Clear Plan. No Hidden Fees.")}
+          </h2>
+          <p className="mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {t("All premium coatings, annual complete pairs, and accidental replacements bundled into one predictable rate.")}
+          </p>
+        </div>
+
+        <div className="max-w-lg mx-auto rounded-3xl border-2 border-primary bg-card p-6 sm:p-9 shadow-xl relative text-left">
+          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-primary-foreground shadow-sm">
+            {t(plan.name)}
+          </div>
+
+          <div className="flex items-baseline justify-between border-b border-border/60 pb-5">
+            <div>
+              <p className="text-xs uppercase font-mono tracking-wider text-muted-foreground">
+                {t("Monthly Subscription")}
+              </p>
+              <div className="flex items-baseline gap-1.5 mt-1">
+                <span className="font-display text-4xl sm:text-5xl font-bold text-primary">
+                  {formatEur(plan.monthlyPrice)}
+                </span>
+                <span className="text-xs text-muted-foreground font-medium">{t("/ month")}</span>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <span className="text-[11px] font-semibold text-emerald-600">
+                {dailyEq} {t("/ day")}
+              </span>
+              <p className="text-[10px] text-muted-foreground mt-0.5">
+                {annualTotal} € {t("annual commitment")}
+              </p>
+            </div>
+          </div>
+
+          {/* Features */}
+          <ul className="mt-6 space-y-3 text-xs text-foreground/90">
+            {(plan.includedServices || []).map((feature: string, idx: number) => (
+              <li key={idx} className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <span>{t(feature)}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-8 pt-5 border-t border-border/60 space-y-2 text-center">
+            <Link
+              to="/checkout"
+              className="block w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-xs sm:text-sm shadow-md hover:bg-primary/95 transition text-center"
+            >
+              {t("Subscribe to Lensly Care")}
+            </Link>
+            <p className="text-[10px] text-muted-foreground">
+              {t("Secure recurring payments via Stripe SEPA Debit or Card. Minimum 12-month duration, monthly cancelable thereafter.")}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function InclusionsSection() {
+  const { t } = useLanguage();
+
+  return (
+    <section className="py-16 md:py-24 border-b border-border/60 bg-background">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <p className="text-[10.5px] font-mono uppercase tracking-widest text-primary font-bold">
+            {t("All-Inclusive Standard")}
+          </p>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-2">
+            {t("What Is Included in Your Lensly Plan")}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+          <div className="p-5 rounded-2xl border border-border bg-card shadow-xs">
+            <Package className="w-6 h-6 text-primary mb-3" />
+            <h3 className="font-display font-bold text-sm text-foreground">{t("Annual Complete Pair")}</h3>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              {t("Every 12 months you receive a complete new pair with updated prescription values and your choice of frame.")}
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-border bg-card shadow-xs">
+            <RefreshCw className="w-6 h-6 text-primary mb-3" />
+            <h3 className="font-display font-bold text-sm text-foreground">{t("Up to 3 Replacements")}</h3>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              {t("Broken frames, deep scratches, or prescribed diopter changes within the year are covered up to three times per plan terms.")}
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-border bg-card shadow-xs">
+            <Sparkles className="w-6 h-6 text-primary mb-3" />
+            <h3 className="font-display font-bold text-sm text-foreground">{t("All Premium Coatings")}</h3>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              {t("Anti-reflective, scratch-resistant hard coating, easy-clean hydrophobic seal, and 100% UV-400 protection.")}
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-border bg-card shadow-xs">
+            <ShieldCheck className="w-6 h-6 text-primary mb-3" />
+            <h3 className="font-display font-bold text-sm text-foreground">{t("Free EU Delivery")}</h3>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              {t("Insured climate-neutral shipping across all European Union member states directly to your mailbox.")}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ReplacementCareSection() {
+  const { t } = useLanguage();
+
+  return (
+    <section className="py-16 md:py-24 border-b border-border/60 bg-muted/10">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center text-left">
+          <div className="lg:col-span-7 space-y-4">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider bg-primary/10 text-primary font-semibold">
+              <RefreshCw className="w-3 h-3" />
+              <span>{t("Accident & Damage Coverage")}</span>
+            </div>
+
+            <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+              {t("How Accidental Replacements Work")}
+            </h2>
+
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              {t("Eyewear accidents happen. If you accidentally step on your frame, scratch a lens, or your optometrist diagnoses a change in cylinder power within your subscription year:")}
+            </p>
+
+            <ol className="text-xs text-muted-foreground space-y-2 list-decimal pl-4">
+              <li>
+                <strong className="text-foreground">{t("Notify Lensly:")}</strong> {t("Send a quick email or request replacement via your customer portal.")}
+              </li>
+              <li>
+                <strong className="text-foreground">{t("Lab Production:")}</strong> {t("We immediately machine a replacement pair with your recorded prescription.")}
+              </li>
+              <li>
+                <strong className="text-foreground">{t("Zero Co-Pay:")}</strong> {t("Up to three replacement incidents per contract year carry zero repair or lens surcharges.")}
+              </li>
+            </ol>
+          </div>
+
+          <div className="lg:col-span-5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-md text-left space-y-3">
+              <span className="text-xs font-mono uppercase tracking-wider text-primary font-semibold">
+                {t("Coverage Comparison")}
+              </span>
+              <div className="space-y-2.5 text-xs">
+                <div className="p-3 rounded-lg border border-border/80 bg-muted/20">
+                  <p className="font-semibold text-foreground">{t("Traditional Retail Purchase:")}</p>
+                  <p className="text-muted-foreground text-[11px] mt-0.5">
+                    {t("Breakage or scratches usually require a completely new purchase at full retail price.")}
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg border border-primary/20 bg-primary/5">
+                  <p className="font-semibold text-primary">{t("Lensly Continuous Care:")}</p>
+                  <p className="text-muted-foreground text-[11px] mt-0.5">
+                    {t("Up to 3 replacement requests per contract year are included in the regular rate of €29/month (per plan terms).")}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TrustAndPrivacySection() {
+  const { t } = useLanguage();
+
+  return (
+    <section className="py-16 md:py-24 border-b border-border/60 bg-background">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <p className="text-[10.5px] font-mono uppercase tracking-widest text-primary font-bold">
+            {t("Data Minimization & Compliance")}
+          </p>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-2">
+            {t("German Privacy & Sensitive Medical Data Standards")}
+          </h2>
+          <p className="mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {t("Your prescription and visual health data are treated with strict purpose limitation under the European General Data Protection Regulation (GDPR / DSGVO).")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+          <div className="p-5 rounded-2xl border border-border bg-card">
+            <Lock className="w-5 h-5 text-primary mb-2.5" />
+            <h3 className="font-display font-bold text-sm text-foreground">{t("Encrypted Transmission")}</h3>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              {t("All prescription documents and customer details are transmitted through TLS-encrypted channels directly to verified opticians.")}
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-border bg-card">
+            <Eye className="w-5 h-5 text-primary mb-2.5" />
+            <h3 className="font-display font-bold text-sm text-foreground">{t("Purpose-Specific Use")}</h3>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              {t("Prescription data are accessed solely by optical technicians for lens surfacing. Never sold, never shared with advertising networks.")}
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-border bg-card">
+            <ShieldCheck className="w-5 h-5 text-primary mb-2.5" />
+            <h3 className="font-display font-bold text-sm text-foreground">{t("Right of Erasure")}</h3>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              {t("Under Art. 17 DSGVO, you retain full rights to request complete deletion of uploaded prescriptions and personal records at any time.")}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 text-center text-xs text-muted-foreground flex flex-wrap items-center justify-center gap-4">
+          <Link to="/datenschutz" className="underline hover:text-foreground">
+            {t("Datenschutzerklärung (Privacy Policy)")}
+          </Link>
+          <span>•</span>
+          <Link to="/agb" className="underline hover:text-foreground">
+            {t("Allgemeine Geschäftsbedingungen (Terms)")}
+          </Link>
+          <span>•</span>
+          <Link to="/impressum" className="underline hover:text-foreground">
+            {t("Impressum (Legal Notice)")}
           </Link>
         </div>
       </div>
@@ -1083,91 +1068,95 @@ export function ProductGallery() {
   );
 }
 
-export function Faq() {
+function PartnerOpticianSection() {
   const { t } = useLanguage();
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <section className="py-16 md:py-24 border-b border-border/60 bg-muted/15">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <p className="text-[10.5px] font-mono uppercase tracking-widest text-primary font-bold">
+            {t("Certified Optical Infrastructure")}
+          </p>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-2">
+            {t("Direct Lab Surfacing Without High Street Markup")}
+          </h2>
+          <p className="mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {t("How Lensly achieves €29/month: We bypass expensive retail real estate and collaborate directly with certified optical finishing labs equipped with CNC edgers and digital wavefront surfacing machinery.")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+          <div className="p-6 rounded-2xl border border-border bg-card">
+            <Building2 className="w-6 h-6 text-primary mb-3" />
+            <h3 className="font-display font-bold text-base text-foreground">
+              {t("Precision Manufacturing & Quality Control")}
+            </h3>
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+              {t("After verifying your prescription details, the lenses are custom-ground for your chosen frame, anti-reflective coated, and subjected to careful optical quality control before shipping.")}
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl border border-border bg-card">
+            <Eye className="w-6 h-6 text-primary mb-3" />
+            <h3 className="font-display font-bold text-base text-foreground">
+              {t("Prescription & PD Measurements")}
+            </h3>
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+              {t("Need a recent eye test or pupillary distance measurement? Any ophthalmologist or local optometrist can issue an updated prescription pass, which you can easily photograph and upload.")}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FaqSection() {
+  const { t } = useLanguage();
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
     {
-      q: t("Who is behind Lensly?"),
-      a: (
-        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t(
-            "We're a small team from Germany. The idea came up because glasses in Europe are absurdly expensive - not because they have to be, but because the market wants it that way. We work directly with certified optical labs and skip the retail markup.",
-          )}
-        </p>
-      ),
+      q: "Can I really send a link or screenshot of any frame I find?",
+      a: "Yes. You can share a product link, model number, or clear photo from any store or designer brand. Our team checks whether genuine distributor stock is available and whether the frame dimensions support your prescription before you pay.",
     },
     {
-      q: t("Can I see frame options before subscribing?"),
-      a: (
-        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t(
-            "Yes - and that's actually the best part. You can pick any frame you like. From Mister Spex, JINS, a local optician, Amazon - doesn't matter. Just send us a screenshot and we'll source the frame for you. No markup, no restrictions.",
-          )}
-        </p>
-      ),
+      q: "What happens before I pay?",
+      a: "Nothing is charged upfront. You submit the frame details and your prescription values. We verify optical compatibility and frame availability. Only once verified do you receive a link to activate your Lensly Care subscription.",
     },
     {
-      q: t("How do I get my pupillary distance measured?"),
-      a: (
-        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t(
-            "Visit any local optician or eye doctor for a quick measurement. Takes 2 minutes and is usually free. Then just include it in your email to us.",
-          )}
-        </p>
-      ),
+      q: "What if I have strong diopters or high astigmatism?",
+      a: "We fulfill prescriptions across common minus, plus, and cylinder ranges. For stronger powers (e.g. above +/-4.00 dpt or high cylinder), our lab reviews whether high-index lenses are required to keep the edge profile clean and comfortable.",
     },
     {
-      q: t("What if my lenses are wrong?"),
-      a: (
-        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t("Then we'll do it again. Free of charge. No discussion.")}
-        </p>
-      ),
+      q: "How does the annual replacement benefit work?",
+      a: "Your subscription includes up to 3 replacements per contract year for accidental breakage, severe scratches, or doctor-verified prescription changes. Simply notify our support team with photos to initiate production.",
     },
     {
-      q: t("I have a strong prescription - will this still work?"),
-      a: (
-        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t(
-            "Yes. We make lenses for all common prescriptions, including high diopters and astigmatism. Drop us a message before subscribing if you're unsure.",
-          )}
-        </p>
-      ),
+      q: "What is the contract duration and cancellation policy?",
+      a: "The initial contract commitment is 12 months (€29/month = €348/year). After the initial 12 months, your plan automatically renews on a flexible monthly basis, cancelable at any time with statutory 30-day notice via our online cancellation portal.",
     },
     {
-      q: t("How do returns or refunds work?"),
-      a: (
-        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t(
-            "If there's a production error on our end, we fix it for free. Custom prescription lenses can't be refunded once made, but we'll always find a solution that works.",
-          )}
-        </p>
-      ),
+      q: "Does statutory health insurance (GKV) cover the costs?",
+      a: "Reimbursement by statutory health insurance is only possible in specific legally defined cases and depends on individual requirements. Please verify coverage with your insurance provider in advance.",
     },
     {
-      q: t("Do I buy the frame or do you?"),
-      a: (
-        <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
-          {t(
-            "We source the frame for you based on your photo or screenshot. It's included in your subscription - nothing extra to pay.",
-          )}
-        </p>
-      ),
+      q: "How do I measure my Pupillary Distance (PD)?",
+      a: "Your PD is often listed on your optical pass (Brillenpass) or prescription sheet from your eye doctor or optician. Alternatively, visit any optical practice for a quick PD millimeter reading before ordering.",
     },
   ];
 
   return (
-    <section id="faq" className="py-16 md:py-28 border-t border-border/40 bg-muted/10">
+    <section id="faq" className="py-16 md:py-24 border-b border-border/60 bg-background">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <div className="text-center mb-8 sm:mb-12">
-          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            {t("Still have questions?")}
-          </h2>
-          <p className="mt-2 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">
-            {t("The things people ask us most.")}
+        <div className="text-center mb-12">
+          <p className="text-[10.5px] font-mono uppercase tracking-widest text-primary font-bold">
+            {t("Answers & Clarity")}
           </p>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-2">
+            {t("Frequently Asked Questions")}
+          </h2>
         </div>
 
         <div className="space-y-3">
@@ -1176,39 +1165,25 @@ export function Faq() {
             return (
               <div
                 key={idx}
-                className="overflow-hidden rounded-lg border border-border bg-card transition-all duration-200"
+                className="overflow-hidden rounded-xl border border-border bg-card transition"
               >
                 <button
                   type="button"
-                  aria-expanded={isOpen}
-                  aria-controls={`faq-answer-${idx}`}
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="flex w-full items-center justify-between px-4 py-3.5 sm:px-6 sm:py-5 text-left text-[13px] sm:text-base font-semibold text-foreground hover:bg-muted/30 transition-colors cursor-pointer"
+                  className="flex w-full items-center justify-between p-4 sm:p-5 text-left text-xs sm:text-sm font-semibold text-foreground hover:bg-muted/40 transition cursor-pointer"
                 >
-                  <span>{faq.q}</span>
-                  <svg
-                    className={`h-4 w-4 text-muted-foreground shrink-0 ml-4 transition-transform duration-200 ${
-                      isOpen ? "rotate-180" : ""
+                  <span>{t(faq.q)}</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${
+                      isOpen ? "rotate-180 text-primary" : ""
                     }`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
+                  />
                 </button>
-                <div
-                  id={`faq-answer-${idx}`}
-                  role="region"
-                  className={`transition-all duration-200 ease-in-out ${
-                    isOpen
-                      ? "max-h-[700px] opacity-100 border-t border-border/40 px-4 py-4 sm:px-6 sm:py-5 bg-muted/5"
-                      : "max-h-0 opacity-0 overflow-hidden"
-                  }`}
-                >
-                  {faq.a}
-                </div>
+                {isOpen && (
+                  <div className="px-4 pb-4 sm:px-5 sm:pb-5 text-xs text-muted-foreground leading-relaxed border-t border-border/40 pt-3">
+                    {t(faq.a)}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -1218,195 +1193,95 @@ export function Faq() {
   );
 }
 
-export function Reviews() {
+function FinalCta({ onOpenFrameModal }: { onOpenFrameModal: () => void }) {
   const { t } = useLanguage();
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const reviews = [
-    {
-      name: "Sarah Lindner",
-      role: t("Medical Student, LMU Munich"),
-      badge: t("Student"),
-      badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
-      image: "/sarah-lindner.png",
-      text: t("As a student, I couldn't just drop €380 for new glasses every two years. With Lensly I pay €29 a month and get a new pair every year. Last week my frame got damaged - the replacement arrived in 4 days.")
-    },
-    {
-      name: "Markus Becker",
-      role: t("Senior Consultant, Accenture"),
-      badge: t("Office Worker"),
-      badgeColor: "bg-indigo-50/50 text-indigo-700 border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
-      image: "/markus-becker.png",
-      text: t("I work 9 hours a day in front of three monitors. The blue-light filter lenses from Lensly are noticeably better than what I used to buy at the local optician - and for a third of the price. Setup took 10 minutes.")
-    },
-    {
-      name: "Lukas Weber",
-      role: t("Computer Science Student, TU Berlin"),
-      badge: t("Student"),
-      badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
-      image: "/lukas-weber.png",
-      text: t("The first delivery took almost 18 days, which I found a bit long. But the lenses were precise, the anti-reflective coating was good, and the second pair arrived in 12 days. For €29/month, definitely fair.")
-    },
-    {
-      name: "Jonas Schmidt",
-      role: t("Business Student, FU Berlin"),
-      badge: t("Student"),
-      badgeColor: "bg-emerald-50/50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
-      image: "/jonas-schmidt.png",
-      text: t("I never understood why glasses should be so expensive. Lensly explains it: because opticians charge retail markups. With the subscription I pay €348 per year for new glasses including replacements - at the optician, one pair alone was €320.")
-    },
-    {
-      name: "Emma Fischer",
-      role: t("Administrative Assistant, Siemens"),
-      badge: t("Office Worker"),
-      badgeColor: "bg-indigo-50/50 text-indigo-700 border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
-      image: "/emma-fischer.png",
-      text: t("After an accident I requested my replacement pair. One short email to Lensly, two photos, three days later the new glasses arrived. No forms, no phone call.")
-    },
-    {
-      name: "Laura Weber",
-      role: t("Marketing Manager, Zalando"),
-      badge: t("Office Worker"),
-      badgeColor: "bg-indigo-50/50 text-indigo-700 border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
-      image: "/laura-weber.png",
-      text: t("I change my style every year. At a normal optician that costs €400 per pair. Now I just pick a new frame, send a screenshot - and get it built and delivered. That's the model I always wanted.")
-    }
-  ];
-
-  const visibleReviews = isExpanded ? reviews : reviews.slice(0, 3);
 
   return (
-    <section id="reviews" className="py-16 md:py-28 border-t border-border/40 bg-background relative overflow-hidden">
-      {/* Subtle decorative glow to match other sections */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
-      
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="text-center mb-10 md:mb-16">
-          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            {t("What our members say")}
-          </h2>
-        </div>
+    <section className="py-20 md:py-28 bg-gradient-to-b from-background to-primary/5 text-center">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+          {t("Ready to experience hassle-free vision care?")}
+        </h2>
+        <p className="mt-4 text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
+          {t("Send us your favorite frame link or screenshot. We’ll review availability and your prescription values before you pay a single euro.")}
+        </p>
 
-        {/* 3-column layout grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {visibleReviews.map((review, idx) => (
-            <div 
-              key={idx}
-              className="bg-white/80 border border-primary/10 rounded-2xl p-6 shadow-[0_12px_40px_rgba(0,102,119,0.03)] backdrop-blur-xs flex flex-col justify-between hover:shadow-[0_16px_48px_rgba(0,102,119,0.06)] hover:scale-[1.01] hover:border-primary/20 transition-all duration-300 relative group"
-            >
-              <div>
-                {/* 5-star rating layout using clinical-teal color */}
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-3.5 h-3.5 text-primary fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-
-                <p className="text-[13px] text-muted-foreground/90 font-sans leading-relaxed italic">
-                  "{review.text}"
-                </p>
-              </div>
-
-              {/* Reviewer Details */}
-              <div className="flex flex-col gap-3 mt-6 pt-5 border-t border-border/40">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
-                    <img
-                      src={review.image}
-                      alt={review.name}
-                      width={64}
-                      height={64}
-                      className="w-8 h-8 rounded-full border border-primary/10 object-cover shrink-0"
-                    />
-                    <div className="text-left">
-                      <h4 className="font-semibold text-xs text-foreground leading-none">
-                        {review.name}
-                      </h4>
-                      <span className="text-[10px] text-muted-foreground font-medium block mt-1.5 leading-none">
-                        {review.role}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Role Specific color Badge */}
-                  <span className={`text-[8px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border shrink-0 ${review.badgeColor}`}>
-                    {review.badge}
-                  </span>
-                </div>
-
-                {/* Verified Tag */}
-                <div className="flex items-center gap-1 text-[10px] text-emerald-600 font-semibold text-left">
-                  <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span>{t("Verified Member")}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Expand / Collapse Button controls */}
-        <div className="text-center mt-12 animate-fade-in">
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
           <button
             type="button"
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="inline-flex items-center gap-2 rounded-xl border border-primary/10 bg-white px-6 py-3 text-xs font-bold uppercase tracking-wider text-primary hover:bg-primary/5 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-xs"
+            onClick={onOpenFrameModal}
+            className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-xs sm:text-sm shadow-md hover:bg-primary/95 transition flex items-center justify-center gap-2 cursor-pointer"
           >
-            {isExpanded ? t("See Less") : t("See More")}
+            <span>{t("Check My Frame & Prescription")}</span>
+            <ArrowRight className="w-4 h-4" />
           </button>
+          <Link
+            to="/checkout"
+            className="w-full sm:w-auto px-7 py-3.5 rounded-xl border border-border bg-card text-foreground font-semibold text-xs sm:text-sm hover:bg-muted transition"
+          >
+            {t("Subscribe Directly")}
+          </Link>
         </div>
       </div>
     </section>
   );
 }
 
-export function Footer() {
+export function Footer({ onContactClick }: { onContactClick?: () => void }) {
   const { t } = useLanguage();
+
   return (
-    <footer className="bg-foreground text-background">
-      <div className="border-b border-background/10 py-5 text-center text-xs text-background/60">
-        {t("Questions about your subscription? Write to us:")}{" "}
-        <a href="mailto:hello@lensly.care" className="text-primary hover:underline font-medium">
-          hello@lensly.care
-        </a>
-      </div>
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 py-8 label-mono text-[10px] uppercase tracking-[0.18em] text-background/60">
-        <Link
-          to="/"
-          className="flex items-center gap-2 text-background/85 hover:opacity-90 transition-opacity"
-        >
-          <LensMark />
-          <span className="font-display text-sm font-semibold">Lensly</span>
-        </Link>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          <a
-            href="mailto:hello@lensly.care"
-            className="hover:text-background transition-colors lowercase tracking-normal font-sans text-xs mr-2"
-          >
-            hello@lensly.care
-          </a>
-          <Link to="/contract" className="hover:text-background transition-colors">
-            {t("Sign Contract")}
-          </Link>
-          <Link to="/impressum" className="hover:text-background transition-colors">
-            {t("Impressum")}
-          </Link>
-          <Link to="/datenschutz" className="hover:text-background transition-colors">
-            {t("Datenschutz")}
-          </Link>
-          <Link to="/agb" className="hover:text-background transition-colors">
-            {t("AGB")}
-          </Link>
-          <Link
-            to="/cancel"
-            className="hover:text-background transition-colors"
-          >
-            {t("Vertrag hier kündigen")}
-          </Link>
-          <span className="text-background/40">© 2026 Lensly</span>
+    <footer className="bg-card border-t border-border/60 text-muted-foreground text-xs">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-8 border-b border-border/60">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <LensMark />
+              <span className="font-display font-bold text-foreground text-sm">Lensly.care</span>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              {t("Prescription eyewear subscription & pre-payment frame verification.")}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 text-xs">
+            <a
+              href="mailto:support@lensly.care"
+              className="text-primary hover:underline font-medium"
+            >
+              support@lensly.care
+            </a>
+            <span>•</span>
+            <button
+              type="button"
+              onClick={onContactClick}
+              className="text-foreground hover:text-primary transition cursor-pointer"
+            >
+              {t("Contact Specialist")}
+            </button>
+          </div>
+        </div>
+
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-4">
+            <Link to="/impressum" className="hover:text-foreground transition">
+              {t("Impressum")}
+            </Link>
+            <Link to="/datenschutz" className="hover:text-foreground transition">
+              {t("Datenschutz")}
+            </Link>
+            <Link to="/agb" className="hover:text-foreground transition">
+              {t("AGB")}
+            </Link>
+            <Link to="/withdraw" className="hover:text-foreground transition">
+              {t("Widerrufsrecht")}
+            </Link>
+            <Link to="/cancel" className="hover:text-foreground transition">
+              {t("Vertrag hier kündigen (§ 312k BGB)")}
+            </Link>
+          </div>
+
+          <p>{t("© 2026 Lensly. All rights reserved.")}</p>
         </div>
       </div>
     </footer>
