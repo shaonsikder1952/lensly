@@ -428,7 +428,7 @@ function AdminPage() {
       .catch((err) => {
         setLoading(false);
         console.error("Login failed:", err);
-        setAuthError(t("An error occurred during authentication"));
+        setAuthError(err?.message || t("An error occurred during authentication"));
       });
   };
 

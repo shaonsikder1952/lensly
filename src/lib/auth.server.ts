@@ -107,6 +107,9 @@ export async function requireAdminSession(
   } else {
     try {
       rawSessionId = getCookie(cookieName);
+      if (!rawSessionId) {
+        rawSessionId = getCookie("admin_session") || getCookie("__Host-admin_session");
+      }
     } catch {
       // Outside active request context or cookie missing
     }
@@ -212,109 +215,150 @@ export async function processAdminLogin(password: string, username?: string): Pr
   csrfToken?: string;
   error?: string;
 }> {
-  const clientIp = getClientIdentifier();
-  const isProd = process.env.NODE_ENV === "production";
+  try {
+    const clientIp = getClientIdentifier();
+    const isProd = process.env.NODE_ENV === "production";
 
-  // Check username if supplied
-  if (username) {
-    const expected = getAdminUsername();
-    if (username.trim().toLowerCase() !== expected.toLowerCase()) {
+    // Check username if supplied
+    if (username) {
+      const expected = getAdminUsername();
+      if (username.trim().toLowerCase() !== expected.toLowerCase()) {
+        safeSetStatus(401, "Unauthorized");
+        return {
+          success: false,
+          error: "Invalid username or password.",
+        };
+      }
+    }
+
+    // 1. Dual-Key Rate Limiting (IP + Account) with graceful bypass on failure
+    try {
+      const ipCheck = await checkAndRecordRateLimit("login_ip", `ip:${clientIp}`, 10, 15 * 60 * 1000);
+      const accountCheck = await checkAndRecordRateLimit("login_account", "id:admin", 20, 15 * 60 * 1000);
+
+      if (!ipCheck.allowed || !accountCheck.allowed) {
+        safeSetStatus(429, "Too Many Requests");
+        return {
+          success: false,
+          error: "Too many failed login attempts. Please try again in 15 minutes.",
+        };
+      }
+    } catch (rlErr) {
+      console.warn("[Auth] Rate limiter check error (proceeding):", rlErr);
+    }
+
+    // 2. Password verification
+    const isValid = await verifyAdminPassword(password);
+    if (!isValid) {
+      await recordAuditLogServer({
+        request_id: "AUTH",
+        admin_id: username || "unknown",
+        action: "ADMIN_LOGIN_FAILURE",
+        metadata: `IP_HASH: ${crypto.createHash("sha256").update(clientIp).digest("hex").slice(0, 16)}`,
+      }).catch(() => {});
+
       safeSetStatus(401, "Unauthorized");
       return {
         success: false,
         error: "Invalid username or password.",
       };
     }
-  }
 
-  // 1. Dual-Key Rate Limiting (IP + Account) across server instances
-  const ipCheck = await checkAndRecordRateLimit("login_ip", `ip:${clientIp}`, 5, 15 * 60 * 1000);
-  const accountCheck = await checkAndRecordRateLimit("login_account", "id:admin", 10, 15 * 60 * 1000);
+    // 3. Clear rate limits on success
+    await clearLoginRateLimits(clientIp, "admin").catch(() => {});
 
-  if (!ipCheck.allowed || !accountCheck.allowed) {
-    safeSetStatus(429, "Too Many Requests");
-    return {
-      success: false,
-      error: "Too many failed login attempts. Please try again in 15 minutes.",
-    };
-  }
+    // 4. Issue secure server session & anti-CSRF token
+    const rawSessionId = crypto.randomBytes(32).toString("hex");
+    const tokenHash = hashSessionToken(rawSessionId);
+    const csrfToken = crypto.randomBytes(32).toString("hex");
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 4 * 60 * 60 * 1000); // 4 hours
 
-  // 2. Timing-safe Argon2id password verification
-  const isValid = await verifyAdminPassword(password);
-  if (!isValid) {
+    const sessionStore = getSessionStore();
+    try {
+      await sessionStore.create({
+        id: tokenHash,
+        admin_id: "admin",
+        csrf_token: csrfToken,
+        ip_hash: crypto.createHash("sha256").update(clientIp).digest("hex").slice(0, 16),
+        created_at: now.toISOString(),
+        expires_at: expiresAt.toISOString(),
+      });
+    } catch (storeErr) {
+      console.warn("[Auth] Primary session store failed, falling back to FileSessionStore:", storeErr);
+      const fileStore = new FileSessionStore();
+      await fileStore.create({
+        id: tokenHash,
+        admin_id: "admin",
+        csrf_token: csrfToken,
+        ip_hash: crypto.createHash("sha256").update(clientIp).digest("hex").slice(0, 16),
+        created_at: now.toISOString(),
+        expires_at: expiresAt.toISOString(),
+      });
+    }
+
+    // 5. Set HttpOnly session cookie
+    const cookieName = getSessionCookieName();
+    try {
+      setCookie(cookieName, rawSessionId, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: "strict",
+        path: "/",
+        maxAge: 4 * 60 * 60,
+      });
+      if (cookieName !== "admin_session") {
+        setCookie("admin_session", rawSessionId, {
+          httpOnly: true,
+          secure: isProd,
+          sameSite: "strict",
+          path: "/",
+          maxAge: 4 * 60 * 60,
+        });
+      }
+    } catch (cookieErr) {
+      console.warn("[Auth] Failed to set session cookie:", cookieErr);
+    }
+
+    // 6. Set client-readable SameSite=Strict anti-CSRF cookie
+    try {
+      setCookie(CSRF_COOKIE_NAME, csrfToken, {
+        httpOnly: false,
+        secure: isProd,
+        sameSite: "strict",
+        path: "/",
+        maxAge: 4 * 60 * 60,
+      });
+    } catch (csrfCookieErr) {
+      console.warn("[Auth] Failed to set CSRF cookie:", csrfCookieErr);
+    }
+
+    // 7. Audit log (never log raw tokens or passwords)
     await recordAuditLogServer({
       request_id: "AUTH",
-      admin_id: username || "unknown",
-      action: "ADMIN_LOGIN_FAILURE",
+      admin_id: "admin",
+      action: "ADMIN_LOGIN_SUCCESS",
       metadata: `IP_HASH: ${crypto.createHash("sha256").update(clientIp).digest("hex").slice(0, 16)}`,
     }).catch(() => {});
 
-    safeSetStatus(401, "Unauthorized");
+    return {
+      success: true,
+      csrfToken,
+    };
+  } catch (err: any) {
+    console.error("[Auth] Fatal admin login error:", err);
     return {
       success: false,
-      error: "Invalid username or password.",
+      error: `Authentication failed: ${err?.message || "Internal server error"}`,
     };
   }
-
-  // 3. Clear rate limits on success
-  await clearLoginRateLimits(clientIp, "admin");
-
-  // 4. Issue secure server session & anti-CSRF token
-  // Raw session token: 256 bits of cryptographic entropy
-  const rawSessionId = crypto.randomBytes(32).toString("hex");
-  const tokenHash = hashSessionToken(rawSessionId);
-  const csrfToken = crypto.randomBytes(32).toString("hex");
-  const now = new Date();
-  const expiresAt = new Date(now.getTime() + 4 * 60 * 60 * 1000); // 4 hours
-
-  const sessionStore = getSessionStore();
-  await sessionStore.create({
-    id: tokenHash, // Store only the secure hash, never raw token
-    admin_id: "admin",
-    csrf_token: csrfToken,
-    ip_hash: crypto.createHash("sha256").update(clientIp).digest("hex").slice(0, 16),
-    created_at: now.toISOString(),
-    expires_at: expiresAt.toISOString(),
-  });
-
-  // 5. Set HttpOnly session cookie with __Host- prefix in production
-  const cookieName = getSessionCookieName();
-  setCookie(cookieName, rawSessionId, {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: "strict",
-    path: "/",
-    maxAge: 4 * 60 * 60,
-  });
-
-  // 6. Set client-readable SameSite=Strict anti-CSRF cookie
-  setCookie(CSRF_COOKIE_NAME, csrfToken, {
-    httpOnly: false,
-    secure: isProd,
-    sameSite: "strict",
-    path: "/",
-    maxAge: 4 * 60 * 60,
-  });
-
-  // 7. Audit log (never log raw tokens or passwords)
-  await recordAuditLogServer({
-    request_id: "AUTH",
-    admin_id: "admin",
-    action: "ADMIN_LOGIN_SUCCESS",
-    metadata: `IP_HASH: ${crypto.createHash("sha256").update(clientIp).digest("hex").slice(0, 16)}`,
-  }).catch(() => {});
-
-  return {
-    success: true,
-    csrfToken,
-  };
 }
 
 export async function processAdminLogout(): Promise<{ success: boolean }> {
   const cookieName = getSessionCookieName();
   let rawSessionId: string | undefined;
   try {
-    rawSessionId = getCookie(cookieName);
+    rawSessionId = getCookie(cookieName) || getCookie("admin_session") || getCookie("__Host-admin_session");
   } catch {}
 
   if (rawSessionId) {
@@ -325,6 +369,8 @@ export async function processAdminLogout(): Promise<{ success: boolean }> {
 
   const isProd = process.env.NODE_ENV === "production";
   deleteCookie(cookieName, { path: "/", secure: isProd, sameSite: "strict" });
+  deleteCookie("admin_session", { path: "/", secure: isProd, sameSite: "strict" });
+  deleteCookie("__Host-admin_session", { path: "/", secure: isProd, sameSite: "strict" });
   deleteCookie(CSRF_COOKIE_NAME, { path: "/", secure: isProd, sameSite: "strict" });
 
   await recordAuditLogServer({

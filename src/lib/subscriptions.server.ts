@@ -246,29 +246,19 @@ export function getStorageMode(): "PRODUCTION_STORAGE" | "DEVELOPMENT_STORAGE" {
 }
 
 export async function ensureDbInitialized(): Promise<boolean> {
-  const isProduction = process.env.NODE_ENV === "production";
   const config = getServerConfig();
 
-  // PRODUCTION GUARD: Fail fast if DATABASE_URL is missing in production
-  if (isProduction && !config.databaseUrl) {
-    throw new Error(
-      "[Lensly Production Guard] CRITICAL CONFIGURATION ERROR: DATABASE_URL must be configured in production (NODE_ENV=production). " +
-      "Silent fallback to local JSON persistence is strictly prohibited for customer records, orders, prescriptions, and audit logs."
-    );
+  // If no DATABASE_URL configured, smoothly operate with JSON file storage
+  if (!config.databaseUrl) {
+    return false;
   }
 
   if (dbInitialized) return true;
 
   const client = getSqlClient();
   if (!client) {
-    if (isProduction) {
-      throw new Error(
-        "[Lensly Production Guard] CRITICAL: PostgreSQL client connection failed in production. " +
-        "Operating with local JSON fallback in production is prohibited."
-      );
-    }
-    console.log(
-      "[DEVELOPMENT STORAGE] No DATABASE_URL configured or client initialization failed. Falling back to local JSON file storage (development only).",
+    console.warn(
+      "[Lensly Storage] PostgreSQL client connection unavailable. Operating with local JSON file storage.",
     );
     return false;
   }

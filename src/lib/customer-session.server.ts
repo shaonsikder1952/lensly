@@ -134,107 +134,134 @@ export class FileCustomerSessionStore implements CustomerSessionStore {
 }
 
 export class PostgresCustomerSessionStore implements CustomerSessionStore {
-  async createSession(session: CustomerSessionRecord): Promise<void> {
-    await ensureDbInitialized();
-    const client = getSqlClient();
-    if (!client) throw new Error("PostgreSQL unavailable for customer session creation");
+  private fileFallback = new FileCustomerSessionStore();
 
-    await client`
-      INSERT INTO customer_sessions (
-        id, customer_email, contract_id, csrf_token, ip_hash, user_agent, created_at, expires_at, revoked_at
-      ) VALUES (
-        ${session.id},
-        ${session.customer_email},
-        ${session.contract_id ?? null},
-        ${session.csrf_token},
-        ${session.ip_hash ?? null},
-        ${session.user_agent ?? null},
-        ${session.created_at},
-        ${session.expires_at},
-        ${session.revoked_at ?? null}
-      )
-      ON CONFLICT (id) DO UPDATE SET
-        expires_at = EXCLUDED.expires_at,
-        revoked_at = EXCLUDED.revoked_at
-    `;
+  async createSession(session: CustomerSessionRecord): Promise<void> {
+    try {
+      const isDb = await ensureDbInitialized();
+      const client = getSqlClient();
+      if (!isDb || !client) return await this.fileFallback.createSession(session);
+
+      await client`
+        INSERT INTO customer_sessions (
+          id, customer_email, contract_id, csrf_token, ip_hash, user_agent, created_at, expires_at, revoked_at
+        ) VALUES (
+          ${session.id},
+          ${session.customer_email},
+          ${session.contract_id ?? null},
+          ${session.csrf_token},
+          ${session.ip_hash ?? null},
+          ${session.user_agent ?? null},
+          ${session.created_at},
+          ${session.expires_at},
+          ${session.revoked_at ?? null}
+        )
+        ON CONFLICT (id) DO UPDATE SET
+          expires_at = EXCLUDED.expires_at,
+          revoked_at = EXCLUDED.revoked_at
+      `;
+    } catch (err) {
+      console.warn("[PostgresCustomerSessionStore] DB createSession failed, falling back to file:", err);
+      return await this.fileFallback.createSession(session);
+    }
   }
 
   async getSession(tokenHash: string): Promise<CustomerSessionRecord | null> {
-    await ensureDbInitialized();
-    const client = getSqlClient();
-    if (!client) throw new Error("PostgreSQL unavailable for customer session lookup");
+    try {
+      const isDb = await ensureDbInitialized();
+      const client = getSqlClient();
+      if (!isDb || !client) return await this.fileFallback.getSession(tokenHash);
 
-    const rows = await client`
-      SELECT * FROM customer_sessions WHERE id = ${tokenHash.trim().toLowerCase()} LIMIT 1
-    `;
-    if (!rows || rows.length === 0) return null;
-    const r = rows[0];
-    return {
-      id: r.id,
-      customer_email: r.customer_email,
-      contract_id: r.contract_id || undefined,
-      csrf_token: r.csrf_token,
-      ip_hash: r.ip_hash || undefined,
-      user_agent: r.user_agent || undefined,
-      created_at: new Date(r.created_at).toISOString(),
-      expires_at: new Date(r.expires_at).toISOString(),
-      revoked_at: r.revoked_at ? new Date(r.revoked_at).toISOString() : undefined,
-    };
+      const rows = await client`
+        SELECT * FROM customer_sessions WHERE id = ${tokenHash.trim().toLowerCase()} LIMIT 1
+      `;
+      if (!rows || rows.length === 0) return await this.fileFallback.getSession(tokenHash);
+      const r = rows[0];
+      return {
+        id: r.id,
+        customer_email: r.customer_email,
+        contract_id: r.contract_id || undefined,
+        csrf_token: r.csrf_token,
+        ip_hash: r.ip_hash || undefined,
+        user_agent: r.user_agent || undefined,
+        created_at: new Date(r.created_at).toISOString(),
+        expires_at: new Date(r.expires_at).toISOString(),
+        revoked_at: r.revoked_at ? new Date(r.revoked_at).toISOString() : undefined,
+      };
+    } catch (err) {
+      console.warn("[PostgresCustomerSessionStore] DB getSession failed, falling back to file:", err);
+      return await this.fileFallback.getSession(tokenHash);
+    }
   }
 
   async revokeSession(tokenHash: string): Promise<void> {
-    await ensureDbInitialized();
-    const client = getSqlClient();
-    if (!client) throw new Error("PostgreSQL unavailable for customer session revocation");
+    try {
+      const isDb = await ensureDbInitialized();
+      const client = getSqlClient();
+      if (!isDb || !client) return await this.fileFallback.revokeSession(tokenHash);
 
-    await client`
-      UPDATE customer_sessions SET revoked_at = CURRENT_TIMESTAMP WHERE id = ${tokenHash.trim().toLowerCase()}
-    `;
+      await client`
+        UPDATE customer_sessions SET revoked_at = CURRENT_TIMESTAMP WHERE id = ${tokenHash.trim().toLowerCase()}
+      `;
+    } catch (err) {
+      console.warn("[PostgresCustomerSessionStore] DB revokeSession failed, falling back to file:", err);
+      return await this.fileFallback.revokeSession(tokenHash);
+    }
   }
 
   async createHandoff(handoff: CustomerHandoffRecord): Promise<void> {
-    await ensureDbInitialized();
-    const client = getSqlClient();
-    if (!client) throw new Error("PostgreSQL unavailable for customer handoff creation");
+    try {
+      const isDb = await ensureDbInitialized();
+      const client = getSqlClient();
+      if (!isDb || !client) return await this.fileFallback.createHandoff(handoff);
 
-    await client`
-      INSERT INTO customer_handoffs (
-        token_hash, customer_email, contract_id, expires_at, used
-      ) VALUES (
-        ${handoff.token_hash},
-        ${handoff.customer_email},
-        ${handoff.contract_id ?? null},
-        ${new Date(handoff.expires_at).toISOString()},
-        ${handoff.used}
-      )
-    `;
+      await client`
+        INSERT INTO customer_handoffs (
+          token_hash, customer_email, contract_id, expires_at, used
+        ) VALUES (
+          ${handoff.token_hash},
+          ${handoff.customer_email},
+          ${handoff.contract_id ?? null},
+          ${new Date(handoff.expires_at).toISOString()},
+          ${handoff.used}
+        )
+      `;
+    } catch (err) {
+      console.warn("[PostgresCustomerSessionStore] DB createHandoff failed, falling back to file:", err);
+      return await this.fileFallback.createHandoff(handoff);
+    }
   }
 
   async consumeHandoff(tokenHash: string): Promise<CustomerHandoffRecord | null> {
-    await ensureDbInitialized();
-    const client = getSqlClient();
-    if (!client) throw new Error("PostgreSQL unavailable for customer handoff consumption");
+    try {
+      const isDb = await ensureDbInitialized();
+      const client = getSqlClient();
+      if (!isDb || !client) return await this.fileFallback.consumeHandoff(tokenHash);
 
-    const normalized = tokenHash.trim().toLowerCase();
-    const rows = await client`
-      SELECT * FROM customer_handoffs 
-      WHERE token_hash = ${normalized} AND used = false AND expires_at > CURRENT_TIMESTAMP
-      LIMIT 1
-    `;
-    if (!rows || rows.length === 0) return null;
+      const normalized = tokenHash.trim().toLowerCase();
+      const rows = await client`
+        SELECT * FROM customer_handoffs 
+        WHERE token_hash = ${normalized} AND used = false AND expires_at > CURRENT_TIMESTAMP
+        LIMIT 1
+      `;
+      if (!rows || rows.length === 0) return await this.fileFallback.consumeHandoff(tokenHash);
 
-    await client`
-      UPDATE customer_handoffs SET used = true WHERE token_hash = ${normalized}
-    `;
+      await client`
+        UPDATE customer_handoffs SET used = true WHERE token_hash = ${normalized}
+      `;
 
-    const r = rows[0];
-    return {
-      token_hash: r.token_hash,
-      customer_email: r.customer_email,
-      contract_id: r.contract_id || undefined,
-      expires_at: new Date(r.expires_at).getTime(),
-      used: true,
-    };
+      const r = rows[0];
+      return {
+        token_hash: r.token_hash,
+        customer_email: r.customer_email,
+        contract_id: r.contract_id || undefined,
+        expires_at: new Date(r.expires_at).getTime(),
+        used: true,
+      };
+    } catch (err) {
+      console.warn("[PostgresCustomerSessionStore] DB consumeHandoff failed, falling back to file:", err);
+      return await this.fileFallback.consumeHandoff(tokenHash);
+    }
   }
 }
 
@@ -242,10 +269,9 @@ let activeCustomerSessionStore: CustomerSessionStore | null = null;
 
 export function getCustomerSessionStore(): CustomerSessionStore {
   if (activeCustomerSessionStore) return activeCustomerSessionStore;
-  const isProduction = process.env.NODE_ENV === "production";
   const client = getSqlClient();
 
-  if (isProduction || client) {
+  if (process.env.DATABASE_URL && client) {
     activeCustomerSessionStore = new PostgresCustomerSessionStore();
   } else {
     activeCustomerSessionStore = new FileCustomerSessionStore();

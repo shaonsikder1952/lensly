@@ -1,16 +1,3 @@
-/**
- * Lensly Notification Service Abstraction
- *
- * Dispatches structured customer & administrative notifications for:
- * - Prescription submitted / needs attention
- * - Frame request received / found / unavailable
- * - Order confirmed / processing / shipped / delivered
- * - Support message reply
- *
- * Configurable via environment variables (SMTP, Resend, or Postmark).
- * Falls back to structured simulated logging in local/test environments.
- * Zero hardcoded credentials.
- */
 
 export type NotificationEvent =
   | "prescription_submitted"

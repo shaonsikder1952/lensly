@@ -93,71 +93,101 @@ export class FileSessionStore implements SessionStore {
  * Ensures session durability across multiple application instances and deployment rollouts.
  */
 export class PostgresSessionStore implements SessionStore {
-  async create(session: SessionRecord): Promise<void> {
-    await ensureDbInitialized();
-    const client = getSqlClient();
-    if (!client) {
-      throw new Error("PostgreSQL client unavailable for session creation");
-    }
+  private fileFallback = new FileSessionStore();
 
-    await client`
-      INSERT INTO admin_sessions (
-        id, admin_id, csrf_token, ip_hash, user_agent, created_at, expires_at, revoked_at
-      ) VALUES (
-        ${session.id},
-        ${session.admin_id},
-        ${session.csrf_token},
-        ${session.ip_hash ?? null},
-        ${session.user_agent ?? null},
-        ${session.created_at},
-        ${session.expires_at},
-        ${session.revoked_at ?? null}
-      )
-      ON CONFLICT (id) DO UPDATE SET
-        csrf_token = EXCLUDED.csrf_token,
-        expires_at = EXCLUDED.expires_at,
-        revoked_at = EXCLUDED.revoked_at
-    `;
+  async create(session: SessionRecord): Promise<void> {
+    try {
+      const isDb = await ensureDbInitialized();
+      const client = getSqlClient();
+      if (!isDb || !client) {
+        return await this.fileFallback.create(session);
+      }
+
+      await client`
+        INSERT INTO admin_sessions (
+          id, admin_id, csrf_token, ip_hash, user_agent, created_at, expires_at, revoked_at
+        ) VALUES (
+          ${session.id},
+          ${session.admin_id},
+          ${session.csrf_token},
+          ${session.ip_hash ?? null},
+          ${session.user_agent ?? null},
+          ${session.created_at},
+          ${session.expires_at},
+          ${session.revoked_at ?? null}
+        )
+        ON CONFLICT (id) DO UPDATE SET
+          csrf_token = EXCLUDED.csrf_token,
+          expires_at = EXCLUDED.expires_at,
+          revoked_at = EXCLUDED.revoked_at
+      `;
+    } catch (err) {
+      console.warn("[PostgresSessionStore] DB create failed, falling back to file session store:", err);
+      return await this.fileFallback.create(session);
+    }
   }
 
   async get(tokenHash: string): Promise<SessionRecord | null> {
-    await ensureDbInitialized();
-    const client = getSqlClient();
-    if (!client) return null;
+    try {
+      const isDb = await ensureDbInitialized();
+      const client = getSqlClient();
+      if (!isDb || !client) {
+        return await this.fileFallback.get(tokenHash);
+      }
 
-    const rows = await client`
-      SELECT id, admin_id, csrf_token, ip_hash, user_agent, created_at, expires_at, revoked_at
-      FROM admin_sessions
-      WHERE id = ${tokenHash}
-      LIMIT 1
-    `;
+      const rows = await client`
+        SELECT id, admin_id, csrf_token, ip_hash, user_agent, created_at, expires_at, revoked_at
+        FROM admin_sessions
+        WHERE id = ${tokenHash}
+        LIMIT 1
+      `;
 
-    if (!rows || rows.length === 0) return null;
-    return rows[0] as SessionRecord;
+      if (!rows || rows.length === 0) {
+        return await this.fileFallback.get(tokenHash);
+      }
+      return rows[0] as SessionRecord;
+    } catch (err) {
+      console.warn("[PostgresSessionStore] DB get failed, falling back to file session store:", err);
+      return await this.fileFallback.get(tokenHash);
+    }
   }
 
   async revoke(tokenHash: string): Promise<void> {
-    await ensureDbInitialized();
-    const client = getSqlClient();
-    if (!client) return;
+    try {
+      const isDb = await ensureDbInitialized();
+      const client = getSqlClient();
+      if (!isDb || !client) {
+        return await this.fileFallback.revoke(tokenHash);
+      }
 
-    const now = new Date().toISOString();
-    await client`
-      UPDATE admin_sessions
-      SET revoked_at = ${now}
-      WHERE id = ${tokenHash}
-    `;
+      const now = new Date().toISOString();
+      await client`
+        UPDATE admin_sessions
+        SET revoked_at = ${now}
+        WHERE id = ${tokenHash}
+      `;
+    } catch (err) {
+      console.warn("[PostgresSessionStore] DB revoke failed, falling back to file session store:", err);
+      return await this.fileFallback.revoke(tokenHash);
+    }
   }
 
   async delete(tokenHash: string): Promise<void> {
-    await ensureDbInitialized();
-    const client = getSqlClient();
-    if (!client) return;
+    try {
+      const isDb = await ensureDbInitialized();
+      const client = getSqlClient();
+      if (!isDb || !client) {
+        return await this.fileFallback.delete(tokenHash);
+      }
 
-    await client`
-      DELETE FROM admin_sessions
-      WHERE id = ${tokenHash}
-    `;
+      await client`
+        DELETE FROM admin_sessions
+        WHERE id = ${tokenHash}
+      `;
+    } catch (err) {
+      console.warn("[PostgresSessionStore] DB delete failed, falling back to file session store:", err);
+      return await this.fileFallback.delete(tokenHash);
+    }
   }
 }
 

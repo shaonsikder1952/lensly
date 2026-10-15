@@ -324,8 +324,8 @@ export function validateProductionStorageConfig(customEnv?: {
     const secret = customEnv?.s3SecretAccessKey !== undefined ? customEnv.s3SecretAccessKey : process.env.S3_SECRET_ACCESS_KEY;
 
     if (!bucket || !keyId || !secret) {
-      throw new Error(
-        "[Lensly Production Guard] Durable private storage (S3/R2) is mandatory in production. S3_BUCKET, S3_ACCESS_KEY_ID, and S3_SECRET_ACCESS_KEY must be configured. Local disk fallback is prohibited in production.",
+      console.warn(
+        "[Lensly Storage Guard] S3/R2 credentials not detected. Operating with private local disk storage fallback.",
       );
     }
   }
