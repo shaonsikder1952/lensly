@@ -99,22 +99,30 @@ async function loadFaceLandmarker() {
       }
     }
 
-    // 1. Try local assets first
+    // 1. Try CDN wasm (guaranteed application/wasm MIME type) with local model
+    try {
+      faceLandmarkerInstance = await tryInitialize(cdnWasm, localModel, "CDN-Wasm+LocalModel");
+      return faceLandmarkerInstance;
+    } catch (e1) {
+      console.warn("[MediaPipe] CDN-Wasm + LocalModel attempt failed, trying full CDN:", e1);
+    }
+
+    // 2. Try full CDN (CDN wasm + Google Storage CDN model)
+    try {
+      faceLandmarkerInstance = await tryInitialize(cdnWasm, cdnModel, "Full-CDN");
+      return faceLandmarkerInstance;
+    } catch (e2) {
+      console.warn("[MediaPipe] Full CDN attempt failed, trying local assets:", e2);
+    }
+
+    // 3. Fall back to local assets
     try {
       faceLandmarkerInstance = await tryInitialize(localWasm, localModel, "Local");
       return faceLandmarkerInstance;
-    } catch (localErr) {
-      console.warn("[MediaPipe] Local initialization failed, falling back to CDN:", localErr);
-    }
-
-    // 2. Fall back to official Google / jsDelivr CDN
-    try {
-      faceLandmarkerInstance = await tryInitialize(cdnWasm, cdnModel, "CDN");
-      return faceLandmarkerInstance;
-    } catch (cdnErr: any) {
-      console.error("[MediaPipe] Both local and CDN FaceLandmarker initialization failed:", cdnErr);
+    } catch (localErr: any) {
+      console.error("[MediaPipe] All FaceLandmarker initialization strategies failed:", localErr);
       loadingPromise = null;
-      throw cdnErr;
+      throw localErr;
     }
   })();
 

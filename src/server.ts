@@ -37,11 +37,13 @@ function applySecurityHeaders(response: Response): Response {
   // Notice: dynamic code evaluation is strictly omitted from script-src.
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://js.stripe.com https://www.clarity.ms",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://js.stripe.com https://www.clarity.ms https://cdn.jsdelivr.net",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob: https:",
-    "connect-src 'self' https://api.stripe.com https://*.clarity.ms https://c.bing.com",
+    "connect-src 'self' https://api.stripe.com https://*.clarity.ms https://c.bing.com https://cdn.jsdelivr.net https://storage.googleapis.com",
+    "worker-src 'self' blob:",
+    "child-src 'self' blob:",
     "frame-src 'self' https://js.stripe.com",
     "frame-ancestors 'none'",
     "object-src 'none'",
