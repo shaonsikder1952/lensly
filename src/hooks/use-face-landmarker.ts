@@ -41,93 +41,80 @@ const CHIN = 152;
 
 let faceLandmarkerInstance: any = null;
 let loadingPromise: Promise<any> | null = null;
-let loadFailed = false;
 
 async function loadFaceLandmarker() {
   if (faceLandmarkerInstance) return faceLandmarkerInstance;
-  if (loadFailed) return null;
   if (loadingPromise) return loadingPromise;
 
   loadingPromise = (async () => {
-    try {
-      const vision = await import("@mediapipe/tasks-vision");
-      const { FaceLandmarker, FilesetResolver } = vision;
+    const vision = await import("@mediapipe/tasks-vision");
+    const { FaceLandmarker, FilesetResolver } = vision;
 
-      const baseUrl =
-        typeof import.meta !== "undefined" && import.meta.env?.BASE_URL
-          ? import.meta.env.BASE_URL.replace(/\/$/, "")
-          : "";
-      const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const baseUrl =
+      typeof import.meta !== "undefined" && import.meta.env?.BASE_URL
+        ? import.meta.env.BASE_URL.replace(/\/$/, "")
+        : "";
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
 
-      let wasmPath = `${origin}${baseUrl}/wasm`;
-      let modelPath = `${origin}${baseUrl}/models/face_landmarker.task`;
+    const localWasm = `${origin}${baseUrl}/wasm`;
+    const localModel = `${origin}${baseUrl}/models/face_landmarker.task`;
 
-      // Verify local model is accessible and not an HTML SPA fallback (Netlify/Vercel rewrite)
-      let useLocal = true;
+    const cdnWasm = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.1.0/wasm";
+    const cdnModel =
+      "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
+
+    async function tryInitialize(wasmUrl: string, modelUrl: string, label: string) {
+      console.log(`[MediaPipe] Initializing (${label}) FilesetResolver from:`, wasmUrl);
+      const resolver = await FilesetResolver.forVisionTasks(wasmUrl);
+
+      // Attempt GPU first
       try {
-        const checkRes = await fetch(modelPath, { method: "HEAD" });
-        const ct = checkRes.headers.get("content-type") || "";
-        if (!checkRes.ok || ct.includes("text/html")) {
-          console.warn(
-            `[MediaPipe] Local model invalid (status: ${checkRes.status}, content-type: "${ct}"). Falling back to CDN.`
-          );
-          useLocal = false;
-        }
-      } catch (checkErr) {
-        console.warn("[MediaPipe] Network probe for local model failed. Falling back to CDN:", checkErr);
-        useLocal = false;
-      }
-
-      if (!useLocal) {
-        wasmPath = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm";
-        modelPath =
-          "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
-      }
-
-      console.log("[MediaPipe] Initializing FilesetResolver from:", wasmPath);
-      const filesetResolver = await FilesetResolver.forVisionTasks(wasmPath);
-
-      // Try GPU first, fall back to CPU
-      try {
-        console.log("[MediaPipe] Attempting GPU delegate...");
-        faceLandmarkerInstance = await FaceLandmarker.createFromOptions(filesetResolver, {
-          baseOptions: {
-            modelAssetPath: modelPath,
-            delegate: "GPU",
-          },
+        console.log(`[MediaPipe] (${label}) Attempting GPU delegate...`);
+        const inst = await FaceLandmarker.createFromOptions(resolver, {
+          baseOptions: { modelAssetPath: modelUrl, delegate: "GPU" },
           runningMode: "IMAGE",
           numFaces: 1,
           outputFaceBlendshapes: false,
           outputFacialTransformationMatrixes: false,
         });
-        faceLandmarkerInstance.__activeDelegate = "GPU";
-        faceLandmarkerInstance.__filesetResolver = filesetResolver;
-        faceLandmarkerInstance.__modelPath = modelPath;
-        console.log("[MediaPipe] Initialized successfully with GPU delegate!");
+        inst.__activeDelegate = "GPU";
+        inst.__filesetResolver = resolver;
+        inst.__modelPath = modelUrl;
+        console.log(`[MediaPipe] (${label}) Successfully initialized with GPU delegate!`);
+        return inst;
       } catch (gpuErr) {
-        console.warn("[MediaPipe] GPU delegate failed, trying CPU fallback:", gpuErr);
-        faceLandmarkerInstance = await FaceLandmarker.createFromOptions(filesetResolver, {
-          baseOptions: {
-            modelAssetPath: modelPath,
-            delegate: "CPU",
-          },
+        console.warn(`[MediaPipe] (${label}) GPU delegate failed, trying CPU fallback:`, gpuErr);
+        const inst = await FaceLandmarker.createFromOptions(resolver, {
+          baseOptions: { modelAssetPath: modelUrl, delegate: "CPU" },
           runningMode: "IMAGE",
           numFaces: 1,
           outputFaceBlendshapes: false,
           outputFacialTransformationMatrixes: false,
         });
-        faceLandmarkerInstance.__activeDelegate = "CPU";
-        faceLandmarkerInstance.__filesetResolver = filesetResolver;
-        faceLandmarkerInstance.__modelPath = modelPath;
-        console.log("[MediaPipe] Initialized successfully with CPU delegate!");
+        inst.__activeDelegate = "CPU";
+        inst.__filesetResolver = resolver;
+        inst.__modelPath = modelUrl;
+        console.log(`[MediaPipe] (${label}) Successfully initialized with CPU delegate!`);
+        return inst;
       }
+    }
 
+    // 1. Try local assets first
+    try {
+      faceLandmarkerInstance = await tryInitialize(localWasm, localModel, "Local");
       return faceLandmarkerInstance;
-    } catch (err: any) {
-      console.error("[MediaPipe] Failed to load FaceLandmarker:", err);
-      loadFailed = true;
+    } catch (localErr) {
+      console.warn("[MediaPipe] Local initialization failed, falling back to CDN:", localErr);
+    }
+
+    // 2. Fall back to official Google / jsDelivr CDN
+    try {
+      faceLandmarkerInstance = await tryInitialize(cdnWasm, cdnModel, "CDN");
+      return faceLandmarkerInstance;
+    } catch (cdnErr: any) {
+      console.error("[MediaPipe] Both local and CDN FaceLandmarker initialization failed:", cdnErr);
       loadingPromise = null;
-      throw err;
+      throw cdnErr;
     }
   })();
 

@@ -857,9 +857,8 @@ export function VirtualTryOnPreview({ onOpenFrameModal }: VirtualTryOnProps) {
       cropH: number,
       mirror: boolean = false
     ) => {
-      // In live camera mode, skip drawing when no face is detected
-      if (!detection) return;
-
+      // In live camera mode, if face is detected, it will position dynamically;
+      // if not detected, renderGlassesUnified provides fallback centered placement with interactive drag.
       const curFrameId = activeFrameIdRef.current;
       const frameImg = getFrameImageById(curFrameId);
       if (!frameImg) return;
